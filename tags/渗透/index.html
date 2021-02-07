@@ -252,9 +252,6 @@
   </div>
 
 
-
-
-
   
   <div class="statistics">
     
@@ -285,8 +282,48 @@
   
 
   
-</footer>
 
+<span id="sitetime"></span>
+<script language=javascript>
+	function siteTime(){
+		window.setTimeout("siteTime()", 1000);
+		var seconds = 1000;
+		var minutes = seconds * 60;
+		var hours = minutes * 60;
+		var days = hours * 24;
+		var years = days * 365;
+		var today = new Date();
+		var todayYear = today.getFullYear();
+		var todayMonth = today.getMonth()+1;
+		var todayDate = today.getDate();
+		var todayHour = today.getHours();
+		var todayMinute = today.getMinutes();
+		var todaySecond = today.getSeconds();
+		/* 
+		Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳)
+		year - 作为date对象的年份，为4位年份值
+		month - 0-11之间的整数，做为date对象的月份
+		day - 1-31之间的整数，做为date对象的天数
+		hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+		minutes - 0-59之间的整数，做为date对象的分钟数
+		seconds - 0-59之间的整数，做为date对象的秒数
+		microseconds - 0-999之间的整数，做为date对象的毫秒数
+        */
+		var t1 = Date.UTC(2020,12,30,00,00,00); //北京时间2020-12-30 00:00:00
+		var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+		var diff = t2-t1;
+		var diffYears = Math.floor(diff/years);
+		var diffDays = Math.floor((diff/days)-diffYears*365);
+		var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+		var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+		var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+		document.getElementById("sitetime").innerHTML=" 自Na0h将神光棒放入此地已"+/*diffYears+" 年 "+*/diffDays+" 天"+diffHours+" 小时 "+diffMinutes+" 分钟 "+diffSeconds+" 秒🌩٩(๏̯๏)۶❤ ";
+	}
+	siteTime();
+</script>
+
+
+</footer>
 
 
 <!-- SCRIPTS -->
@@ -413,6 +450,11 @@
 
 
 
+
+
+<script type="text/javascript"
+color="220,220,220" opacity='0.7' zIndex="-2" count="200" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js">
+</script>
 
 <!-- hexo injector body_end start --><script src="https://cdn.jsdelivr.net/npm/hexo-widget-tree@0.0.5/js/index.js"></script><div id="widget-tree">
       <ul><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/web/">web</a><ul class="tree-list-children"><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/web/sql%E6%B3%A8%E5%85%A5/">sql注入</a><ul class="tree-list-children"><li class="tree-list-item"><a class="tree-list-post-link" href="/2020/12/30/sql%E6%B3%A8%E5%85%A5%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9F%BA%E6%93%8D/" title="sql注入的一些基操"><i class="post-icon gg-file-document"></i>sql注入的一些基操</a></li></ul></li></ul></li><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/wp/">wp</a><ul class="tree-list-children"><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/01/29/%E5%AD%A6%E6%A0%A1ctf%E8%AE%AD%E7%BB%83%E8%B5%9B%E7%9A%84wp/" title="学校ctf训练赛的wp"><i class="post-icon gg-file-document"></i>学校ctf训练赛的wp</a></li></ul></li><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a><ul class="tree-list-children"><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/02/05/%E5%AD%A6%E4%B9%A0%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E7%AC%94%E8%AE%B0/" title="学习正则表达式的一些笔记"><i class="post-icon gg-file-document"></i>学习正则表达式的一些笔记</a></li></ul></li><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/%E9%9A%8F%E7%AC%94/">随笔</a><ul class="tree-list-children"><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/01/29/%E8%BF%91%E6%9C%9F%E7%9A%84%E4%B8%80%E4%BA%9B%E8%AE%A1%E5%88%92/" title="关于一些计划"><i class="post-icon gg-file-document"></i>关于一些计划</a></li></ul></li><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/%E9%9D%B6%E5%9C%BA/">靶场</a><ul class="tree-list-children"><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/01/03/xss-lab%E9%80%9A%E5%85%B3%E5%B0%8F%E8%AE%B0/" title="xss-lab通关小记"><i class="post-icon gg-file-document"></i>xss-lab通关小记</a></li><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/02/07/%E6%90%AD%E5%BB%BAvulhub(%E5%9F%BA%E4%BA%8Ecentos)/" title="搭建vulhub(基于centos)"><i class="post-icon gg-file-document"></i>搭建vulhub(基于centos)</a></li><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/01/16/Pikachu%E9%9D%B6%E5%9C%BA%E7%9A%84%E5%B0%8F%E8%AE%B0/" title="Pikachu靶场的小记"><i class="post-icon gg-file-document"></i>Pikachu靶场的小记</a></li></ul></li></ul>
