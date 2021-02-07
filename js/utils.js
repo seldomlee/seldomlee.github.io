@@ -1,64 +1,102 @@
-HTMLElement.prototype.wrap = function(wrapper) {
-  this.parentNode.insertBefore(wrapper, this);
-  this.parentNode.removeChild(this);
-  wrapper.appendChild(this);
-};
+/* global Fluid, Debouncer */
 
-Yun.utils = {
-  wrapTable: () => {
-    document.querySelectorAll("table").forEach((el) => {
-      const container = document.createElement("div");
-      container.className = "table-container";
-      el.wrap(container);
-    });
+Fluid.utils = {
+
+  listenScroll: function(callback) {
+    const dbc = new Debouncer(callback);
+    window.addEventListener('scroll', dbc, false);
+    dbc.handleEvent();
   },
 
-  /**
-   * click btn to copy codeblock
-   */
-  insertCopyCodeBtn: () => {
-    const codeblocks = document.querySelectorAll("pre[class*='language-']");
-
-    codeblocks.forEach((codeblock) => {
-      if (!CONFIG.copycode) return;
-      codeblock.insertAdjacentHTML(
-        "beforeend",
-        '<div class="copy-btn"><svg class="icon"><use xlink:href="#icon-file-copy-line" aria-label="copy"></use></svg></div>'
-      );
-      const copyBtn = codeblock.querySelector(".copy-btn");
-      copyBtn.addEventListener("click", () => {
-        const lines =
-          codeblock.querySelector("code[class*='language-']") ||
-          codeblock.querySelector(".token");
-        const code = lines.innerText;
-        const ta = document.createElement("textarea");
-        ta.style.top = window.scrollY + "px"; // Prevent page scrolling
-        ta.style.position = "absolute";
-        ta.style.opacity = "0";
-        ta.readOnly = true;
-        ta.value = code;
-        document.body.append(ta);
-        ta.select();
-        ta.setSelectionRange(0, code.length);
-        ta.readOnly = false;
-        // copy success
-        const result = document.execCommand("copy");
-        const iconName = result ? "#icon-check-line" : "#icon-timer-line";
-        const iconSvg = copyBtn.querySelector("svg use");
-        iconSvg.setAttribute("xlink:href", iconName);
-        iconSvg.setAttribute("color", result ? "green" : "red");
-
-        ta.blur(); // For iOS
-        copyBtn.blur();
-        document.body.removeChild(ta);
+  scrollToElement: function(target, offset) {
+    var of = $(target).offset();
+    if (of) {
+      $('html,body').animate({
+        scrollTop: of.top + (offset || 0),
+        easing   : 'swing'
       });
-      codeblock.addEventListener("mouseleave", () => {
-        setTimeout(() => {
-          const iconSvg = copyBtn.querySelector("svg use");
-          iconSvg.setAttribute("xlink:href", "#icon-file-copy-line");
-          iconSvg.setAttribute("color", "gray");
-        }, 200);
-      });
-    });
+    }
   },
+
+  waitElementVisible: function(targetId, callback) {
+    var runningOnBrowser = typeof window !== 'undefined';
+    var isBot = (runningOnBrowser && !('onscroll' in window)) || (typeof navigator !== 'undefined'
+    && /(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent));
+    var supportsIntersectionObserver = runningOnBrowser && 'IntersectionObserver' in window;
+    if (!isBot && supportsIntersectionObserver) {
+      var io = new IntersectionObserver(function(entries, ob) {
+        if (entries[0].isIntersecting) {
+          callback && callback();
+          ob.disconnect();
+        }
+      }, {
+        threshold : [0],
+        rootMargin: (window.innerHeight || document.documentElement.clientHeight) + 'px'
+      });
+      io.observe(document.getElementById(targetId));
+    } else {
+      callback && callback();
+    }
+  },
+
+  waitElementLoaded: function(targetId, callback) {
+    var runningOnBrowser = typeof window !== 'undefined';
+    var isBot = (runningOnBrowser && !('onscroll' in window)) || (typeof navigator !== 'undefined'
+    && /(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent));
+    if (!runningOnBrowser || isBot) {
+      return;
+    }
+
+    if ('MutationObserver' in window) {
+      var mo = new MutationObserver(function(records, ob) {
+        var ele = document.getElementById(targetId);
+        if (ele) {
+          callback && callback();
+          ob.disconnect();
+        }
+      });
+      mo.observe(document, { childList: true, subtree: true });
+    } else {
+      document.addEventListener('DOMContentLoaded', function() {
+        callback && callback();
+      });
+    }
+  },
+
+  createScript: function(url, onload) {
+    var s = document.createElement('script');
+    s.setAttribute('src', url);
+    s.setAttribute('type', 'text/javascript');
+    s.setAttribute('charset', 'UTF-8');
+    s.async = false;
+    if (typeof onload === 'function') {
+      if (window.attachEvent) {
+        s.onreadystatechange = function() {
+          var e = s.readyState;
+          if (e === 'loaded' || e === 'complete') {
+            s.onreadystatechange = null;
+            onload();
+          }
+        };
+      } else {
+        s.onload = onload;
+      }
+    }
+    var e = document.getElementsByTagName('script')[0]
+    || document.getElementsByTagName('head')[0]
+    || document.head || document.documentElement;
+    e.parentNode.insertBefore(s, e);
+  },
+
+  createCssLink: function(url) {
+    var l = document.createElement('link');
+    l.setAttribute('rel', 'stylesheet');
+    l.setAttribute('type', 'text/css');
+    l.setAttribute('href', url);
+    var e = document.getElementsByTagName('link')[0]
+    || document.getElementsByTagName('head')[0]
+    || document.head || document.documentElement;
+    e.parentNode.insertBefore(l, e);
+  }
+
 };
