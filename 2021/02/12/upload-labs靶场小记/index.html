@@ -206,7 +206,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      133
+      132
        分钟
     </span>
   
@@ -248,7 +248,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年2月13日 凌晨
+                  本文最后更新于：2021年2月12日 下午
                 
               </p>
             
@@ -543,7 +543,7 @@
 <h3 id="bypass-17"><a href="#bypass-17" class="headerlink" title="bypass"></a>bypass</h3><p>条件竞争：（多线程、同时、同一个文件）</p>
 <p>发生在多个线程同时访问同一个共享代码、变量、文件等没有进行锁操作或者同步操作的场景中</p>
 <p>由此进行bypass</p>
-<p>1、抓上传包和访问包；并发送到intruder模块（利用intruder重复发送、访问，从而达成解析上传文件的目的~）</p>
+<p>1、抓上传包和访问包；并发送到intruder模块</p>
 <p><img src="https://img-blog.csdnimg.cn/20210212115024415.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" alt="在这里插入图片描述"><img src="https://img-blog.csdnimg.cn/20210212115446325.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 <p>2、利用intruder重复发送、访问，从而达成解析上传文件的目的~</p>
 <p>在url中添加参数a=1（作为payload的攻击参数），payload选择numeber输个合适的范围就可以了</p>
@@ -593,9 +593,9 @@
 <p>1.检查MIME：修改Content-Type即可bypass</p>
 <p>2.检查后缀名：将文件名分割取末尾元素判断，因此文件最后一个后缀必须为<code>jpg | png | gif</code></p>
 <p>3.重新拼接文件名：拼接 <code>文件名(数组第一个单元)</code> + <code>.</code> + <code>数组倒数第二个单元</code>；</p>
-<p>​    若传入值为非数组则用<code>explode(&#39;.&#39;, strtolower($file))</code>分割为数组(以 . 分割)，为使数组值可控，只需要以数组形式传入</p>
-<p>​    通过控制传入参数的数组值即可绕过：<code>save_name[0]=info.php</code> ; <code>save_name[2]=gif</code>；</p>
-<p>(此处save_name[1]默认为空，故最终拼接的文件名为：<code>save_name[0]=info.php</code> + <code>save_name[1]=null</code>即得<code>info.php </code></p>
+<p>若传入值为非数组则用<code>explode(&#39;.&#39;, strtolower($file))</code>分割为数组(以 . 分割)，为使数组值可控，需以数组形式传入</p>
+<p>控制传入参数的数组值：<code>save_name[0]=info.php</code> ; <code>save_name[2]=gif</code>；（此处save_name[1]默认为空）</p>
+<p>故最终拼接得到的文件名为:save_name[0]=info.php<code>+</code>save_name[1]=null<code>即得</code>info.php `，实现绕过</p>
 <h3 id="bypass-20"><a href="#bypass-20" class="headerlink" title="bypass"></a>bypass</h3><p>如下：抓包修改即可~</p>
 <p><img src="https://img-blog.csdnimg.cn/20210212151434885.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 <p>最终</p>
