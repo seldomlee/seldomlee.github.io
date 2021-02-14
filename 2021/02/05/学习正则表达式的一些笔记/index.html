@@ -196,7 +196,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      3k 字
+      5k 字
     </span>
   
 
@@ -206,7 +206,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      34
+      58
        分钟
     </span>
   
@@ -248,7 +248,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年2月8日 凌晨
+                  本文最后更新于：2021年2月14日 下午
                 
               </p>
             
@@ -257,9 +257,15 @@
 
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>emmm虽然正则表达式好像不是特别急需，但后面还是需要学的=-=，就在吃喝玩乐睡的假期抽空学习一下。<br>本章是阅读《正则表达式30分钟入门》的笔记</p>
 <h1 id="笔记咯"><a href="#笔记咯" class="headerlink" title="笔记咯"></a>笔记咯</h1><h2 id="元字符"><a href="#元字符" class="headerlink" title="元字符"></a>元字符</h2><p><code>.</code> ：匹配除换行符以外的任意字符<br><code>\w</code>：匹配字母或数字或下划线或汉字等<br><code>\s</code>：匹配任意的空白符，包括空格，制表符(Tab)，换行符，中文全角空格 等<br><code>\d</code>：匹配一位数字<br><code>\b</code>：匹配单词的开始或结束。匹配这样一个位置：它的前一个字符和后一个字符不全是\w（一个是，一个不是或不存在）<br><code>^</code>：匹配字符串开始<br><code>$</code>：匹配字符串结束<br><code>(</code>和<code>)</code>：小括号有很多妙用，看下面吧</p>
+<h2 id="界定符"><a href="#界定符" class="headerlink" title="界定符"></a>界定符</h2><p>指定正则表达式的开始和结束，可以当成是计算机语言中的大括号<code>&#123;</code>和<code>&#125;</code>。一般有三种表现方式：</p>
+<ul>
+<li>斜杠。例如<code>/[0-9]/</code>。这是最常用的方式，在PHP中，推荐使用这种方式。</li>
+<li>井号。例如<code>#[0-9]</code>。</li>
+<li>大括号。例如<code>&#123;[0-9]&#125;</code>。在正则表达式中，大括号还有其他作用，所以这种方式不推荐使用。</li>
+</ul>
 <h2 id="反义"><a href="#反义" class="headerlink" title="反义"></a>反义</h2><p><code>\W</code> 匹配任意不是字母，数字，下划线，汉字的字符<br><code>\S</code> 匹配任意不是空白符的字符<br><code>\D</code> 匹配任意非数字的字符<br><code>\B</code> 匹配不是单词开头或结束的位置<br><code>[\^x]</code> 匹配除了x以外的任意字符<br><code>[\^aeiou]</code> 匹配除了aeiou这几个字母以外的任意字符</p>
 <h2 id="字符转义"><a href="#字符转义" class="headerlink" title="字符转义"></a>字符转义</h2><p>若需要查找元字符本身如<code>.</code>、<code>*</code>这些，需要用<code>\</code>来将这些字符的特殊意义取消掉：如<code>\.</code>、<code>\*</code>；当然查找<code>\</code>本身也需要转义为<code>\\</code></p>
-<h2 id="重复"><a href="#重复" class="headerlink" title="重复"></a>重复</h2><p><code>*</code> ：任意数量；重复0次或很多次<br><code>+</code>：&gt;=1次；重复1次或很多次<br><code>?</code>：0 or 1；重复0次或1次<br><code>&#123;n&#125;</code>：n次；如：\d{2}（表示\d重复匹配2次）；<br><code>&#123;n,&#125;</code>：&gt;=n次；重复n次或更多次<br><code>&#123;n,m&#125;</code>：重复n到m次；重复次数不少于n，不大于m</p>
+<h2 id="量词"><a href="#量词" class="headerlink" title="量词"></a>量词</h2><p><code>*</code> ：任意数量；重复0次或很多次<br><code>+</code>：&gt;=1次；重复1次或很多次<br><code>?</code>：0 or 1；重复0次或1次<br><code>&#123;n&#125;</code>：n次；如：\d{2}（表示\d重复匹配2次）；<br><code>&#123;n,&#125;</code>：&gt;=n次；重复n次或更多次<br><code>&#123;n,m&#125;</code>：重复n到m次；重复次数不少于n，不大于m</p>
 <h2 id="查找字符类"><a href="#查找字符类" class="headerlink" title="查找字符类"></a>查找字符类</h2><p>如查找abcde，只需在方括号中列出<code>[abcde]</code>;那么就构造了这样一个只会匹配abcde的字符集，数量由其后的重复次数决定</p>
 <p>也可以指定范围：<br>[0-9] 代表的含意与 \d 就是完全一致的：一位 数字；<br>[a-z0-9A-Z_] 也完全等同于 \w （如果只考虑英文的话）。</p>
 <h2 id="分支条件"><a href="#分支条件" class="headerlink" title="分支条件"></a>分支条件</h2><p>正则表达式里的分枝条件指的是有几种规则，如果满足其中任意一种规则都会进行匹配，具体方法是用 <code>|</code> 把不同的规则分隔开。如a | b，只要满足其中之一，都会进行匹配</p>
@@ -359,7 +365,14 @@
 <figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs livescript">(?&lt;=    <span class="hljs-comment"># 断言要匹配的文本的前缀</span><br>&lt;(<span class="hljs-string">\w+)&gt;</span> <span class="hljs-comment"># 查找尖括号括起来的内容</span><br>        <span class="hljs-comment"># (即HTML/XML标签)</span><br>)       <span class="hljs-comment"># 前缀结束</span><br>.*      <span class="hljs-comment"># 匹配任意文本</span><br>(?=     <span class="hljs-comment"># 断言要匹配的文本的后缀</span><br>&lt;<span class="hljs-string">\/\1&gt;</span>  <span class="hljs-comment"># 查找尖括号括起来的内容</span><br>        <span class="hljs-comment"># 查找尖括号括起来的内容</span><br>)       <span class="hljs-comment"># 后缀结束</span><br></code></pre></td></tr></table></figure>
 
 
-
+<h2 id="修正模式"><a href="#修正模式" class="headerlink" title="修正模式"></a>修正模式</h2><p>给正则表达式的匹配过程添加一种匹配模式</p>
+<ul>
+<li><code>U</code> 加<code>U</code>是懒惰匹配，不加<code>U</code>是默认的贪婪匹配。</li>
+<li><code>i</code> 忽略英文字母大小写。</li>
+<li><code>x</code> 忽略空白。（包括空格和按tab键输出的制表符）</li>
+<li><code>s</code> 让元字符<code>.</code>匹配包括换行符在内的所有字符。</li>
+<li><code>e</code> <code>preg_replace()</code>在替换字符串中对逆向引用作正常的替换。简单的说，就是PHP会把replace的结果当做PHP代码。（替换字符串要符合php的语法规范）<br>例如：<code>echo preg_replace(&#39;/(\d+),(\d+)/e&#39;, &#39;$1+$2&#39;, &#39;2,3&#39;);</code>会输出<code>5</code>。</li>
+</ul>
 <h2 id="贪婪与懒惰"><a href="#贪婪与懒惰" class="headerlink" title="贪婪与懒惰"></a>贪婪与懒惰</h2><h3 id="贪婪匹配"><a href="#贪婪匹配" class="headerlink" title="贪婪匹配"></a>贪婪匹配</h3><p>当正则表达式中包含能接受重复的限定符时，通常的行为是匹配尽可能多的字符（在使整个表达式能得到匹配的前提下）</p>
 <p>如：<code>a.*b</code>会匹配最长的  以a开始，b结束  的字符串；<br>当以此对aabab进行搜索，就会匹配整个字符串aabab</p>
 <h3 id="懒惰匹配"><a href="#懒惰匹配" class="headerlink" title="懒惰匹配"></a>懒惰匹配</h3><p>也就是是匹配尽可能少的字符。<br>只需在限定符后加上<code>?</code>即可转换为懒惰匹配模式</p>
@@ -430,6 +443,222 @@
 <p>每碰到了左括号，就在压入一个”Open”, 每碰到一个右括号，就弹出一个，到了最后就看看堆栈是否为空；</p>
 <p>不为空  -》证明左括号比右括号多，那匹配就应该失败。</p>
 <p>正则表达式引擎会进行回溯(放弃最前面或最后面的一些字符)，尽量使整个表达式得到匹配</p>
+<h2 id="正则表达式手册"><a href="#正则表达式手册" class="headerlink" title="正则表达式手册"></a>正则表达式手册</h2><h3 id="表达式全集"><a href="#表达式全集" class="headerlink" title="表达式全集"></a>表达式全集</h3><table>
+<thead>
+<tr>
+<th align="center">字符</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">\</td>
+<td align="center">将下一个字符标记为一个特殊字符、或一个原义字符、或一个向后引用、或一个八进制转义符。例如，“<code>n</code>”匹配字符“<code>n</code>”。“<code>\n</code>”匹配一个换行符。串行“<code>\\</code>”匹配“<code>\</code>”而“<code>\(</code>”则匹配“<code>(</code>”。</td>
+</tr>
+<tr>
+<td align="center">^</td>
+<td align="center">匹配输入字符串的开始位置。如果设置了RegExp对象的Multiline属性，^也匹配“<code>\n</code>”或“<code>\r</code>”之后的位置。</td>
+</tr>
+<tr>
+<td align="center">$</td>
+<td align="center">匹配输入字符串的结束位置。如果设置了RegExp对象的Multiline属性，$也匹配“<code>\n</code>”或“<code>\r</code>”之前的位置。</td>
+</tr>
+<tr>
+<td align="center">*</td>
+<td align="center">匹配前面的子表达式零次或多次。例如，zo<em>能匹配“<code>z</code>”以及“<code>zoo</code>”。</em>等价于{0,}。</td>
+</tr>
+<tr>
+<td align="center">+</td>
+<td align="center">匹配前面的子表达式一次或多次。例如，“<code>zo+</code>”能匹配“<code>zo</code>”以及“<code>zoo</code>”，但不能匹配“<code>z</code>”。+等价于{1,}。</td>
+</tr>
+<tr>
+<td align="center">?</td>
+<td align="center">匹配前面的子表达式零次或一次。例如，“<code>do(es)?</code>”可以匹配“<code>does</code>”或“<code>does</code>”中的“<code>do</code>”。?等价于{0,1}。</td>
+</tr>
+<tr>
+<td align="center">{<em>n</em>}</td>
+<td align="center"><em>n</em>是一个非负整数。匹配确定的<em>n</em>次。例如，“<code>o&#123;2&#125;</code>”不能匹配“<code>Bob</code>”中的“<code>o</code>”，但是能匹配“<code>food</code>”中的两个o。</td>
+</tr>
+<tr>
+<td align="center">{<em>n</em>,}</td>
+<td align="center"><em>n</em>是一个非负整数。至少匹配<em>n</em>次。例如，“<code>o&#123;2,&#125;</code>”不能匹配“<code>Bob</code>”中的“<code>o</code>”，但能匹配“<code>foooood</code>”中的所有o。“<code>o&#123;1,&#125;</code>”等价于“<code>o+</code>”。“<code>o&#123;0,&#125;</code>”则等价于“<code>o*</code>”。</td>
+</tr>
+<tr>
+<td align="center">{<em>n</em>,<em>m</em>}</td>
+<td align="center"><em>m</em>和<em>n</em>均为非负整数，其中<em>n</em>&lt;=<em>m</em>。最少匹配<em>n</em>次且最多匹配<em>m</em>次。例如，“<code>o&#123;1,3&#125;</code>”将匹配“<code>fooooood</code>”中的前三个o。“<code>o&#123;0,1&#125;</code>”等价于“<code>o?</code>”。请注意在逗号和两个数之间不能有空格。</td>
+</tr>
+<tr>
+<td align="center">?</td>
+<td align="center">当该字符紧跟在任何一个其他限制符（*,+,?，{<em>n</em>}，{<em>n</em>,}，{<em>n</em>,<em>m</em>}）后面时，匹配模式是非贪婪的。非贪婪模式尽可能少的匹配所搜索的字符串，而默认的贪婪模式则尽可能多的匹配所搜索的字符串。例如，对于字符串“<code>oooo</code>”，“<code>o+?</code>”将匹配单个“<code>o</code>”，而“<code>o+</code>”将匹配所有“<code>o</code>”。</td>
+</tr>
+<tr>
+<td align="center">.</td>
+<td align="center">匹配除“<code>\</code>*<code>n</code><em>”之外的任何单个字符。要匹配包括“<code>\</code></em><code>n</code>*”在内的任何字符，请使用像“`(.</td>
+</tr>
+<tr>
+<td align="center">(pattern)</td>
+<td align="center">匹配pattern并获取这一匹配。所获取的匹配可以从产生的Matches集合得到，在VBScript中使用SubMatches集合，在JScript中则使用$0…$9属性。要匹配圆括号字符，请使用“<code>\(</code>”或“<code>\)</code>”。</td>
+</tr>
+<tr>
+<td align="center">(?:pattern)</td>
+<td align="center">匹配pattern但不获取匹配结果，也就是说这是一个非获取匹配，不进行存储供以后使用。这在使用或字符“`(</td>
+</tr>
+<tr>
+<td align="center">(?=pattern)</td>
+<td align="center">正向肯定预查，在任何匹配pattern的字符串开始处匹配查找字符串。这是一个非获取匹配，也就是说，该匹配不需要获取供以后使用。例如，“`Windows(?=95</td>
+</tr>
+<tr>
+<td align="center">(?!pattern)</td>
+<td align="center">正向否定预查，在任何不匹配pattern的字符串开始处匹配查找字符串。这是一个非获取匹配，也就是说，该匹配不需要获取供以后使用。例如“`Windows(?!95</td>
+</tr>
+<tr>
+<td align="center">(?&lt;=pattern)</td>
+<td align="center">反向肯定预查，与正向肯定预查类拟，只是方向相反。例如，“`(?&lt;=95</td>
+</tr>
+<tr>
+<td align="center">(?&lt;!pattern)</td>
+<td align="center">反向否定预查，与正向否定预查类拟，只是方向相反。例如“`(?&lt;!95</td>
+</tr>
+<tr>
+<td align="center">x|y</td>
+<td align="center">匹配x或y。例如，“`z</td>
+</tr>
+<tr>
+<td align="center">[xyz]</td>
+<td align="center">字符集合。匹配所包含的任意一个字符。例如，“<code>[abc]</code>”可以匹配“<code>plain</code>”中的“<code>a</code>”。</td>
+</tr>
+<tr>
+<td align="center">[^xyz]</td>
+<td align="center">负值字符集合。匹配未包含的任意字符。例如，“<code>[^abc]</code>”可以匹配“<code>plain</code>”中的“<code>p</code>”。</td>
+</tr>
+<tr>
+<td align="center">[a-z]</td>
+<td align="center">字符范围。匹配指定范围内的任意字符。例如，“<code>[a-z]</code>”可以匹配“<code>a</code>”到“<code>z</code>”范围内的任意小写字母字符。</td>
+</tr>
+<tr>
+<td align="center">[^a-z]</td>
+<td align="center">负值字符范围。匹配任何不在指定范围内的任意字符。例如，“<code>[^a-z]</code>”可以匹配任何不在“<code>a</code>”到“<code>z</code>”范围内的任意字符。</td>
+</tr>
+<tr>
+<td align="center">\b</td>
+<td align="center">匹配一个单词边界，也就是指单词和空格间的位置。例如，“<code>er\b</code>”可以匹配“<code>never</code>”中的“<code>er</code>”，但不能匹配“<code>verb</code>”中的“<code>er</code>”。</td>
+</tr>
+<tr>
+<td align="center">\B</td>
+<td align="center">匹配非单词边界。“<code>er\B</code>”能匹配“<code>verb</code>”中的“<code>er</code>”，但不能匹配“<code>never</code>”中的“<code>er</code>”。</td>
+</tr>
+<tr>
+<td align="center">\cx</td>
+<td align="center">匹配由x指明的控制字符。例如，\cM匹配一个Control-M或回车符。x的值必须为A-Z或a-z之一。否则，将c视为一个原义的“<code>c</code>”字符。</td>
+</tr>
+<tr>
+<td align="center">\d</td>
+<td align="center">匹配一个数字字符。等价于[0-9]。</td>
+</tr>
+<tr>
+<td align="center">\D</td>
+<td align="center">匹配一个非数字字符。等价于[^0-9]。</td>
+</tr>
+<tr>
+<td align="center">\f</td>
+<td align="center">匹配一个换页符。等价于\x0c和\cL。</td>
+</tr>
+<tr>
+<td align="center">\n</td>
+<td align="center">匹配一个换行符。等价于\x0a和\cJ。</td>
+</tr>
+<tr>
+<td align="center">\r</td>
+<td align="center">匹配一个回车符。等价于\x0d和\cM。</td>
+</tr>
+<tr>
+<td align="center">\s</td>
+<td align="center">匹配任何空白字符，包括空格、制表符、换页符等等。等价于[ \f\n\r\t\v]。</td>
+</tr>
+<tr>
+<td align="center">\S</td>
+<td align="center">匹配任何非空白字符。等价于[^ \f\n\r\t\v]。</td>
+</tr>
+<tr>
+<td align="center">\t</td>
+<td align="center">匹配一个制表符。等价于\x09和\cI。</td>
+</tr>
+<tr>
+<td align="center">\v</td>
+<td align="center">匹配一个垂直制表符。等价于\x0b和\cK。</td>
+</tr>
+<tr>
+<td align="center">\w</td>
+<td align="center">匹配包括下划线的任何单词字符。等价于“<code>[A-Za-z0-9_]</code>”。</td>
+</tr>
+<tr>
+<td align="center">\W</td>
+<td align="center">匹配任何非单词字符。等价于“<code>[^A-Za-z0-9_]</code>”。</td>
+</tr>
+<tr>
+<td align="center">\x<em>n</em></td>
+<td align="center">匹配<em>n</em>，其中<em>n</em>为十六进制转义值。十六进制转义值必须为确定的两个数字长。例如，“<code>\x41</code>”匹配“<code>A</code>”。“<code>\x041</code>”则等价于“<code>\x04&amp;1</code>”。正则表达式中可以使用ASCII编码。.</td>
+</tr>
+<tr>
+<td align="center">*num*</td>
+<td align="center">匹配<em>num</em>，其中<em>num</em>是一个正整数。对所获取的匹配的引用。例如，“<code>(.)\1</code>”匹配两个连续的相同字符。</td>
+</tr>
+<tr>
+<td align="center">*n*</td>
+<td align="center">标识一个八进制转义值或一个向后引用。如果*n<em>之前至少</em>n<em>个获取的子表达式，则</em>n<em>为向后引用。否则，如果</em>n<em>为八进制数字（0-7），则</em>n*为一个八进制转义值。</td>
+</tr>
+<tr>
+<td align="center">*nm*</td>
+<td align="center">标识一个八进制转义值或一个向后引用。如果*nm<em>之前至少有</em>nm<em>个获得子表达式，则</em>nm<em>为向后引用。如果\</em>nm<em>之前至少有</em>n<em>个获取，则</em>n<em>为一个后跟文字</em>m<em>的向后引用。如果前面的条件都不满足，若</em>n<em>和</em>m<em>均为八进制数字（0-7），则\</em>nm<em>将匹配八进制转义值</em>nm*。</td>
+</tr>
+<tr>
+<td align="center">*nml*</td>
+<td align="center">如果<em>n</em>为八进制数字（0-3），且<em>m和l</em>均为八进制数字（0-7），则匹配八进制转义值<em>nm</em>l。</td>
+</tr>
+<tr>
+<td align="center">\u<em>n</em></td>
+<td align="center">匹配<em>n</em>，其中<em>n</em>是一个用四个十六进制数字表示的Unicode字符。例如，\u00A9匹配版权符号（©）。</td>
+</tr>
+</tbody></table>
+<h3 id="常用正则表达式"><a href="#常用正则表达式" class="headerlink" title="常用正则表达式"></a>常用正则表达式</h3><table>
+<thead>
+<tr>
+<th align="center">用户名</th>
+<th>/^[a-z0-9_-]{3,16}$/</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">密码</td>
+<td>/^[a-z0-9_-]{6,18}$/</td>
+</tr>
+<tr>
+<td align="center">十六进制值</td>
+<td>/^#?([a-f0-9]{6}|[a-f0-9]{3})$/</td>
+</tr>
+<tr>
+<td align="center">电子邮箱</td>
+<td>/^([a-z0-9_.-]+)@([\da-z.-]+).([a-z.]{2,6})$/ /^[a-z\d]+(.[a-z\d]+)*@(<a href="-%5B%5Cda-z%5D">\da-z</a>?)+(.{1,2}[a-z]+)+$/</td>
+</tr>
+<tr>
+<td align="center">URL</td>
+<td>/^(https?://)?([\da-z.-]+).([a-z.]{2,6})([/\w .-]*)*/?$/</td>
+</tr>
+<tr>
+<td align="center">IP 地址</td>
+<td>/((2[0-4]\d|25[0-5]|[01]?\d\d?).){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)/ /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/</td>
+</tr>
+<tr>
+<td align="center">HTML 标签</td>
+<td>/^&lt;([a-z]+)([^&lt;]+)*(?:&gt;(.*)&lt;/\1&gt;|\s+/&gt;)$/</td>
+</tr>
+<tr>
+<td align="center">删除代码\注释</td>
+<td>(?&lt;!http:|\S)//.*$</td>
+</tr>
+<tr>
+<td align="center">Unicode编码中的汉字范围</td>
+<td>/^[\u2E80-\u9FFF]+$/</td>
+</tr>
+</tbody></table>
 
             </div>
             <hr>

