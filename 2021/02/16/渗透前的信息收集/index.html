@@ -196,7 +196,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      3.8k 字
+      3.9k 字
     </span>
   
 
@@ -206,7 +206,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      42
+      43
        分钟
     </span>
   
@@ -287,16 +287,26 @@
 <h3 id="获取网站信息"><a href="#获取网站信息" class="headerlink" title="获取网站信息"></a>获取网站信息</h3><p>收集网站的各种信息如：服务器、操作系统、编程语言、cms等等</p>
 <blockquote>
 <p>方法：</p>
-<p>1、浏览器插件<code>wappalyzer</code>,可以识别网站采用了那些web技术，如图为扫描csdn某博客</p>
+<p>1、浏览器插件<code>wappalyzer</code>,可以识别网站采用了那些web技术，如图为扫描csdn某博客<br>也可以判断一些cms还有cdn的使用，总之就是非常好用啦，但也不是万能的</p>
 <p><img src="https://i.loli.net/2021/02/16/uCDEZf4rFS7h1JW.png" srcset="/img/loading.gif"></p>
 <p>2、burpsuite spider爬取、F12网络溯源</p>
 <p>3、抓包，404，大小写敏感</p>
 <p>4、底部、源码的版权信息</p>
 <p>5、网站</p>
-<p><a target="_blank" rel="noopener" href="https://www.yunsee.cn/">云悉互联网WEB资产在线梳理|在线CMS指纹识别平台 - 云悉安全平台 (yunsee.cn)</a></p>
-<p><a target="_blank" rel="noopener" href="http://whatweb.bugscaner.com/look/">在线指纹识别,在线cms识别小插件–在线工具 (bugscaner.com)</a></p>
 <p><a target="_blank" rel="noopener" href="https://fofa.so/">网络空间安全搜索引擎，网络空间搜索引擎，网络空间测绘，安全态势感知 - FOFA网络空间测绘系统</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.virustotal.com/gui/home/upload">VirusTotal</a></p>
+<p>指纹识别：</p>
+<p><a target="_blank" rel="noopener" href="https://whatweb.net/">WhatWeb - Next generation web scanner.</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.yunsee.cn/">云悉指纹</a></p>
+<p><a target="_blank" rel="noopener" href="http://whatweb.bugscaner.com/look/">在线指纹识别,在线cms识别小插件–在线工具 (bugscaner.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://anquan.baidu.com/product/secindex?industry=total">安全指数 (baidu.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/iceyhexman/onlinetools">iceyhexman/onlinetools</a>（在线demo不开放，只能自己下源码了）</p>
+</blockquote>
+<blockquote>
+<p><strong>判断cms</strong></p>
+<p>除了上述方法，还可以主动寻找网站相关信息：</p>
+<p>关键字、url特征、meta特征、scrip特征</p>
+<p>robots.txt、网站路径特征、网站静态资源、网站目录信息<br>cookie、请求头、404<br>除此之外还可以比较网站独有文件的hash md5，比如网站图标favicon.ico，或者某固定的头像等</p>
 </blockquote>
 <h3 id="获取真实ip"><a href="#获取真实ip" class="headerlink" title="获取真实ip"></a>获取真实ip</h3><p>确认目标位置，目标可能使用CDN/云防线/反向代理等，这时我们的ping命令无法直接将请求传递到真实的服务器上，而是经过一层设置对该请求进行转向，导致到我们不能获取到真实服务器的开放端口等信息进行收集。</p>
 <h4 id="检测是否存在cdn"><a href="#检测是否存在cdn" class="headerlink" title="检测是否存在cdn"></a>检测是否存在cdn</h4><blockquote>
