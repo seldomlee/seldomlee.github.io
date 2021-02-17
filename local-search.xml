@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>关于一些计划（的实施情况）</title>
+    <link href="/2021/02/18/%E8%BF%91%E6%9C%9F%E7%9A%84%E4%B8%80%E4%BA%9B%E8%AE%A1%E5%88%92/"/>
+    <url>/2021/02/18/%E8%BF%91%E6%9C%9F%E7%9A%84%E4%B8%80%E4%BA%9B%E8%AE%A1%E5%88%92/</url>
+    
+    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><!-- more --><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近没啥动劲，虚度了几天，想想可能是因为没有计划的原因。所以决定写出来==</p><p>（2021-01-29 至 2021-02-18）</p><h1 id="详情"><a href="#详情" class="headerlink" title="详情"></a>详情</h1><p>1、<del>完成寒假任务的那些</del><br>（马马虎虎完成；到后面大概是内网的学习？打算把vulhub的环境都复现一下）<br>（写出来是这么写，做不做得还是一个问题）</p><p>2、<del>关于php的学习，经过这次训练赛，发现对php其实并不熟络(之前看只是看个简单的结构)，php是非常重要的，相对的java也是啦，计划就是跟着官方文档。（各种函数遇到就记一下，慢慢积累）</del><br>（意料之中的没有完成呢，教练我还有机会吗）</p><p>3、尽量每天都刷一下ctf题！！！刷题是扩充知识面的好方法，重在这个过程学习到的新的知识<br>（这个大概就做了三四道题。。不过确实是需要刷题的，时间不是没有就是拿来玩了。。）</p><p>4、<del>记得看一下带回来的那本《逆向工程核心原理》，还有IDA的使用。经过这次训练赛，对程序逆向分析挺有兴趣的(也可能是出的太简单了但做出来还是开心hh)。总而言之，逆向分析需要的核心能力也是代码审计，要点上</del><br>（Oh no！我跟本没打开过！！！回到家我根本不可能看书，而且我还又买了三本，这几本东西又大又厚，开学必须看完！！！必须！！）</p><p>5、<del>还有各种pdf扫描滴书都要看看</del><br>（买实体书了，页数太多，页数少还好，页数一多有点不习惯，还是花钱买了本实体的）</p><p>6、<del>学习kali的工具，kali许多工具确实有很多帮助，也是非常基础的！！！</del><br>（目前为止就看了nc，而且好像忘的差不多了）</p><p>7、锻炼身体。</p><h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>虽然做不完是预料中的事，但是至少做了。。所以我打算下次安排更多事，总会做这么几件的</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>随笔</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>随笔</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>渗透测试前的一些信息收集</title>
     <link href="/2021/02/16/%E6%B8%97%E9%80%8F%E5%89%8D%E7%9A%84%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/"/>
     <url>/2021/02/16/%E6%B8%97%E9%80%8F%E5%89%8D%E7%9A%84%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/</url>
@@ -125,31 +150,6 @@
     <tags>
       
       <tag>学习笔记</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
-    <title>关于一些计划</title>
-    <link href="/2021/01/29/%E8%BF%91%E6%9C%9F%E7%9A%84%E4%B8%80%E4%BA%9B%E8%AE%A1%E5%88%92/"/>
-    <url>/2021/01/29/%E8%BF%91%E6%9C%9F%E7%9A%84%E4%B8%80%E4%BA%9B%E8%AE%A1%E5%88%92/</url>
-    
-    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><!-- more --><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近没啥动劲，虚度了几天，想想可能是因为没有计划的原因。所以决定写出来==</p><h1 id="详情"><a href="#详情" class="headerlink" title="详情"></a>详情</h1><p>1、完成寒假任务的那些~</p><p>2、关于php的学习，经过这次训练赛，发现对php其实并不熟络(之前看只是看个简单的结构)，php是非常重要的，相对的java也是啦，计划就是跟着官方文档。（各种函数打算遇到就记一下，慢慢积累）</p><p>3、尽量每天都刷一下ctf题！！！刷题是扩充知识面的好方法，关键不在于刷题，而在于这个过程学习到的新的知识</p><p>4、记得看一下带回来的那本《逆向工程核心原理》，还有IDA的使用。经过这次训练赛，对程序逆向分析挺有兴趣的(也可能是出的太简单了但做出来还是开心hh)。    总而言之，逆向分析需要的核心能力也是代码审计，要点上</p><p>5、还有各种pdf扫描滴书都要看看~</p><p>6、2~3天学习一个kali的工具，kali许多工具确实有很多帮助，也是非常基础的！！！</p><p>7、锻炼身体。</p><p>只有努力有成果了，努力才会被别人看到，加油加油</p>]]></content>
-    
-    
-    <categories>
-      
-      <category>随笔</category>
-      
-    </categories>
-    
-    
-    <tags>
-      
-      <tag>随笔</tag>
       
     </tags>
     
