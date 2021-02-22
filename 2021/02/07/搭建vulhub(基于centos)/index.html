@@ -196,7 +196,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      2.5k 字
+      2.6k 字
     </span>
   
 
@@ -206,7 +206,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      31
+      33
        分钟
     </span>
   
@@ -248,7 +248,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年2月17日 晚上
+                  本文最后更新于：2021年2月22日 中午
                 
               </p>
             
@@ -297,6 +297,10 @@
 <figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">docker-compose down -v</span><br></code></pre></td></tr></table></figure>
 
 
+<blockquote>
+<p>ps:kali-linux安装vulhub</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs shell">apt-get update  ##顺便更新一下软件<br>apt install docker.io  ##安装docker<br>docker -v  ##查看docker版本<br>systemctl start docker  ##开启docker,不执行这条也行，能看到版本就已经开启服务了<br>docker ps -a  ##显示docker信息<br>apt-get install python3-pip  ##安装pip，需要python3的环境<br>pip3 -V  ##看看pip的版本<br>pip3 install docker-compose  ##使用pip安装docker-compose<br>docker-compose -v  ##看看docker-compose的版本<br><br>mkdir /cve<br>cd /cve<br>git clone https://github.com/vulhub/vulhub.git  ##下载靶场<br><br>其余的启动和关闭靶场同上~<br></code></pre></td></tr></table></figure>
+</blockquote>
 <h1 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h1><p>这里先随便复现两个过过瘾吧，后面再另作目录分组记录~</p>
 <h2 id="zabbix-latest-php-SQL注入漏洞（CVE-2016-10134）"><a href="#zabbix-latest-php-SQL注入漏洞（CVE-2016-10134）" class="headerlink" title="zabbix latest.php SQL注入漏洞（CVE-2016-10134）"></a>zabbix latest.php SQL注入漏洞（CVE-2016-10134）</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>zabbix是一款服务器监控软件，其由server、agent、web等模块组成，其中web模块由PHP编写，用来显示数据库中的结果。</p>
 <p>zabbix 2.2.x, 3.0.0-3.0.3版本存在SQL注入漏洞，攻击者无需授权登陆即可登陆zabbix管理系统</p>
