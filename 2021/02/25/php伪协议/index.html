@@ -248,7 +248,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年2月25日 晚上
+                  本文最后更新于：2021年2月26日 晚上
                 
               </p>
             
@@ -499,10 +499,17 @@
 </li>
 <li><p>demo:</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span>    <br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span></span>&#123;<br>    <span class="hljs-keyword">var</span> <span class="hljs-variable">$string</span>;<br>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__destruct</span>(<span class="hljs-params"></span>)</span>&#123;<br>        <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Phar create done&quot;</span>;<br>    &#125;<br>&#125;<br><br>@unlink(<span class="hljs-string">&quot;test.phar&quot;</span>);<br><span class="hljs-variable">$phar</span> = <span class="hljs-keyword">new</span> Phar(<span class="hljs-string">&quot;test.phar&quot;</span>);<span class="hljs-comment">#.phar文件，(后缀名必须为phar)</span><br><span class="hljs-variable">$phar</span>-&gt;startBuffering();<br><span class="hljs-variable">$phar</span>-&gt;setStub(<span class="hljs-string">&quot;&lt;?php  __HALT_COMPILER(); ?&gt;&quot;</span>);	<span class="hljs-comment">#stub(1)</span><br><span class="hljs-comment">#检测图片头时，可以添加gif头来绕过：GIF89a</span><br><br><span class="hljs-variable">$o</span> = <span class="hljs-keyword">new</span> Test();<br><span class="hljs-variable">$o</span>-&gt;string = <span class="hljs-string">&quot;bphar&quot;</span>;<span class="hljs-comment">#类的属性</span><br><br><span class="hljs-variable">$phar</span>-&gt;setMetadata(<span class="hljs-variable">$o</span>);	<span class="hljs-comment">#将自定义的meta-data存入manifest(2)</span><br><span class="hljs-variable">$phar</span>-&gt;addFromString(<span class="hljs-string">&quot;bphar.txt&quot;</span>,<span class="hljs-string">&quot;bphar&quot;</span>); <span class="hljs-comment">#添加压缩文件(3)</span><br><span class="hljs-variable">$phar</span>-&gt;stopBuffering();	<span class="hljs-comment">#签名自动计算(4)</span><br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs awk"><br>  ![创建成功](https:<span class="hljs-regexp">//i</span>.loli.net<span class="hljs-regexp">/2021/</span><span class="hljs-number">02</span><span class="hljs-regexp">/25/</span>QIKqF6MvL9Tif7x.png)<br>  ![test.phar文件结构](https:<span class="hljs-regexp">//i</span>.loli.net<span class="hljs-regexp">/2021/</span><span class="hljs-number">02</span><span class="hljs-regexp">/25/</span>w8cvt7eCQpHMbEj.png)<br>  在使用Phar:<span class="hljs-regexp">//</span> 协议流解析Phar文件时，Meta-data中的内容都会进行反序列化<br>(也就是phar文件中的反序列化部分)<br></code></pre></td></tr></table></figure>
+
+
 </li>
 </ul>
 </li>
+</ul>
+<pre><code>![创建成功](https://i.loli.net/2021/02/25/QIKqF6MvL9Tif7x.png)
+![test.phar文件结构](https://i.loli.net/2021/02/25/w8cvt7eCQpHMbEj.png)
+  在使用Phar:// 协议流解析Phar文件时，Meta-data中的内容都会进行反序列化
+(也就是phar文件中的反序列化部分)</code></pre>
+<ul>
 <li><p>利用：</p>
 <ol>
 <li>上传phar文件，并借助phar://协议访问phar文件，从而将Meta-data中的内容反序列化</li>
