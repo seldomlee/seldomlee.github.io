@@ -248,7 +248,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年3月12日 晚上
+                  本文最后更新于：2021年3月13日 晚上
                 
               </p>
             
@@ -350,7 +350,10 @@
 </blockquote>
 <p>2,3为回显位，因此在2、3的位置插入语句即可。</p>
 <blockquote>
-<p>eg:<br>?id=-1’ union select 1,2,group_concat(table_name) from information_schema.tables where table_schema=database() –+</p>
+<p>eg:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mysql">?id&#x3D;-1&#39; union select 1,2,group_concat(table_name) from information_schema.tables where table_schema&#x3D;database() --+<br></code></pre></td></tr></table></figure>
+
+
 </blockquote>
 <h2 id="一库三表四字段"><a href="#一库三表四字段" class="headerlink" title="一库三表四字段"></a>一库三表四字段</h2><p>很多教程讲的很详细，这里不做赘述，挂个当时记的结构图<br><img src="https://i.loli.net/2021/02/13/VMmBU5JvkuAH9Oe.jpg" srcset="/img/loading.gif"><br>select schema_name from information_schema.schemata<br>select table_name from information_schema.tables where table_schema=’xxx’<br>select column_name from information_schema.columns where table_name=’xxx’<br>select group_concat(xxx) from xxx</p>
 <h1 id="各种注入"><a href="#各种注入" class="headerlink" title="各种注入"></a>各种注入</h1><h2 id="union联合查询"><a href="#union联合查询" class="headerlink" title="union联合查询"></a>union联合查询</h2><ul>
