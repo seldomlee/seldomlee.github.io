@@ -196,7 +196,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      2.6k 字
+      3.4k 字
     </span>
   
 
@@ -206,7 +206,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      34
+      46
        分钟
     </span>
   
@@ -248,7 +248,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年3月13日 晚上
+                  本文最后更新于：2021年3月26日 晚上
                 
               </p>
             
@@ -256,14 +256,14 @@
               <!-- more -->
 
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这篇长期更新，大概就是总结一下一直以来刷的web题中的一些小知识，但像sql注入、文件上传、伪协议之类系统学习过的就不在这里赘述了</p>
-<h1 id="php"><a href="#php" class="headerlink" title="php"></a>php</h1><h2 id="强-弱比较"><a href="#强-弱比较" class="headerlink" title="强|弱比较"></a>强|弱比较</h2><p>强比较<code>===</code>：先比较类型是否相同；再比较值</p>
+<h1 id="php特性"><a href="#php特性" class="headerlink" title="php特性"></a>php特性</h1><h2 id="强-弱比较"><a href="#强-弱比较" class="headerlink" title="强|弱比较"></a>强|弱比较</h2><p>强比较<code>===</code>：先比较类型是否相同；再比较值</p>
 <p>弱类型比较<code>==</code>：会将字符类型转换为相同类型，在比较值<br>（ps：若比较数字和字符串 | 涉及数字内容的字符串；则字符串会转换为数值并按数值进行比较）</p>
 <blockquote>
 <p>eg：</p>
 <p>当一个字符串欸当作一个数值来取值，其结果和类型如下:如果该字符串没有包含’.’,’e’,’E’并且其数值值在整形的范围之内<br>该字符串被当作int来取值，其他所有情况下都被作为float来取值，该字符串的开始部分决定了它的值，如果该字符串以合法的数值开始，则使用该数值，否则其值为0。</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs php">var_dump(<span class="hljs-string">&quot;admin&quot;</span>==<span class="hljs-number">0</span>);  <span class="hljs-comment">//true			# admin为字符串，转换即为0</span><br>var_dump(<span class="hljs-string">&quot;1admin&quot;</span>==<span class="hljs-number">1</span>); <span class="hljs-comment">//true			# 字符串中的数值的开始部分决定了其值</span><br>var_dump(<span class="hljs-string">&quot;admin1&quot;</span>==<span class="hljs-number">1</span>) <span class="hljs-comment">//false			</span><br>var_dump(<span class="hljs-string">&quot;admin1&quot;</span>==<span class="hljs-number">0</span>) <span class="hljs-comment">//true</span><br>var_dump(<span class="hljs-string">&quot;0e123456&quot;</span>==<span class="hljs-string">&quot;0e4456789&quot;</span>); <span class="hljs-comment">//true # 将0e|0E识别为科学计数法；而0的n次方始终为0，故相等</span><br></code></pre></td></tr></table></figure>
 </blockquote>
-<h3 id="md5"><a href="#md5" class="headerlink" title="md5()"></a>md5()</h3><blockquote>
+<h2 id="各种函数"><a href="#各种函数" class="headerlink" title="各种函数"></a>各种函数</h2><h3 id="md5"><a href="#md5" class="headerlink" title="md5()"></a>md5()</h3><blockquote>
 <p>利用md5($pass,true)构造万能密码sql注入</p>
 <ul>
 <li><p>后端查询语句：</p>
@@ -288,11 +288,17 @@
 <blockquote>
 <p>弱类型比较bypass</p>
 <p>利用一些MD5编码后为0e开头的字符串</p>
-<figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs dns">QNKCDZO<br><span class="hljs-number">0</span>e830400451993494058<span class="hljs-number">024219903391</span><br>s878926199a<br><span class="hljs-number">0</span>e5459932745177090343<span class="hljs-number">28855841020</span><br>s155964671a<br><span class="hljs-number">0</span>e342768416822451524<span class="hljs-number">974117254469</span><br>s214587387a<br><span class="hljs-number">0</span>e8482404488305379244<span class="hljs-number">65865611904</span><br>s214587387a<br><span class="hljs-number">0</span>e8482404488305379244<span class="hljs-number">65865611904</span><br>s878926199a<br><span class="hljs-number">0</span>e5459932745177090343<span class="hljs-number">28855841020</span><br>s1091221200a<br><span class="hljs-number">0</span>e9406242178565615578<span class="hljs-number">16327384675</span><br>s1885207154a<br><span class="hljs-number">0</span>e5093672134182067008<span class="hljs-number">42008763514</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">&gt;</span><span class="bash">QNKCDZO</span><br><span class="hljs-meta">&gt;</span><span class="bash">0e830400451993494058024219903391</span><br><span class="hljs-meta">&gt;</span><span class="bash">s878926199a</span><br><span class="hljs-meta">&gt;</span><span class="bash">0e545993274517709034328855841020</span><br><span class="hljs-meta">&gt;</span><span class="bash">s155964671a</span><br><span class="hljs-meta">&gt;</span><span class="bash">0e342768416822451524974117254469</span><br><span class="hljs-meta">&gt;</span><span class="bash">s214587387a</span><br><span class="hljs-meta">&gt;</span><span class="bash">0e848240448830537924465865611904</span><br><span class="hljs-meta">&gt;</span><span class="bash">s214587387a</span><br><span class="hljs-meta">&gt;</span><span class="bash">0e848240448830537924465865611904</span><br><span class="hljs-meta">&gt;</span><span class="bash">s878926199a</span><br><span class="hljs-meta">&gt;</span><span class="bash">0e545993274517709034328855841020</span><br><span class="hljs-meta">&gt;</span><span class="bash">s1091221200a</span><br><span class="hljs-meta">&gt;</span><span class="bash">0e940624217856561557816327384675</span><br><span class="hljs-meta">&gt;</span><span class="bash">s1885207154a</span><br><span class="hljs-meta">&gt;</span><span class="bash">0e509367213418206700842008763514</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python">&gt;<span class="hljs-comment"># 补一个脚本吧，碰到某道题 变量$a==md5($a)</span><br>&gt;<span class="hljs-keyword">import</span> hashlib<br><br>&gt;<span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>,<span class="hljs-number">10</span>**<span class="hljs-number">41</span>):<br>&gt;i=‘0e‘+<span class="hljs-built_in">str</span>(i)<br>&gt;md5=hashlib.md5(i.encode()).hexdigest()<br>&gt;<span class="hljs-keyword">if</span> md5[:<span class="hljs-number">2</span>]==‘0e‘ <span class="hljs-keyword">and</span> md5[<span class="hljs-number">2</span>:].isdigit():<br>  print(‘md5:&#123;&#125; ‘.<span class="hljs-built_in">format</span>(i))<br>  <span class="hljs-keyword">break</span><br></code></pre></td></tr></table></figure>
 
 <p>强比较bypass</p>
 <p>常见的：数组绕过</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs php">eg：<br>(md5(<span class="hljs-variable">$id</span>) === md5(<span class="hljs-variable">$gg</span>) &amp;&amp; <span class="hljs-variable">$id</span> !== <span class="hljs-variable">$gg</span>)<br>直接数组绕过：<br>?id[]=<span class="hljs-number">1</span>&amp;gg[]=<span class="hljs-number">2</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs php">&gt;eg：<br>&gt;(md5(<span class="hljs-variable">$id</span>) === md5(<span class="hljs-variable">$gg</span>) &amp;&amp; <span class="hljs-variable">$id</span> !== <span class="hljs-variable">$gg</span>)<br>&gt;直接数组绕过：<br>&gt;?id[]=<span class="hljs-number">1</span>&amp;gg[]=<span class="hljs-number">2</span><br></code></pre></td></tr></table></figure>
+
+<p>还有最近碰到的：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs php">&gt;(<span class="hljs-keyword">string</span>)<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;a1&#x27;</span>]!==(<span class="hljs-keyword">string</span>)<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;a2&#x27;</span>]&amp;&amp;md5(<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;a1&#x27;</span>])===md5(<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;a2&#x27;</span>])&#125;<br>&gt;<span class="hljs-comment"># 最后转换为字符串比较，使用数组就不可行了</span><br>&gt;<span class="hljs-comment"># 只能使用两组MD5值相同的不同字符串了，这里可以用脚本跑，这里就直接上一组url编码过后的值：</span><br>&gt;<span class="hljs-comment"># 1</span><br>&gt;a=M%C9h%FF%<span class="hljs-number">0</span>E%E3%<span class="hljs-number">5</span>C%<span class="hljs-number">20</span>%<span class="hljs-number">95</span>r%D4w%<span class="hljs-number">7</span>Br%<span class="hljs-number">15</span>%<span class="hljs-number">87</span>%D3o%A7%B2%<span class="hljs-number">1</span>B%DCV%B7J%<span class="hljs-number">3</span>D%C0x%<span class="hljs-number">3</span>E%<span class="hljs-number">7</span>B%<span class="hljs-number">95</span>%<span class="hljs-number">18</span>%AF%BF%A2%<span class="hljs-number">00</span>%A8%<span class="hljs-number">28</span>K%F3n%<span class="hljs-number">8</span>EKU%B3_Bu%<span class="hljs-number">93</span>%D8Igm%A0%D1U%<span class="hljs-number">5</span>D%<span class="hljs-number">83</span>%<span class="hljs-number">60</span>%FB_%<span class="hljs-number">07</span>%FE%A2<br>&gt;b=M%C9h%FF%<span class="hljs-number">0</span>E%E3%<span class="hljs-number">5</span>C%<span class="hljs-number">20</span>%<span class="hljs-number">95</span>r%D4w%<span class="hljs-number">7</span>Br%<span class="hljs-number">15</span>%<span class="hljs-number">87</span>%D3o%A7%B2%<span class="hljs-number">1</span>B%DCV%B7J%<span class="hljs-number">3</span>D%C0x%<span class="hljs-number">3</span>E%<span class="hljs-number">7</span>B%<span class="hljs-number">95</span>%<span class="hljs-number">18</span>%AF%BF%A2%<span class="hljs-number">02</span>%A8%<span class="hljs-number">28</span>K%F3n%<span class="hljs-number">8</span>EKU%B3_Bu%<span class="hljs-number">93</span>%D8Igm%A0%D1%D5%<span class="hljs-number">5</span>D%<span class="hljs-number">83</span>%<span class="hljs-number">60</span>%FB_%<span class="hljs-number">07</span>%FE%A2<br>&gt;<span class="hljs-comment"># 2</span><br>&gt;a=%<span class="hljs-number">4</span>d%c9%<span class="hljs-number">68</span>%ff%<span class="hljs-number">0</span>e%e3%<span class="hljs-number">5</span>c%<span class="hljs-number">20</span>%<span class="hljs-number">95</span>%<span class="hljs-number">72</span>%d4%<span class="hljs-number">77</span>%<span class="hljs-number">7</span>b%<span class="hljs-number">72</span>%<span class="hljs-number">15</span>%<span class="hljs-number">87</span>%d3%<span class="hljs-number">6</span>f%a7%b2%<span class="hljs-number">1</span>b%dc%<span class="hljs-number">56</span>%b7%<span class="hljs-number">4</span>a%<span class="hljs-number">3</span>d%c0%<span class="hljs-number">78</span>%<span class="hljs-number">3</span>e%<span class="hljs-number">7</span>b%<span class="hljs-number">95</span>%<span class="hljs-number">18</span>%af%bf%a2%<span class="hljs-number">00</span>%a8%<span class="hljs-number">28</span>%<span class="hljs-number">4</span>b%f3%<span class="hljs-number">6</span>e%<span class="hljs-number">8</span>e%<span class="hljs-number">4</span>b%<span class="hljs-number">55</span>%b3%<span class="hljs-number">5</span>f%<span class="hljs-number">42</span>%<span class="hljs-number">75</span>%<span class="hljs-number">93</span>%d8%<span class="hljs-number">49</span>%<span class="hljs-number">67</span>%<span class="hljs-number">6</span>d%a0%d1%<span class="hljs-number">55</span>%<span class="hljs-number">5</span>d%<span class="hljs-number">83</span>%<span class="hljs-number">60</span>%fb%<span class="hljs-number">5</span>f%<span class="hljs-number">07</span>%fe%a2<br>&gt;&amp;b=%<span class="hljs-number">4</span>d%c9%<span class="hljs-number">68</span>%ff%<span class="hljs-number">0</span>e%e3%<span class="hljs-number">5</span>c%<span class="hljs-number">20</span>%<span class="hljs-number">95</span>%<span class="hljs-number">72</span>%d4%<span class="hljs-number">77</span>%<span class="hljs-number">7</span>b%<span class="hljs-number">72</span>%<span class="hljs-number">15</span>%<span class="hljs-number">87</span>%d3%<span class="hljs-number">6</span>f%a7%b2%<span class="hljs-number">1</span>b%dc%<span class="hljs-number">56</span>%b7%<span class="hljs-number">4</span>a%<span class="hljs-number">3</span>d%c0%<span class="hljs-number">78</span>%<span class="hljs-number">3</span>e%<span class="hljs-number">7</span>b%<span class="hljs-number">95</span>%<span class="hljs-number">18</span>%af%bf%a2%<span class="hljs-number">02</span>%a8%<span class="hljs-number">28</span>%<span class="hljs-number">4</span>b%f3%<span class="hljs-number">6</span>e%<span class="hljs-number">8</span>e%<span class="hljs-number">4</span>b%<span class="hljs-number">55</span>%b3%<span class="hljs-number">5</span>f%<span class="hljs-number">42</span>%<span class="hljs-number">75</span>%<span class="hljs-number">93</span>%d8%<span class="hljs-number">49</span>%<span class="hljs-number">67</span>%<span class="hljs-number">6</span>d%a0%d1%d5%<span class="hljs-number">5</span>d%<span class="hljs-number">83</span>%<span class="hljs-number">60</span>%fb%<span class="hljs-number">5</span>f%<span class="hljs-number">07</span>%fe%a2<br><br></code></pre></td></tr></table></figure>
+
 
 </blockquote>
 <h3 id="substr-、sha1-、base64-decode"><a href="#substr-、sha1-、base64-decode" class="headerlink" title="substr()、sha1()、base64_decode"></a>substr()、sha1()、base64_decode</h3><blockquote>
@@ -332,6 +338,43 @@
 
 <p>array_search()和in_array()类似</p>
 </blockquote>
+<h3 id="intval"><a href="#intval" class="headerlink" title="intval()"></a>intval()</h3><p><code>intval ( mixed $value , int $base = 10 ) : int</code>获取变量的整数值<br>value：要转换的数量值，base：转换所用进制</p>
+<p>三个特性：</p>
+<ul>
+<li><p>成功：返回var的整数值；<br>失败 | 空数组：返回0；</p>
+<pre><code>非空数组：返回1</code></pre>
+</li>
+<li><blockquote>
+<p>如果 <code>base</code> 是 0，通过检测 <code>value</code> 的格式来决定使用的进制：</p>
+<ul>
+<li>如果字符串包括了 “0x” (或 “0X”) 的前缀，使用 16 进制 (hex)；否则，</li>
+<li>如果字符串以 “0” 开始，使用 8 进制(octal)；否则，</li>
+<li>将使用 10 进制 (decimal)。</li>
+</ul>
+</blockquote>
+</li>
+<li><p>base为0，变量在遇上数字或正负符号才做转换，遇到非数字或字符串结束时以(\0)结束转换，ps：前提是进行弱类型比较</p>
+</li>
+</ul>
+<blockquote>
+<p>eg1:</p>
+<p><img src="https://i.loli.net/2021/03/16/rmzM8cI3FtHa4lA.png" srcset="/img/loading.gif"><br>由此可输入三种payload：</p>
+<ul>
+<li>十六进制：?num=0x117c </li>
+<li>小数点：?num=4476.110</li>
+<li>?num=4476e1</li>
+</ul>
+<p>eg2:</p>
+<p><img src="https://i.loli.net/2021/03/16/lHMVZnLrtFq9REp.png" srcset="/img/loading.gif" alt="朴实无华"><br>Intval在处理字符串型的科学计数法时只输出e前的数字，而+1后又作为数字处理</p>
+<p>echo intval(1e10);     =》10000000000</p>
+<p>echo intval(“1e10”);     =》1</p>
+<p>echo intval(“1e10”+1); =》10000000001</p>
+</blockquote>
+<h3 id="preg-match"><a href="#preg-match" class="headerlink" title="preg_match()"></a>preg_match()</h3><ol>
+<li>preg_match只能处理字符串，当传入数组时会返回false</li>
+<li><a target="_blank" rel="noopener" href="https://www.leavesongs.com/PENETRATION/use-pcre-backtrack-limit-to-bypass-restrict.html">PHP利用PCRE回溯次数限制绕过某些安全限制</a></li>
+<li><code>.</code>不会匹配换行符；<br>eg:<code>preg_match(&#39;/^.*(flag).*$/&#39;, $a)</code>可令<code>a=&quot;\nflag&quot;</code><br>而非多行模式下，<code>$</code>会忽略末尾的<code>%0a</code>即空字符；<br>eg:<code>preg_match(&#39;/^flag$/&#39;, $_GET[&#39;a&#39;]) &amp;&amp; $_GET[&#39;a&#39;] !== &#39;flag&#39;</code>可输入<code>a=flag%0a</code></li>
+</ol>
 <h2 id="反序列化"><a href="#反序列化" class="headerlink" title="反序列化"></a>反序列化</h2><h3 id="序列化数据的标识"><a href="#序列化数据的标识" class="headerlink" title="序列化数据的标识"></a>序列化数据的标识</h3><blockquote>
 <p>a - array 数组<br>b - boolean 布尔型<br>d - double 浮点型<br>i - integer 整数型<br>o - common object 共同对象<br>r - reference 对象引用<br>s - string 纯字符串<br>S - string 此时字符串支持后面的字符用16进制表示<br>C - custom object 自定义对象<br>O - class 类<br>N - null 空<br>R - pointer reference 指针引用<br>U - unicode string Unicode编码的字符串（php4、5不支持）</p>
 <p>在php中，引用意为不同的名字访问同一个变量内容</p>
@@ -420,8 +463,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/03/09/%E9%9A%8F%E4%BE%BF%E6%B3%A8blacklist%E5%BE%97%E5%88%B0%E7%9A%84%E4%B8%80%E4%BA%9B%E7%9F%A5%E8%AF%86/">
-                        <span class="hidden-mobile">随便注|blacklist => 的一些知识</span>
+                      <a href="/2021/03/10/VulnStack1/">
+                        <span class="hidden-mobile">VulnStack1</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
