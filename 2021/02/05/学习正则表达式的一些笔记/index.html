@@ -248,7 +248,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年3月12日 晚上
+                  本文最后更新于：2021年3月27日 晚上
                 
               </p>
             
@@ -257,13 +257,21 @@
 
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>emmm虽然正则表达式好像不是特别急需，但后面还是需要学的=-=，就在吃喝玩乐睡的假期抽空学习一下。<br>本章是阅读《正则表达式30分钟入门》的笔记</p>
 <h1 id="笔记咯"><a href="#笔记咯" class="headerlink" title="笔记咯"></a>笔记咯</h1><h2 id="元字符"><a href="#元字符" class="headerlink" title="元字符"></a>元字符</h2><p><code>.</code> ：匹配除换行符以外的任意字符<br><code>\w</code>：匹配字母或数字或下划线或汉字等<br><code>\s</code>：匹配任意的空白符，包括空格，制表符(Tab)，换行符，中文全角空格 等<br><code>\d</code>：匹配一位数字<br><code>\b</code>：匹配单词的开始或结束。匹配这样一个位置：它的前一个字符和后一个字符不全是\w（一个是，一个不是或不存在）<br><code>^</code>：匹配字符串开始<br><code>$</code>：匹配字符串结束<br><code>(</code>和<code>)</code>：小括号有很多妙用，看下面吧</p>
+<h2 id="反义"><a href="#反义" class="headerlink" title="反义"></a>反义</h2><p><code>\W</code> 匹配任意不是字母，数字，下划线，汉字的字符<br><code>\S</code> 匹配任意不是空白符的字符<br><code>\D</code> 匹配任意非数字的字符<br><code>\B</code> 匹配不是单词开头或结束的位置<br><code>[\^x]</code> 匹配除了x以外的任意字符<br><code>[\^aeiou]</code> 匹配除了aeiou这几个字母以外的任意字符</p>
 <h2 id="界定符"><a href="#界定符" class="headerlink" title="界定符"></a>界定符</h2><p>指定正则表达式的开始和结束，可以当成是计算机语言中的大括号<code>&#123;</code>和<code>&#125;</code>。一般有三种表现方式：</p>
 <ul>
 <li>斜杠。例如<code>/[0-9]/</code>。这是最常用的方式，在PHP中，推荐使用这种方式。</li>
 <li>井号。例如<code>#[0-9]</code>。</li>
 <li>大括号。例如<code>&#123;[0-9]&#125;</code>。在正则表达式中，大括号还有其他作用，所以这种方式不推荐使用。</li>
 </ul>
-<h2 id="反义"><a href="#反义" class="headerlink" title="反义"></a>反义</h2><p><code>\W</code> 匹配任意不是字母，数字，下划线，汉字的字符<br><code>\S</code> 匹配任意不是空白符的字符<br><code>\D</code> 匹配任意非数字的字符<br><code>\B</code> 匹配不是单词开头或结束的位置<br><code>[\^x]</code> 匹配除了x以外的任意字符<br><code>[\^aeiou]</code> 匹配除了aeiou这几个字母以外的任意字符</p>
+<h2 id="修饰符-修正模式"><a href="#修饰符-修正模式" class="headerlink" title="修饰符 | 修正模式"></a>修饰符 | 修正模式</h2><p>给正则表达式的匹配过程添加一种匹配模式</p>
+<ul>
+<li><code>U</code> 加<code>U</code>是懒惰匹配，不加<code>U</code>是默认的贪婪匹配。</li>
+<li><code>i</code> 忽略英文字母大小写。</li>
+<li><code>x</code> 忽略空白。（包括空格和按tab键输出的制表符）</li>
+<li><code>s</code> 让元字符<code>.</code>匹配包括换行符在内的所有字符。</li>
+<li><code>e</code> <code>preg_replace()</code>在替换字符串中对逆向引用作正常的替换。简单的说，就是PHP会把replace的结果当做PHP代码。（替换字符串要符合php的语法规范）<br>例如：<code>echo preg_replace(&#39;/(\d+),(\d+)/e&#39;, &#39;$1+$2&#39;, &#39;2,3&#39;);</code>会输出<code>5</code>。</li>
+</ul>
 <h2 id="字符转义"><a href="#字符转义" class="headerlink" title="字符转义"></a>字符转义</h2><p>若需要查找元字符本身如<code>.</code>、<code>*</code>这些，需要用<code>\</code>来将这些字符的特殊意义取消掉：如<code>\.</code>、<code>\*</code>；当然查找<code>\</code>本身也需要转义为<code>\\</code></p>
 <h2 id="量词"><a href="#量词" class="headerlink" title="量词"></a>量词</h2><p><code>*</code> ：任意数量；重复0次或很多次<br><code>+</code>：&gt;=1次；重复1次或很多次<br><code>?</code>：0 or 1；重复0次或1次<br><code>&#123;n&#125;</code>：n次；如：\d{2}（表示\d重复匹配2次）；<br><code>&#123;n,&#125;</code>：&gt;=n次；重复n次或更多次<br><code>&#123;n,m&#125;</code>：重复n到m次；重复次数不少于n，不大于m</p>
 <h2 id="查找字符类"><a href="#查找字符类" class="headerlink" title="查找字符类"></a>查找字符类</h2><p>如查找abcde，只需在方括号中列出<code>[abcde]</code>;那么就构造了这样一个只会匹配abcde的字符集，数量由其后的重复次数决定</p>
@@ -365,14 +373,9 @@
 <figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs livescript">(?&lt;=    <span class="hljs-comment"># 断言要匹配的文本的前缀</span><br>&lt;(<span class="hljs-string">\w+)&gt;</span> <span class="hljs-comment"># 查找尖括号括起来的内容</span><br>        <span class="hljs-comment"># (即HTML/XML标签)</span><br>)       <span class="hljs-comment"># 前缀结束</span><br>.*      <span class="hljs-comment"># 匹配任意文本</span><br>(?=     <span class="hljs-comment"># 断言要匹配的文本的后缀</span><br>&lt;<span class="hljs-string">\/\1&gt;</span>  <span class="hljs-comment"># 查找尖括号括起来的内容</span><br>        <span class="hljs-comment"># 查找尖括号括起来的内容</span><br>)       <span class="hljs-comment"># 后缀结束</span><br></code></pre></td></tr></table></figure>
 
 
-<h2 id="修正模式"><a href="#修正模式" class="headerlink" title="修正模式"></a>修正模式</h2><p>给正则表达式的匹配过程添加一种匹配模式</p>
-<ul>
-<li><code>U</code> 加<code>U</code>是懒惰匹配，不加<code>U</code>是默认的贪婪匹配。</li>
-<li><code>i</code> 忽略英文字母大小写。</li>
-<li><code>x</code> 忽略空白。（包括空格和按tab键输出的制表符）</li>
-<li><code>s</code> 让元字符<code>.</code>匹配包括换行符在内的所有字符。</li>
-<li><code>e</code> <code>preg_replace()</code>在替换字符串中对逆向引用作正常的替换。简单的说，就是PHP会把replace的结果当做PHP代码。（替换字符串要符合php的语法规范）<br>例如：<code>echo preg_replace(&#39;/(\d+),(\d+)/e&#39;, &#39;$1+$2&#39;, &#39;2,3&#39;);</code>会输出<code>5</code>。</li>
-</ul>
+
+
+
 <h2 id="贪婪与懒惰"><a href="#贪婪与懒惰" class="headerlink" title="贪婪与懒惰"></a>贪婪与懒惰</h2><h3 id="贪婪匹配"><a href="#贪婪匹配" class="headerlink" title="贪婪匹配"></a>贪婪匹配</h3><p>当正则表达式中包含能接受重复的限定符时，通常的行为是匹配尽可能多的字符（在使整个表达式能得到匹配的前提下）</p>
 <p>如：<code>a.*b</code>会匹配最长的  以a开始，b结束  的字符串；<br>当以此对aabab进行搜索，就会匹配整个字符串aabab</p>
 <h3 id="懒惰匹配"><a href="#懒惰匹配" class="headerlink" title="懒惰匹配"></a>懒惰匹配</h3><p>也就是是匹配尽可能少的字符。<br>只需在限定符后加上<code>?</code>即可转换为懒惰匹配模式</p>
