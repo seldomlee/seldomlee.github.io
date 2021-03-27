@@ -206,7 +206,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      60
+      61
        分钟
     </span>
   
@@ -274,7 +274,8 @@
 <h2 id="反义"><a href="#反义" class="headerlink" title="反义"></a>反义</h2><p><code>\W</code> 匹配任意不是字母，数字，下划线，汉字的字符<br><code>\S</code> 匹配任意不是空白符的字符<br><code>\D</code> 匹配任意非数字的字符<br><code>\B</code> 匹配不是单词开头或结束的位置<br><code>[\^x]</code> 匹配除了x以外的任意字符<br><code>[\^aeiou]</code> 匹配除了aeiou这几个字母以外的任意字符</p>
 <h2 id="量词"><a href="#量词" class="headerlink" title="量词"></a>量词</h2><p><code>*</code> ：任意数量；重复0次或很多次<br><code>+</code>：&gt;=1次；重复1次或很多次<br><code>?</code>：0 or 1；重复0次或1次<br><code>&#123;n&#125;</code>：n次；如：\d{2}（表示\d重复匹配2次）；<br><code>&#123;n,&#125;</code>：&gt;=n次；重复n次或更多次<br><code>&#123;n,m&#125;</code>：重复n到m次；重复次数不少于n，不大于m</p>
 <h2 id="字符转义"><a href="#字符转义" class="headerlink" title="字符转义"></a>字符转义</h2><p>若需要查找元字符本身如<code>.</code>、<code>*</code>这些，需要用<code>\</code>来将这些字符的特殊意义取消掉：如<code>\.</code>、<code>\*</code>；当然查找<code>\</code>本身也需要转义为<code>\\</code></p>
-<h2 id="正则表达式字符类备忘单"><a href="#正则表达式字符类备忘单" class="headerlink" title="正则表达式字符类备忘单"></a>正则表达式字符类备忘单</h2><p><code>[:alpha:]</code>任意字母, <code>[A-Za-z]</code><br><code>[:upper:]</code>任意大写字母, <code>[A-Z]</code><br><code>[:lower:]</code>任意小写字母, <code>[a-z]</code><br><code>[:digit:]</code>任意数字, <code>[0-9]</code><br><code>[:alnum:]</code>任意字符字母数字,  <code>[A-Za-z0-9]</code><br><code>[:xdigit:]</code>任意十六进制数字, <code>[0-9A-Fa-f]</code><br><code>[:space:]</code>制表符，换行符，垂直制表符，换页，回车或空格<br><code>[:blank:]</code>空格或制表符<br><code>[:print:]</code>任意可打印字符<br><code>[:punct:]</code>任意标点符号: <code>! &#39; # S % &amp; &#39; ( ) * + , - . / : ; &lt; = &gt; ? @ [ / ] ^ _ &#123; | &#125; ~</code><br><code>[:graph:]</code>除space类之外的任意字符<br><code>[:word:]</code>字母数字字符和下划线的连续字符串<br><code>[:ascii:]</code>ASCII字符，范围：0-127<br><code>[:cntrl:]</code>任何不属于字符类的字符: <code>[:upper:], [:lower:], [:alpha:], [:digit:], [:punct:], [:graph:], [:print:], [:xdigit:]</code></p>
+<h2 id="正则表达式字符类备忘单"><a href="#正则表达式字符类备忘单" class="headerlink" title="正则表达式字符类备忘单"></a>正则表达式字符类备忘单</h2><p>打ctf的时候碰到的正则匹配<br>ps：不过这个好像不是所有语言都适用？在使用正则测试小工具测试payload的时候就没能识别</p>
+<p><code>[:alpha:]</code>任意字母, <code>[A-Za-z]</code><br><code>[:upper:]</code>任意大写字母, <code>[A-Z]</code><br><code>[:lower:]</code>任意小写字母, <code>[a-z]</code><br><code>[:digit:]</code>任意数字, <code>[0-9]</code><br><code>[:alnum:]</code>任意字符字母数字,  <code>[A-Za-z0-9]</code><br><code>[:xdigit:]</code>任意十六进制数字, <code>[0-9A-Fa-f]</code><br><code>[:space:]</code>制表符，换行符，垂直制表符，换页，回车或空格<br><code>[:blank:]</code>空格或制表符<br><code>[:print:]</code>任意可打印字符<br><code>[:punct:]</code>任意标点符号: <code>! &#39; # S % &amp; &#39; ( ) * + , - . / : ; &lt; = &gt; ? @ [ / ] ^ _ &#123; | &#125; ~</code><br><code>[:graph:]</code>除space类之外的任意字符<br><code>[:word:]</code>字母数字字符和下划线的连续字符串<br><code>[:ascii:]</code>ASCII字符，范围：0-127<br><code>[:cntrl:]</code>任何不属于字符类的字符: <code>[:upper:], [:lower:], [:alpha:], [:digit:], [:punct:], [:graph:], [:print:], [:xdigit:]</code></p>
 <h2 id="查找字符类"><a href="#查找字符类" class="headerlink" title="查找字符类"></a>查找字符类</h2><p>如查找abcde，只需在方括号中列出<code>[abcde]</code>;那么就构造了这样一个只会匹配abcde的字符集，数量由其后的重复次数决定</p>
 <p>也可以指定范围：<br>[0-9] 代表的含意与 \d 就是完全一致的：一位 数字；<br>[a-z0-9A-Z_] 也完全等同于 \w （如果只考虑英文的话）。</p>
 <h2 id="分支条件"><a href="#分支条件" class="headerlink" title="分支条件"></a>分支条件</h2><p>正则表达式里的分枝条件指的是有几种规则，如果满足其中任意一种规则都会进行匹配，具体方法是用 <code>|</code> 把不同的规则分隔开。如a | b，只要满足其中之一，都会进行匹配</p>
