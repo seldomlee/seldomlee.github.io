@@ -196,7 +196,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      5.2k 字
+      5.4k 字
     </span>
   
 
@@ -206,7 +206,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      61
+      63
        分钟
     </span>
   
@@ -248,7 +248,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年3月27日 晚上
+                  本文最后更新于：2021年4月7日 晚上
                 
               </p>
             
@@ -268,7 +268,10 @@
 <li><code>i</code> 忽略英文字母大小写。</li>
 <li><code>x</code> 忽略空白。（包括空格和按tab键输出的制表符）</li>
 <li><code>s</code> 让元字符<code>.</code>匹配包括换行符在内的所有字符。</li>
-<li><code>e</code> <code>preg_replace()</code>在替换字符串中对逆向引用作正常的替换。简单的说，就是PHP会把replace的结果当做PHP代码。（替换字符串要符合php的语法规范）<br>例如：<code>echo preg_replace(&#39;/(\d+),(\d+)/e&#39;, &#39;$1+$2&#39;, &#39;2,3&#39;);</code>会输出<code>5</code>。</li>
+<li><code>A</code>强制从目标字符串开头匹配</li>
+<li><code>e</code> <code>preg_replace()</code>在替换字符串中对逆向引用作正常的替换。简单的说，就是PHP会把replace的结果当做PHP代码。（替换字符串要符合php的语法规范）<br>例如：<code>echo preg_replace(&#39;/(\d+),(\d+)/e&#39;, &#39;$1+$2&#39;, &#39;2,3&#39;);</code>会输出<code>5</code></li>
+<li><code>g</code>全局匹配(但只匹单行)<br>若不带g，正则过程中字符串从左到右匹配，找到第一个符合条件的即匹配成功并返回<br>若带g，则字符串从左到右，找到每个符合条件的都记录下来，直到字符串结尾位置</li>
+<li><code>m</code>多行匹配：若存在换行<code>\n</code>并且有开始<code>^</code>或结束<code>$</code>符的情况下，和<code>g</code>一起使用实现全局匹配。<br>存在换行时默认会把换行符作为一个字符任务匹配。<br>g只匹配第一行，添加m之后实现多行，每个换行符之后作为新的匹配起始</li>
 </ul>
 <h2 id="元字符"><a href="#元字符" class="headerlink" title="元字符"></a>元字符</h2><p><code>.</code> ：匹配除换行符以外的任意字符<br><code>\w</code>：匹配字母或数字或下划线或汉字等<br><code>\s</code>：匹配任意的空白符，包括空格，制表符(Tab)，换行符，中文全角空格 等<br><code>\d</code>：匹配一位数字<br><code>\b</code>：匹配单词的开始或结束。匹配这样一个位置：它的前一个字符和后一个字符不全是\w（一个是，一个不是或不存在）<br><code>^</code>：匹配字符串开始<br><code>$</code>：匹配字符串结束<br><code>(</code>和<code>)</code>：小括号有很多妙用，看下面吧</p>
 <h2 id="反义"><a href="#反义" class="headerlink" title="反义"></a>反义</h2><p><code>\W</code> 匹配任意不是字母，数字，下划线，汉字的字符<br><code>\S</code> 匹配任意不是空白符的字符<br><code>\D</code> 匹配任意非数字的字符<br><code>\B</code> 匹配不是单词开头或结束的位置<br><code>[\^x]</code> 匹配除了x以外的任意字符<br><code>[\^aeiou]</code> 匹配除了aeiou这几个字母以外的任意字符</p>
