@@ -196,7 +196,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      6.2k 字
+      6.3k 字
     </span>
   
 
@@ -248,7 +248,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年4月7日 早上
+                  本文最后更新于：2021年4月8日 晚上
                 
               </p>
             
@@ -298,8 +298,8 @@
 <h1 id="命令执行"><a href="#命令执行" class="headerlink" title="命令执行"></a>命令执行</h1><ul>
 <li><p>先是常见的命令执行两兄弟：</p>
 <ul>
-<li>**eval()**：把字符串按照 PHP 代码来计算。 字符串必须是合法的 PHP 代码，且须以分号结尾<br>可见其对命令实现实际是将括号包含的语句插入到自身的位置，那就可以添加各种语句进行截断：?&gt;&lt;?、exit(0)；</li>
-<li>**system()**：执行 指定的命令， 并输出执行结果<br>成功则返回命令输出的最后一行， 失败则返回 <code>false</code></li>
+<li>eval()：把字符串按照 PHP 代码来计算。 字符串必须是合法的 PHP 代码，且须以分号结尾<br>可见其对命令实现实际是将括号包含的语句插入到自身的位置，那就可以添加各种语句进行截断：?&gt;&lt;?、exit(0)；</li>
+<li>system()：执行 指定的命令， 并输出执行结果<br>成功则返回命令输出的最后一行， 失败则返回 <code>false</code></li>
 </ul>
 </li>
 <li><p>一些符号</p>
@@ -436,7 +436,7 @@
 <h3 id="substr-、sha1-、base64-decode"><a href="#substr-、sha1-、base64-decode" class="headerlink" title="substr()、sha1()、base64_decode"></a>substr()、sha1()、base64_decode</h3><blockquote>
 <p>md5()、sha1()、base64_decode()只能处理传入的字符串数据<br>当传入数组后会报出Warning错误，但仍会正常运行并返回值，当==左右两边都错误时，并且正常运行返回相同的值，就可以是判定条件成立</p>
 <p>bypass：对substr()、sha1()、base64_decode()传入数组则返回null</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs php">&gt;<span class="hljs-variable">$a</span>=[];<br>&gt;var_dump(substr(<span class="hljs-variable">$a</span>, <span class="hljs-number">123</span>));					<span class="hljs-comment">//NULL</span><br>&gt;var_dump(sha1(<span class="hljs-variable">$a</span>));						<span class="hljs-comment">//NULL</span><br>&gt;var_dump(substr(<span class="hljs-variable">$a</span>, <span class="hljs-number">123</span>) === sha1(<span class="hljs-variable">$cc</span>));	<span class="hljs-comment">//bool(true)</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs php">&gt;<span class="hljs-variable">$a</span>=[];<br>&gt;var_dump(substr(<span class="hljs-variable">$a</span>, <span class="hljs-number">123</span>));					<span class="hljs-comment">//NULL</span><br>&gt;var_dump(sha1(<span class="hljs-variable">$a</span>));						<span class="hljs-comment">//NULL</span><br>&gt;<span class="hljs-comment"># sha1后为0e数字的值：</span><br>&gt;<span class="hljs-comment"># aaK1STfY	0e76658526655756207688271159624026011393</span><br>&gt;<span class="hljs-comment"># aaO8zKZF	0e89257456677279068558073954252716165668</span><br>&gt;var_dump(substr(<span class="hljs-variable">$a</span>, <span class="hljs-number">123</span>) === sha1(<span class="hljs-variable">$cc</span>));	<span class="hljs-comment">//bool(true)</span><br></code></pre></td></tr></table></figure>
 </blockquote>
 <h3 id="strcmp"><a href="#strcmp" class="headerlink" title="strcmp()"></a>strcmp()</h3><blockquote>
 <p>strcmp(str1,str2)：比较两个字符串str1和str2</p>
@@ -463,13 +463,6 @@
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-comment"># 该片段判断参数s是否为数字，是则带入数据库查询，不是则返回0</span><br><span class="hljs-variable">$s</span> = is_numeric(<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;s&#x27;</span>])?<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;s&#x27;</span>]:<span class="hljs-number">0</span>;<br><span class="hljs-variable">$sql</span>=<span class="hljs-string">&quot;insert into test(type)values(<span class="hljs-subst">$s</span>);&quot;</span>;  <span class="hljs-comment">//是 values($s) 不是values(&#x27;$s&#x27;)</span><br>mysql_query(<span class="hljs-variable">$sql</span>);<br></code></pre></td></tr></table></figure>
 <p>但可以将sql语句转换为16进制传给参数</p>
 <p><img src="https://i.loli.net/2021/03/10/yamFEb2WUMnvKi1.jpg" srcset="/img/loading.gif"></p>
-<h3 id="in-array"><a href="#in-array" class="headerlink" title="in_array()"></a>in_array()</h3><blockquote>
-<p><code>bool in_array ( mixed $needle , array $haystack [, bool $strict = FALSE ] )</code></p>
-<p>（ps：strict相当于是否开启强比较）<br>不提供$strict参数(即默认为false)时，会进行松散比较，判断$needle是否在数组$haystack中<br>$strict=true；还会比较$needle和$haystack中元素类型是否相同</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs php">&gt;<span class="hljs-variable">$array</span>=[<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-string">&#x27;3&#x27;</span>];<br>&gt;var_dump(in_array(<span class="hljs-string">&#x27;abc&#x27;</span>, <span class="hljs-variable">$array</span>));  <span class="hljs-comment">//true	# &#x27;abc&#x27;转换为0</span><br>&gt;var_dump(in_array(<span class="hljs-string">&#x27;1bc&#x27;</span>, <span class="hljs-variable">$array</span>));  <span class="hljs-comment">//true	# &#x27;1bc&#x27;转换为1</span><br><br>&gt;<span class="hljs-comment"># 转换整型int/浮点型float会返回元素个数；</span><br>&gt;<span class="hljs-comment"># 转换bool返回Array中是否有元素；</span><br>&gt;<span class="hljs-comment"># 转换成string返回&#x27;Array&#x27;，并抛出warning</span><br></code></pre></td></tr></table></figure>
-
-<p>array_search()和in_array()类似</p>
-</blockquote>
 <h3 id="intval"><a href="#intval" class="headerlink" title="intval()"></a>intval()</h3><p><code>intval ( mixed $value , int $base = 10 ) : int</code>获取变量的整数值<br>value：要转换的数量值，base：转换所用进制</p>
 <p>三个特性：</p>
 <ul>
@@ -501,6 +494,13 @@
 <p>echo intval(1e10);     =》10000000000</p>
 <p>echo intval(“1e10”);     =》1</p>
 <p>echo intval(“1e10”+1); =》10000000001</p>
+</blockquote>
+<h3 id="in-array"><a href="#in-array" class="headerlink" title="in_array()"></a>in_array()</h3><blockquote>
+<p><code>bool in_array ( mixed $needle , array $haystack [, bool $strict = FALSE ] )</code></p>
+<p>（ps：strict相当于是否开启强比较）<br>不提供$strict参数(即默认为false)时，会进行松散比较，判断$needle是否在数组$haystack中<br>$strict=true；还会比较$needle和$haystack中元素类型是否相同</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs php">&gt;<span class="hljs-variable">$array</span>=[<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-string">&#x27;3&#x27;</span>];<br>&gt;var_dump(in_array(<span class="hljs-string">&#x27;abc&#x27;</span>, <span class="hljs-variable">$array</span>));  <span class="hljs-comment">//true	# &#x27;abc&#x27;转换为0</span><br>&gt;var_dump(in_array(<span class="hljs-string">&#x27;1bc&#x27;</span>, <span class="hljs-variable">$array</span>));  <span class="hljs-comment">//true	# &#x27;1bc&#x27;转换为1</span><br><br>&gt;<span class="hljs-comment"># 转换整型int/浮点型float会返回元素个数；</span><br>&gt;<span class="hljs-comment"># 转换bool返回Array中是否有元素；</span><br>&gt;<span class="hljs-comment"># 转换成string返回&#x27;Array&#x27;，并抛出warning</span><br></code></pre></td></tr></table></figure>
+
+<p>array_search()和in_array()类似</p>
 </blockquote>
 <h3 id="preg-match"><a href="#preg-match" class="headerlink" title="preg_match()"></a>preg_match()</h3><ol>
 <li>preg_match只能处理字符串，当传入数组时会返回false</li>

